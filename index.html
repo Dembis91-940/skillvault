@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillVault — 50 skills métier en français pour votre agent IA</title>
+<meta name="description" content="Installez une compétence métier dans votre agent IA en 2 minutes : 50 skills en français (commerce, artisanat, RH, compta, marketing), calibrés pour votre métier. Compatibles Claude Code, Codex, Copilot.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SkillVault — 50 skills métier en français pour votre agent IA">
+<meta property="og:description" content="Installez une compétence métier dans votre agent IA en 2 minutes : 50 skills en français, calibrés pour votre métier. Packs dès 29 €.">
+<meta property="og:url" content="https://dembis91-940.github.io/skillvault/">
+<meta property="og:site_name" content="SkillVault">
+<meta name="theme-color" content="#070B14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070B14'/%3E%3Cpath d='M20 44V24l12 12 12-12v20' stroke='%232E6BFF' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='22' r='4' fill='%2367E8F9'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "SkillVault",
+      "description": "Catalogue français de skills métier (SKILL.md) pour agents IA : commerce, artisanat, RH, compta, marketing.",
+      "url": "https://dembis91-940.github.io/skillvault/"
+    },
+    {
+      "@type": "Product",
+      "name": "Pack de skills métier SkillVault",
+      "description": "50 compétences métier en français, au format SKILL.md, installables en 2 minutes dans un agent IA (Claude Code, Codex, Copilot).",
+      "offers": [
+        {"@type": "Offer", "name": "Pack Métier", "price": 29, "priceCurrency": "EUR", "description": "1 pack au choix (10 skills en ZIP) + guide PDF d'installation"},
+        {"@type": "Offer", "name": "Pack Complet", "price": 89, "priceCurrency": "EUR", "description": "Les 5 packs (50 skills) + guide 40 pages + 1 skill sur-mesure"},
+        {"@type": "Offer", "name": "Licence Entreprise", "price": 197, "priceCurrency": "EUR", "description": "Les 5 packs + usage équipe 10 personnes + 5 skills personnalisés + cadrage 45 min"}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Qu'est-ce qu'un skill exactement ?", "acceptedAnswer": {"@type": "Answer", "text": "Un skill est un dossier contenant un fichier SKILL.md : un mode d'emploi qu'un agent IA charge pour exécuter une tâche métier précise. Chaque skill SkillVault contient des instructions pas à pas, un exemple concret et une checklist de validation."}},
+        {"@type": "Question", "name": "Avec quels outils ça fonctionne ?", "acceptedAnswer": {"@type": "Answer", "text": "Le format SKILL.md est le format standard des instructions métier des agents IA : supporté nativement par Claude Code, Codex et Copilot, et lisible par la plupart des autres agents (ChatGPT, Gemini, Cursor…). Le guide PDF détaille l'installation dans chaque outil."}},
+        {"@type": "Question", "name": "Je ne suis pas développeur, est-ce pour moi ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui : l'installation consiste à copier un dossier reçu par email dans le dossier de skills de votre agent, guidé par un PDF pas à pas. Aucune ligne de code à écrire."}},
+        {"@type": "Question", "name": "Comment se passe l'installation ?", "acceptedAnswer": {"@type": "Answer", "text": "Trois étapes : choisir votre pack, copier les dossiers de skills dans votre agent (2 minutes, guide PDF inclus), puis décrire votre tâche à l'agent : il applique la méthode du skill."}},
+        {"@type": "Question", "name": "Que contient le ZIP ?", "acceptedAnswer": {"@type": "Answer", "text": "10 dossiers de skills, un par compétence, chacun contenant son SKILL.md : frontmatter (nom + description), instructions étape par étape, exemple concret et checklist de validation. Tout est rédigé en français."}},
+        {"@type": "Question", "name": "Comment se font le paiement et la livraison ?", "acceptedAnswer": {"@type": "Answer", "text": "Après votre commande via le formulaire, vous recevez un email de confirmation avec les coordonnées de paiement (virement ou message privé) et la facture. Le ZIP et le guide PDF sont livrés par email dès réception du paiement."}},
+        {"@type": "Question", "name": "Le skill sur-mesure, c'est quoi ?", "acceptedAnswer": {"@type": "Answer", "text": "Le Pack Complet inclut 1 skill rédigé selon votre besoin précis : vous décrivez votre tâche métier et nous rédigeons un SKILL.md dédié, livré sous 5 jours ouvrés. La Licence Entreprise inclut 5 skills personnalisés avec un cadrage de 45 min."}},
+        {"@type": "Question", "name": "Et si ça ne me convient pas ?", "acceptedAnswer": {"@type": "Answer", "text": "Garantie satisfait ou remboursé 14 jours : si un pack ne vous convient pas, écrivez-nous dans les 14 jours et nous vous remboursons intégralement, sans condition."}}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root{
+    --abyss:#070B14;
+    --abyss-2:#0B1220;
+    --cobalt:#2E6BFF;
+    --cyan:#67E8F9;
+    --violet:#8B5CF6;
+    --text:#E7EDF7;
+    --muted:#94A3B8;
+    --glass:rgba(255,255,255,.04);
+    --glass-border:rgba(103,232,249,.14);
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--abyss);
+    color:var(--text);
+    font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- Fond : grille fine + halos ---------- */
+  .bg-grid{
+    position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(46,107,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(46,107,255,.05) 1px,transparent 1px);
+    background-size:44px 44px;
+  }
+  .bg-glow{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  .bg-glow::before,.bg-glow::after{
+    content:'';position:absolute;border-radius:50%;filter:blur(120px);opacity:.22;
+  }
+  .bg-glow::before{width:640px;height:640px;top:-180px;left:-120px;background:#2E6BFF}
+  .bg-glow::after{width:560px;height:560px;top:30%;right:-160px;background:#8B5CF6;opacity:.16}
+  /* ---------- Typo utilitaire ---------- */
+  .grad-text{
+    background:linear-gradient(92deg,#67E8F9 0%,#2E6BFF 55%,#8B5CF6 110%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--cyan);
+    border:1px solid rgba(103,232,249,.25);
+    background:rgba(103,232,249,.06);
+    padding:7px 14px;border-radius:999px;
+  }
+  .section{padding:96px 24px;max-width:1180px;margin:0 auto}
+  .section-title{font-size:clamp(30px,4.5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.15;text-align:center}
+  .section-sub{text-align:center;color:var(--muted);max-width:640px;margin:16px auto 0;font-size:17px}
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:100;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(7,11,20,.72);
+    border-bottom:1px solid rgba(103,232,249,.10);
+  }
+  .nav{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:28px}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:19px;text-decoration:none;color:var(--text)}
+  .logo-mark{
+    width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#2E6BFF,#8B5CF6);
+    box-shadow:0 0 22px rgba(46,107,255,.45);
+  }
+  .logo-mark svg{width:20px;height:20px}
+  .nav-links{display:flex;gap:26px;margin-left:auto;align-items:center}
+  .nav-links a{color:var(--muted);text-decoration:none;font-size:14.5px;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--cyan)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    font-family:inherit;font-weight:600;font-size:15px;text-decoration:none;cursor:pointer;
+    border-radius:12px;padding:13px 26px;border:1px solid transparent;transition:transform .15s,box-shadow .2s,background .2s;
+  }
+  .btn-primary{
+    background:linear-gradient(92deg,#2E6BFF,#5B8CFF);
+    color:#fff;box-shadow:0 4px 24px rgba(46,107,255,.4);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(46,107,255,.55)}
+  .btn-ghost{border-color:rgba(103,232,249,.30);color:var(--cyan);background:rgba(103,232,249,.05)}
+  .btn-ghost:hover{background:rgba(103,232,249,.12)}
+  .btn-violet{background:linear-gradient(92deg,#8B5CF6,#A78BFA);color:#fff;box-shadow:0 4px 24px rgba(139,92,246,.4)}
+  .btn-violet:hover{transform:translateY(-2px)}
+  .btn-lg{padding:16px 34px;font-size:16px;border-radius:14px}
+  /* ---------- Hero ---------- */
+  .hero{position:relative;padding:110px 24px 90px;text-align:center;overflow:hidden}
+  .hero-inner{max-width:1180px;margin:0 auto}
+  .hero h1{
+    font-size:clamp(38px,6.2vw,66px);font-weight:700;letter-spacing:-.03em;line-height:1.06;
+    margin:26px auto 0;max-width:900px;
+  }
+  .hero-sub{
+    font-size:clamp(17px,2.2vw,20px);color:var(--muted);max-width:720px;margin:22px auto 0;line-height:1.65;
+  }
+  .hero-sub strong{color:var(--text);font-weight:600}
+  .hero-cta{display:flex;gap:16px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+  .hero-compat{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:38px;color:var(--muted);font-size:13.5px}
+  .hero-compat span{display:inline-flex;align-items:center;gap:7px}
+  .hero-compat .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  /* ---------- Vault mockup ---------- */
+  .vault-wrap{max-width:760px;margin:64px auto 0;position:relative}
+  .vault-wrap::before{
+    content:'';position:absolute;inset:-60px -40px;z-index:-1;border-radius:40px;
+    background:radial-gradient(ellipse at center,rgba(46,107,255,.18),transparent 65%);
+  }
+  .vault{
+    position:relative;border-radius:20px;text-align:left;
+    background:linear-gradient(160deg,rgba(20,30,54,.85),rgba(10,16,30,.92));
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    box-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
+    padding:22px 24px 26px;
+    font-size:13.5px;
+  }
+  .vault-bar{display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(103,232,249,.12);padding-bottom:14px;margin-bottom:16px}
+  .vault-bar .lamp{width:10px;height:10px;border-radius:50%}
+  .vault-bar .l1{background:#FF5F57}.vault-bar .l2{background:#FEBC2E}.vault-bar .l3{background:#28C840}
+  .vault-bar .vault-title{margin-left:8px;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .vault-bar .vault-state{margin-left:auto;color:var(--cyan);font-size:12px;display:flex;align-items:center;gap:6px}
+  .vault-state .pulse{width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(103,232,249,.5)}50%{opacity:.6;box-shadow:0 0 0 6px rgba(103,232,249,0)}}
+  .vline{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;opacity:0;animation:lineIn .5s forwards}
+  .vline:nth-child(1){animation-delay:.3s}.vline:nth-child(2){animation-delay:.75s}.vline:nth-child(3){animation-delay:1.2s}
+  .vline:nth-child(4){animation-delay:1.65s}.vline:nth-child(5){animation-delay:2.1s}.vline:nth-child(6){animation-delay:2.55s}
+  @keyframes lineIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+  .vline .check{width:20px;height:20px;border-radius:6px;background:rgba(46,107,255,.18);color:#67E8F9;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+  .vline .sk-name{font-weight:600;color:var(--text)}
+  .vline .sk-tag{margin-left:auto;font-size:11px;color:var(--muted);border:1px solid rgba(148,163,184,.25);border-radius:999px;padding:2px 9px;flex-shrink:0}
+  .vline .sk-ok{color:var(--cyan);font-size:11px;margin-left:auto}
+  .vault-foot{margin-top:18px;padding-top:14px;border-top:1px dashed rgba(103,232,249,.16);display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12.5px}
+  .vault-foot b{color:var(--cyan);font-weight:600}
+  .vault-coins{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+  .vcoin{
+    font-size:12.5px;font-weight:600;color:#D9E4F5;padding:9px 16px;border-radius:999px;
+    background:rgba(255,255,255,.045);border:1px solid rgba(103,232,249,.18);
+    backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;
+  }
+  .vcoin b{color:var(--cyan)}
+  /* ---------- Stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:980px;margin:76px auto 0}
+  .stat{
+    background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);
+    padding:22px 16px;backdrop-filter:blur(12px);
+  }
+  .stat .num{font-size:34px;font-weight:700;background:linear-gradient(92deg,#67E8F9,#2E6BFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .lbl{font-size:13px;color:var(--muted);margin-top:4px}
+  /* ---------- Sections génériques ---------- */
+  .glass{
+    background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  }
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
+  .card{padding:30px 26px;position:relative}
+  .card .ic{
+    width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;
+    background:rgba(46,107,255,.14);border:1px solid rgba(46,107,255,.3);
+  }
+  .card .ic.v{background:rgba(139,92,246,.14);border-color:rgba(139,92,246,.3)}
+  .card .ic.c{background:rgba(103,232,249,.10);border-color:rgba(103,232,249,.28)}
+  .card h3{font-size:19px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
+  .card p{color:var(--muted);font-size:15px}
+  /* ---------- Étapes ---------- */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px;counter-reset:step}
+  .step{padding:32px 26px;position:relative;overflow:hidden}
+  .step::before{
+    counter-increment:step;content:'0' counter(step);
+    position:absolute;top:6px;right:18px;font-size:74px;font-weight:700;line-height:1;
+    color:rgba(46,107,255,.13);-webkit-text-stroke:1px rgba(103,232,249,.25);
+  }
+  .step .st-ic{font-size:26px;margin-bottom:14px}
+  .step h3{font-size:19px;font-weight:700;margin-bottom:10px}
+  .step p{color:var(--muted);font-size:14.5px}
+  .step p b{color:var(--text);font-weight:600}
+  /* ---------- Pricing ---------- */
+  .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px;align-items:stretch}
+  .plan{display:flex;flex-direction:column;padding:34px 28px;position:relative;transition:transform .2s}
+  .plan:hover{transform:translateY(-4px)}
+  .plan .p-name{font-size:16px;font-weight:700;letter-spacing:.02em}
+  .plan .p-price{font-size:52px;font-weight:700;letter-spacing:-.03em;margin:10px 0 2px}
+  .plan .p-price small{font-size:17px;color:var(--muted);font-weight:500}
+  .plan .p-desc{color:var(--muted);font-size:14px;min-height:44px}
+  .plan ul{list-style:none;margin:22px 0 28px;display:flex;flex-direction:column;gap:11px;flex:1}
+  .plan li{font-size:14px;color:#C9D6EA;display:flex;gap:10px;align-items:flex-start}
+  .plan li::before{content:'✓';color:var(--cyan);font-weight:700;flex-shrink:0}
+  .plan .btn{width:100%}
+  .plan-flag{
+    position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+    background:linear-gradient(92deg,#8B5CF6,#6D28D9);color:#fff;
+    font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    padding:7px 18px;border-radius:999px;white-space:nowrap;
+    box-shadow:0 4px 18px rgba(139,92,246,.5);
+  }
+  .plan-featured{
+    border-color:rgba(139,92,246,.55);
+    background:linear-gradient(170deg,rgba(139,92,246,.14),rgba(46,107,255,.08));
+    box-shadow:0 20px 60px rgba(139,92,246,.18);
+  }
+  .plan-note{text-align:center;color:var(--muted);font-size:13.5px;margin-top:26px}
+  .plan-note b{color:var(--cyan);font-weight:600}
+  /* ---------- 50 skills ---------- */
+  .packs{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:52px}
+  .pack{padding:28px 26px;display:flex;flex-direction:column}
+  .pack-head{display:flex;align-items:center;gap:13px;margin-bottom:8px}
+  .pack-emoji{
+    width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;
+    background:rgba(46,107,255,.13);border:1px solid rgba(46,107,255,.28);flex-shrink:0;
+  }
+  .pack h3{font-size:18px;font-weight:700}
+  .pack .pack-gain{font-size:13.5px;color:var(--muted);margin:0 0 16px 57px;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    font-size:12px;font-weight:500;color:#C9D6EA;
+    padding:6px 12px;border-radius:999px;
+    background:rgba(255,255,255,.04);border:1px solid rgba(103,232,249,.16);
+    transition:border-color .2s,color .2s;
+  }
+  .chip:hover{border-color:var(--cyan);color:var(--cyan)}
+  .packs-note{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
+  /* ---------- FAQ ---------- */
+  .faq{max-width:780px;margin:48px auto 0;display:flex;flex-direction:column;gap:12px}
+  .faq-item{overflow:hidden}
+  .faq-q{
+    width:100%;background:none;border:none;text-align:left;cursor:pointer;
+    font-family:inherit;color:var(--text);font-size:16px;font-weight:600;
+    padding:20px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  }
+  .faq-q .chev{color:var(--cyan);font-size:13px;transition:transform .25s;flex-shrink:0}
+  .faq-item.open .chev{transform:rotate(180deg)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .faq-a-inner{padding:0 22px 20px;color:var(--muted);font-size:14.5px;line-height:1.7}
+  /* ---------- Formulaire ---------- */
+  .order-wrap{max-width:820px;margin:0 auto}
+  .order{
+    margin-top:48px;padding:38px 34px;
+    background:linear-gradient(165deg,rgba(18,28,52,.9),rgba(9,14,26,.95));
+    border:1px solid rgba(46,107,255,.35);
+    border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.45),0 0 60px rgba(46,107,255,.10);
+  }
+  .order h3{font-size:24px;font-weight:700;margin-bottom:6px}
+  .order .order-sub{color:var(--muted);font-size:14.5px;margin-bottom:26px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;min-width:0}
+  .field label{font-size:13px;font-weight:600;color:#C9D6EA}
+  .field input,.field select,.field textarea{
+    font-family:inherit;font-size:14.5px;color:var(--text);
+    background:rgba(7,11,20,.7);border:1px solid rgba(103,232,249,.22);border-radius:10px;
+    padding:12px 14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;
+  }
+  .field textarea{resize:vertical;min-height:90px}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    border-color:var(--cyan);box-shadow:0 0 0 3px rgba(103,232,249,.12);
+  }
+  .field select option{background:#0B1220;color:var(--text)}
+  .field .err{color:#F87171;font-size:12.5px;display:none}
+  .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:#F87171}
+  .field.invalid .err{display:block}
+  .order-actions{margin-top:8px;display:flex;flex-direction:column;gap:12px}
+  .order-actions .btn{width:100%}
+  .order-secure{font-size:13px;color:var(--muted);text-align:center}
+  .order-ok{
+    display:none;text-align:center;padding:26px 18px;
+    border:1px solid rgba(103,232,249,.35);border-radius:14px;background:rgba(103,232,249,.06);
+  }
+  .order-ok .big{font-size:34px;margin-bottom:10px}
+  .order-ok h4{font-size:19px;margin-bottom:8px;color:var(--cyan)}
+  .order-ok p{color:var(--muted);font-size:14.5px}
+  .order-ok .steps-list{margin:14px auto 0;max-width:420px;text-align:left;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:8px}
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid rgba(103,232,249,.10);background:rgba(4,7,13,.6);margin-top:40px}
+  .footer-inner{max-width:1180px;margin:0 auto;padding:48px 24px 34px}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:34px}
+  .footer-grid h4{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
+  .footer-grid p,.footer-grid li{color:var(--muted);font-size:13.5px}
+  .footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .footer-grid a{color:var(--muted);text-decoration:none;transition:color .2s}
+  .footer-grid a:hover{color:var(--cyan)}
+  .footer-bottom{border-top:1px solid rgba(103,232,249,.08);margin-top:36px;padding-top:20px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12.5px}
+  .footer-bottom a{color:var(--muted)}
+  .disclaimer{color:#64748B;font-size:12px;margin-top:16px;line-height:1.6;max-width:760px}
+  /* ---------- Animations reveal ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .vline{animation:none;opacity:1}
+    html{scroll-behavior:auto}
+  }
+  /* ---------- Responsive ---------- */
+  @media (max-width:960px){
+    .cards3,.steps,.pricing{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}
+    .packs{grid-template-columns:1fr}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .footer-grid{grid-template-columns:1fr}
+    .section{padding:72px 20px}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .form-row{grid-template-columns:1fr}
+    .hero{padding:80px 18px 64px}
+    .hero-cta .btn{width:100%}
+    .order{padding:28px 20px}
+    .vault{font-size:12.5px;padding:18px}
+    .vline .sk-tag{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <nav class="nav">
+    <a class="logo" href="#top" aria-label="SkillVault — accueil">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#67E8F9" stroke="none"/></svg>
+      </span>
+      SkillVault
+    </a>
+    <div class="nav-links">
+      <a href="#skills">Les skills</a>
+      <a href="#fonctionnement">Fonctionnement</a>
+      <a href="#offres">Offres</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="btn btn-primary" href="#commande" style="padding:11px 20px;font-size:14px">Obtenir les skills</a>
+  </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <span class="kicker">⚡ 50 skills métier · 100 % en français</span>
+    <h1>Votre agent IA, enfin compétent dans <span class="grad-text">votre métier</span>.</h1>
+    <p class="hero-sub">
+      <strong>Installez une compétence métier dans votre agent IA en 2 minutes — en français, calibrée pour votre métier.</strong><br>
+      Relance de devis, réponse aux avis Google, suivi de trésorerie, fiche de poste, post LinkedIn : vos tâches réelles, prêtes à déléguer.
+    </p>
+    <div class="hero-cta">
+      <a href="#offres" class="btn btn-primary btn-lg">Voir les packs — dès 29 €</a>
+      <a href="#fonctionnement" class="btn btn-ghost btn-lg">Comment ça marche</a>
+    </div>
+    <div class="hero-compat">
+      <span><span class="dot"></span>Format standard SKILL.md</span>
+      <span><span class="dot"></span>Compatible Claude Code, Codex, Copilot</span>
+      <span><span class="dot"></span>Aucune ligne de code à écrire</span>
+    </div>
+
+    <!-- Mockup coffre : installation en direct -->
+    <div class="vault-wrap">
+      <div class="vault" role="img" aria-label="Démonstration : installation de skills métier dans un agent IA">
+        <div class="vault-bar">
+          <span class="lamp l1"></span><span class="lamp l2"></span><span class="lamp l3"></span>
+          <span class="vault-title">SkillVault — coffre d'installation</span>
+          <span class="vault-state"><span class="pulse"></span>installation en cours…</span>
+        </div>
+        <div class="vline"><span class="check">✓</span><span class="sk-name">relance-panier</span><span class="sk-tag">commerce</span><span class="sk-ok">prêt</span></div>
+        <div class="vline"><span class="check">✓</span><span class="sk-name">reponse-avis-google</span><span class="sk-tag">commerce</span><span class="sk-ok">prêt</span></div>
+        <div class="vline"><span class="check">✓</span><span class="sk-name">devis-chiffre</span><span class="sk-tag">artisanat</span><span class="sk-ok">prêt</span></div>
+        <div class="vline"><span class="check">✓</span><span class="sk-name">relance-impaye</span><span class="sk-tag">compta</span><span class="sk-ok">prêt</span></div>
+        <div class="vline"><span class="check">✓</span><span class="sk-name">grille-entretien</span><span class="sk-tag">rh</span><span class="sk-ok">prêt</span></div>
+        <div class="vline"><span class="check">✓</span><span class="sk-name">post-linkedin</span><span class="sk-tag">marketing</span><span class="sk-ok">prêt</span></div>
+        <div class="vault-foot">⏱️ <b>2 minutes</b> : copier le dossier → décrire la tâche → l'agent applique la méthode métier.</div>
+      </div>
+      <div class="vault-coins">
+        <span class="vcoin">🗂️ <b>50</b> skills prêts</span>
+        <span class="vcoin">🧭 <b>5</b> métiers couverts</span>
+        <span class="vcoin">🇫🇷 <b>100 %</b> en français</span>
+        <span class="vcoin">📦 <b>1</b> format : SKILL.md</span>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">50</div><div class="lbl">skills rédigés et prêts à l'emploi</div></div>
+      <div class="stat"><div class="num">5</div><div class="lbl">packs métier : commerce, artisanat, RH, compta, marketing</div></div>
+      <div class="stat"><div class="num">2 min</div><div class="lbl">pour installer un skill dans votre agent</div></div>
+      <div class="stat"><div class="num">100 %</div><div class="lbl">rédigés en français, sans jargon technique</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DOULEURS ================= -->
+<section class="section" id="probleme">
+  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Le problème</span>
+  <h2 class="section-title" style="margin-top:18px">Votre agent IA n'a jamais appris <span class="grad-text">votre métier</span></h2>
+  <p class="section-sub">Les agents IA excellent dans le code et la rédaction générique. Pour vos tâches de terrain, il leur manque la méthode.</p>
+  <div class="cards3">
+    <div class="card glass reveal">
+      <div class="ic">🤖</div>
+      <h3>Des agents sans compétences métier</h3>
+      <p>Demandez à un agent IA de relancer un panier abandonné : il vous sort un texte générique, sans méthode ni vocabulaire du métier. Sans instructions précises, il improvise — et l'improviste ne se facture pas.</p>
+    </div>
+    <div class="card glass reveal" style="transition-delay:.12s">
+      <div class="ic v">🌐</div>
+      <h3>Des skills seulement en anglais</h3>
+      <p>Les rares compétences existantes sont écrites pour les développeurs : prompts en anglais, exemples californiens, jargon technique. Rien pour un artisan, un cabinet comptable ou une boutique en France.</p>
+    </div>
+    <div class="card glass reveal" style="transition-delay:.24s">
+      <div class="ic c">🔧</div>
+      <h3>Une installation réservée aux développeurs</h3>
+      <p>Copier des dossiers, modifier des fichiers de configuration, comprendre des chemins d'accès : la plupart des guides supposent que vous codez. Vous, vous voulez juste déléguer une tâche — pas déboguer un agent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FONCTIONNEMENT ================= -->
+<section class="section" id="fonctionnement">
+  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Le fonctionnement</span>
+  <h2 class="section-title" style="margin-top:18px">Choisir → Installer → <span class="grad-text">Déléguer</span></h2>
+  <p class="section-sub">Trois étapes, zéro code. Vous gardez le contrôle : c'est vous qui validez chaque production de l'agent.</p>
+  <div class="steps">
+    <div class="step glass reveal">
+      <div class="st-ic">🗂️</div>
+      <h3>Choisir votre pack</h3>
+      <p>Commerce, artisanat, RH, compta ou marketing : prenez le pack de votre métier, ou le Pack Complet pour couvrir toute votre activité. <b>Chaque skill couvre une tâche précise et récurrente.</b></p>
+    </div>
+    <div class="step glass reveal" style="transition-delay:.12s">
+      <div class="st-ic">⚡</div>
+      <h3>Installer en 2 minutes</h3>
+      <p>Vous recevez un ZIP avec les dossiers de skills et un guide PDF. <b>Vous copiez les dossiers dans le dossier de skills de votre agent</b> — le guide détaille chaque outil (Claude Code, Codex, Copilot), pas à pas, en images.</p>
+    </div>
+    <div class="step glass reveal" style="transition-delay:.24s">
+      <div class="st-ic">✅</div>
+      <h3>Déléguer la tâche</h3>
+      <p>Décrivez votre besoin en français : « relance ce panier », « chiffre ce devis », « réponds à cet avis Google ». <b>L'agent applique la méthode du skill</b> : instructions, exemple et checklist de validation inclus.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= OFFRES ================= -->
+<section class="section" id="offres">
+  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Les offres</span>
+  <h2 class="section-title" style="margin-top:18px">Des packs simples, un prix <span class="grad-text">honnête</span></h2>
+  <p class="section-sub">Payez ce que vous utilisez. Chaque pack est livré par email, avec facture et garantie satisfait ou remboursé 14 jours.</p>
+  <div class="pricing">
+    <div class="plan glass reveal">
+      <div class="p-name">Pack Métier</div>
+      <div class="p-price">29 €<small></small></div>
+      <div class="p-desc">Pour commencer avec votre métier, sans vous ruiner.</div>
+      <ul>
+        <li>1 pack au choix : commerce, artisanat, RH, compta ou marketing</li>
+        <li>10 skills complets en ZIP (SKILL.md : instructions + exemple + checklist)</li>
+        <li>Guide PDF d'installation (2 minutes, pas à pas)</li>
+        <li>Livraison par email + facture</li>
+        <li>Garantie satisfait ou remboursé 14 jours</li>
+      </ul>
+      <button class="btn btn-primary" onclick="choisirOffre('Pack Métier', 29)">Choisir le Pack Métier — 29 €</button>
+    </div>
+    <div class="plan plan-featured glass reveal" style="transition-delay:.12s">
+      <span class="plan-flag">★ Le plus choisi</span>
+      <div class="p-name">Pack Complet</div>
+      <div class="p-price">89 €<small></small></div>
+      <div class="p-desc">Toute votre activité couverte, d'un seul geste.</div>
+      <ul>
+        <li>Les 5 packs : 50 skills (commerce, artisanat, RH, compta, marketing)</li>
+        <li>Guide d'installation de 40 pages (tous les outils d'agents IA)</li>
+        <li><b style="color:#A78BFA">+ 1 skill sur-mesure</b> : rédigé selon votre besoin, livré sous 5 jours ouvrés</li>
+        <li>Mises à jour des packs incluses pendant 12 mois</li>
+        <li>Livraison par email + facture</li>
+        <li>Garantie satisfait ou remboursé 14 jours</li>
+      </ul>
+      <button class="btn btn-violet" onclick="choisirOffre('Pack Complet', 89)">Choisir le Pack Complet — 89 €</button>
+    </div>
+    <div class="plan glass reveal" style="transition-delay:.24s">
+      <div class="p-name">Licence Entreprise</div>
+      <div class="p-price">197 €<small></small></div>
+      <div class="p-desc">Pour les équipes qui délèguent à plusieurs.</div>
+      <ul>
+        <li>Les 5 packs : 50 skills</li>
+        <li>Usage équipe jusqu'à <b style="color:#67E8F9">10 personnes</b></li>
+        <li><b style="color:#A78BFA">5 skills personnalisés</b> sur vos processus internes</li>
+        <li>Cadrage de 45 minutes pour définir les skills ensemble</li>
+        <li>Facture aux normes + support par email prioritaire</li>
+        <li>Garantie satisfait ou remboursé 14 jours</li>
+      </ul>
+      <button class="btn btn-primary" onclick="choisirOffre('Licence Entreprise', 197)">Choisir la Licence Entreprise — 197 €</button>
+    </div>
+  </div>
+  <p class="plan-note">💳 Paiement par <b>virement ou message privé</b> — coordonnées envoyées par email après la commande.<br>Question avant de commander ? Le chatbot en bas à droite répond, ou écrivez-nous directement.</p>
+</section>
+
+<!-- ================= 50 SKILLS ================= -->
+<section class="section" id="skills">
+  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Le catalogue</span>
+  <h2 class="section-title" style="margin-top:18px">50 skills prêts, <span class="grad-text">5 métiers</span></h2>
+  <p class="section-sub">Chaque skill est un dossier avec son SKILL.md : la description, les instructions étape par étape, un exemple concret et une checklist de validation. Rédigé en français, calibré pour le terrain.</p>
+  <div class="packs">
+    <div class="pack glass reveal">
+      <div class="pack-head"><span class="pack-emoji">🛒</span><h3>Pack Commerce</h3></div>
+      <p class="pack-gain">Vendez plus et fidélisez : chaque texte client est rédigé avec méthode, sans fautes ni promesses fausses.</p>
+      <div class="chips">
+        <span class="chip">relance-panier</span><span class="chip">reponse-avis-google</span><span class="chip">fiche-produit</span><span class="chip">argumentaire-vente</span><span class="chip">email-bienvenue</span><span class="chip">relance-commande</span><span class="chip">reponse-reclamation</span><span class="chip">upsell-croise</span><span class="chip">fiche-client</span><span class="chip">promo-email</span>
+      </div>
+    </div>
+    <div class="pack glass reveal" style="transition-delay:.08s">
+      <div class="pack-head"><span class="pack-emoji">🔨</span><h3>Pack Artisanat</h3></div>
+      <p class="pack-gain">Chiffrez juste, relancez sans gêne, tenez vos chantiers informés : votre temps de gestion divisé.</p>
+      <div class="chips">
+        <span class="chip">devis-chiffre</span><span class="chip">relance-chantier</span><span class="chip">planning-rdv</span><span class="chip">facture-acompte</span><span class="chip">reponse-appel-offres</span><span class="chip">message-commercial</span><span class="chip">suivi-chantier-client</span><span class="chip">fiche-technique-materiaux</span><span class="chip">reception-travaux</span><span class="chip">maintenance-preventive</span>
+      </div>
+    </div>
+    <div class="pack glass reveal" style="transition-delay:.16s">
+      <div class="pack-head"><span class="pack-emoji">🤝</span><h3>Pack RH</h3></div>
+      <p class="pack-gain">Recrutez, intégrez, évaluez : des documents professionnels et conformes, prêts à signer.</p>
+      <div class="chips">
+        <span class="chip">fiche-de-poste</span><span class="chip">grille-entretien</span><span class="chip">onboarding-30-jours</span><span class="chip">annonce-emploi</span><span class="chip">entretien-annuel</span><span class="chip">plan-formation</span><span class="chip">message-candidat-refuse</span><span class="chip">gestion-conflits</span><span class="chip">entretien-depart</span><span class="chip">planning-conges</span>
+      </div>
+    </div>
+    <div class="pack glass reveal" style="transition-delay:.24s">
+      <div class="pack-head"><span class="pack-emoji">🧮</span><h3>Pack Compta</h3></div>
+      <p class="pack-gain">Factures conformes, impayés relancés, trésorerie sous contrôle : la méthode des pros, en français.</p>
+      <div class="chips">
+        <span class="chip">relance-impaye</span><span class="chip">note-de-frais</span><span class="chip">suivi-tresorerie</span><span class="chip">facture-conforme</span><span class="chip">declaration-tva</span><span class="chip">rapprochement-bancaire</span><span class="chip">seuil-rentabilite</span><span class="chip">pointage-fournisseurs</span><span class="chip">cloture-mensuelle</span><span class="chip">previsionnel-cashflow</span>
+      </div>
+    </div>
+    <div class="pack glass reveal" style="transition-delay:.32s">
+      <div class="pack-head"><span class="pack-emoji">📣</span><h3>Pack Marketing</h3></div>
+      <p class="pack-gain">Un contenu régulier et crédible : posts, newsletters, pages de vente, avec des chiffres réels.</p>
+      <div class="chips">
+        <span class="chip">post-linkedin</span><span class="chip">calendrier-contenu</span><span class="chip">reponse-avis-negatif</span><span class="chip">offre-promo</span><span class="chip">titre-accrocheur</span><span class="chip">page-vente</span><span class="chip">email-newsletter</span><span class="chip">brief-agence</span><span class="chip">slogan-marque</span><span class="chip">rapport-campagne</span>
+      </div>
+    </div>
+    <div class="pack glass reveal" style="transition-delay:.4s">
+      <div class="pack-head"><span class="pack-emoji">📦</span><h3>Pack Complet — les 5</h3></div>
+      <p class="pack-gain">Les 50 skills précédents réunis, plus le guide de 40 pages et un skill sur-mesure. Le meilleur rapport valeur-prix.</p>
+      <div class="chips">
+        <span class="chip">10 skills commerce</span><span class="chip">10 skills artisanat</span><span class="chip">10 skills RH</span><span class="chip">10 skills compta</span><span class="chip">10 skills marketing</span><span class="chip">guide 40 pages</span><span class="chip" style="border-color:rgba(139,92,246,.5);color:#A78BFA">+ 1 skill sur-mesure</span>
+      </div>
+    </div>
+  </div>
+  <p class="packs-note">Chaque pack = 10 skills exactement. Chaque skill = 1 dossier avec SKILL.md, prêt à copier dans votre agent.</p>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section" id="faq">
+  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">FAQ</span>
+  <h2 class="section-title" style="margin-top:18px">Les questions qu'on nous <span class="grad-text">pose vraiment</span></h2>
+  <div class="faq">
+    <div class="faq-item glass">
+      <button class="faq-q">Qu'est-ce qu'un skill exactement ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Un skill est un dossier contenant un fichier SKILL.md : un mode d'emploi qu'un agent IA charge pour exécuter une tâche métier précise. Chaque skill SkillVault contient une description, des instructions étape par étape, un exemple concret et une checklist de validation — tout en français.</div></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-q">Avec quels outils ça fonctionne ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Le format SKILL.md est le format standard des instructions métier des agents IA : il est supporté nativement par Claude Code, Codex et Copilot, et lisible par la plupart des autres agents (ChatGPT, Gemini, Cursor…). Le guide PDF détaille l'installation dans chaque outil.</div></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-q">Je ne suis pas développeur, est-ce pour moi ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Oui, c'est exactement pour vous. L'installation consiste à copier un dossier reçu par email dans le dossier de skills de votre agent, guidé par un PDF pas à pas. Aucune ligne de code à écrire — si vous savez copier un dossier, vous savez installer un skill.</div></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-q">Comment se passe l'installation, concrètement ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Trois étapes : 1) vous choisissez votre pack ; 2) vous recevez le ZIP par email, vous le décompressez et vous copiez les dossiers de skills dans le dossier de skills de votre agent (le guide PDF montre chaque outil) ; 3) vous décrivez votre tâche en français (« relance ce panier », « chiffre ce devis ») et l'agent applique la méthode du skill. Comptez 2 minutes pour l'installation.</div></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-q">Que contient exactement le ZIP ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">10 dossiers de skills, un par compétence, chacun avec son SKILL.md : frontmatter (nom + description), instructions étape par étape, exemple concret et checklist de validation. Le ZIP du Pack Complet contient les 5 packs, soit 50 skills, plus le guide d'installation de 40 pages.</div></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-q">Comment se font le paiement et la livraison ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Après votre commande via le formulaire, vous recevez un email de confirmation avec les coordonnées de paiement (virement ou message privé) et votre facture. Le ZIP et le guide PDF sont livrés par email dès réception du paiement. Le skill sur-mesure du Pack Complet est rédigé sous 5 jours ouvrés ; les 5 skills personnalisés de la Licence Entreprise sous 10 jours, après le cadrage de 45 minutes.</div></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-q">Le skill sur-mesure, c'est quoi ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Le Pack Complet inclut 1 skill rédigé selon votre besoin précis : vous décrivez votre tâche métier (ex. « la relance des clients de mon pressing avant l'hiver ») et nous rédigeons un SKILL.md dédié, livré sous 5 jours ouvrés. La Licence Entreprise va plus loin : 5 skills personnalisés sur vos processus internes, définis ensemble lors d'un cadrage de 45 minutes.</div></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-q">Et si ça ne me convient pas ?<span class="chev">▼</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Garantie satisfait ou remboursé 14 jours : si un pack ne vous convient pas, écrivez-nous dans les 14 jours suivant la commande et nous vous remboursons intégralement, sans condition. Nous préférons un client remboursé honnête à un client insatisfait silencieux.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMMANDE ================= -->
+<section class="section" id="commande">
+  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Commande</span>
+  <h2 class="section-title" style="margin-top:18px">Commander <span class="grad-text">vos skills</span></h2>
+  <p class="section-sub">2 minutes pour commander, 2 minutes pour installer. Nous vous répondons sous 24 h ouvrées.</p>
+  <div class="order-wrap">
+    <form class="order" id="order-form" novalidate>
+      <h3>Votre commande</h3>
+      <p class="order-sub">Remplissez le formulaire : vous recevrez l'email de confirmation, la facture et les coordonnées de paiement.</p>
+      <div class="form-row">
+        <div class="field">
+          <label for="f-name">Votre nom</label>
+          <input type="text" id="f-name" name="name" placeholder="Ex. Claire Martin" required>
+          <span class="err">Merci d'indiquer votre nom.</span>
+        </div>
+        <div class="field">
+          <label for="f-email">Votre email</label>
+          <input type="email" id="f-email" name="email" placeholder="vous@exemple.fr" required>
+          <span class="err">Merci d'indiquer un email valide.</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-pack">Pack choisi</label>
+        <select id="f-pack" name="pack" required>
+          <option value="">— Choisissez votre pack —</option>
+          <option value="Pack Métier (29 €)">Pack Métier — 29 € (1 pack au choix : précisez lequel dans le message)</option>
+          <option value="Pack Complet (89 €)">Pack Complet — 89 € (les 5 packs + skill sur-mesure) ★ le plus choisi</option>
+          <option value="Licence Entreprise (197 €)">Licence Entreprise — 197 € (équipe 10 personnes + 5 skills perso)</option>
+        </select>
+        <span class="err">Merci de choisir un pack.</span>
+      </div>
+      <div class="field">
+        <label for="f-msg">Votre message (facultatif)</label>
+        <textarea id="f-msg" name="message" placeholder="Pack Métier : précisez votre métier (commerce, artisanat, RH, compta, marketing). Pack Complet : décrivez votre skill sur-mesure. Licence Entreprise : vos besoins d'équipe…"></textarea>
+        <span class="err">Message trop long (500 caractères maximum).</span>
+      </div>
+      <div class="order-actions">
+        <button type="submit" class="btn btn-primary btn-lg" id="order-submit">Commander — je reçois la confirmation par email</button>
+        <p class="order-secure">🔒 Confirmation par email — paiement par virement ou message privé, facture incluse. Garantie satisfait ou remboursé 14 jours.</p>
+      </div>
+      <div class="order-ok" id="order-ok">
+        <div class="big">🎉</div>
+        <h4>Commande envoyée !</h4>
+        <p>Merci — vous allez recevoir un email de confirmation dans quelques instants.</p>
+        <div class="steps-list">
+          <span>1. Vérifiez votre boîte de réception (et les spams).</span>
+          <span>2. Suivez les coordonnées de paiement reçues par email.</span>
+          <span>3. Vos packs sont livrés dès réception du paiement.</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="#top" style="margin-bottom:14px">
+          <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#67E8F9" stroke="none"/></svg></span>
+          SkillVault
+        </a>
+        <p style="margin-top:14px;max-width:320px">Le catalogue français de compétences métier pour agents IA. Des skills rédigés en français, calibrés pour votre métier, installables en 2 minutes.</p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#skills">Les 50 skills</a></li>
+          <li><a href="#fonctionnement">Fonctionnement</a></li>
+          <li><a href="#offres">Offres et prix</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#commande">Commander</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>Email : contact@skillvault.fr</li>
+          <li>Réponse sous 24 h ouvrées</li>
+          <li>Garantie satisfait ou remboursé 14 jours</li>
+          <li>Données utilisées uniquement pour traiter votre commande (RGPD)</li>
+        </ul>
+      </div>
+    </div>
+    <p class="disclaimer">SkillVault vend des compétences métier au format SKILL.md, un standard d'instructions pour agents IA. Les résultats obtenus dépendent de l'outil utilisé (Claude Code, Codex, Copilot…) et de la qualité des informations que vous fournissez à votre agent : chaque production de l'agent reste à valider par vous avant envoi ou publication. Les montants annoncés sont en euros, toutes taxes comprises.</p>
+    <div class="footer-bottom">
+      <span>© 2026 SkillVault — Tous droits réservés.</span>
+      <span>Fait avec soin en France 🇫🇷</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+/* ---------- Révélation au scroll ---------- */
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { threshold: .12 });
+  els.forEach(function(e){ io.observe(e); });
+})();
+
+/* ---------- FAQ accordéon ---------- */
+(function(){
+  var items = document.querySelectorAll('.faq-item');
+  items.forEach(function(item){
+    var q = item.querySelector('.faq-q');
+    var a = item.querySelector('.faq-a');
+    q.addEventListener('click', function(){
+      var open = item.classList.contains('open');
+      items.forEach(function(o){ o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight = null; });
+      if (!open) { item.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px'; }
+    });
+  });
+})();
+
+/* ---------- EmailJS : configuration réelle ---------- */
+var EMAILJS_CFG = (window.CHATBOT_CONFIG && window.CHATBOT_CONFIG.emailjs) || { serviceId: 'service_cy1ytdb', templateId: 'template_xpo58cv', publicKey: '8Pui4ZEqxW2jRVF7h' };
+if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} }
+
+function chargerEmailJS() {
+  return new Promise(function (resolve) {
+    if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); return; }
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+    s.onload = function () { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); };
+    s.onerror = function () { resolve(); };
+    document.head.appendChild(s);
+  });
+}
+
+/* ---------- Pré-sélection d'offre depuis les cartes de prix ---------- */
+function choisirOffre(nom, prix) {
+  var sel = document.getElementById('f-pack');
+  for (var i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value.indexOf(nom) === 0) { sel.value = sel.options[i].value; break; }
+  }
+  document.getElementById('commande').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('f-name').focus();
+}
+
+/* ---------- Validation + envoi ---------- */
+(function(){
+  var form = document.getElementById('order-form');
+  var submit = document.getElementById('order-submit');
+  var okPanel = document.getElementById('order-ok');
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function mark(field, bad, msg) {
+    var f = field.closest('.field');
+    if (f) { f.classList.toggle('invalid', bad); if (bad && msg) f.querySelector('.err').textContent = msg; }
+    return !bad;
+  }
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var name = document.getElementById('f-name').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+    var pack = document.getElementById('f-pack').value;
+    var msg = document.getElementById('f-msg').value.trim();
+
+    var ok = true;
+    ok = mark(document.getElementById('f-name'), !name) && ok;
+    ok = mark(document.getElementById('f-email'), !emailRe.test(email)) && ok;
+    ok = mark(document.getElementById('f-pack'), !pack) && ok;
+    ok = mark(document.getElementById('f-msg'), msg.length > 500) && ok;
+    if (!ok) return;
+
+    submit.disabled = true;
+    submit.textContent = 'Envoi en cours…';
+    var question = 'Commande SkillVault : ' + pack + '. Nom : ' + name + '. Email : ' + email + (msg ? '. Message : ' + msg : '') + '. Paiement par virement ou message privé — merci d\'envoyer les coordonnées et la facture.';
+
+    chargerEmailJS().then(function () {
+      if (!window.emailjs) {
+        submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
+        alert('Connexion impossible au service d\'envoi. Vérifiez votre connexion internet puis réessayez, ou écrivez-nous directement à contact@skillvault.fr.');
+        return;
+      }
+      window.emailjs.send(EMAILJS_CFG.serviceId, EMAILJS_CFG.templateId, { site: 'SkillVault', name: name, email: email, question: question })
+        .then(function () {
+          form.style.display = 'none';
+          okPanel.style.display = 'block';
+        })
+        .catch(function () {
+          submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
+          alert('L\'envoi a échoué. Merci de réessayer dans un instant, ou écrivez-nous directement à contact@skillvault.fr.');
+        });
+    });
+  });
+})();
+</script>
+
+<!-- Chatbot SkillVault (aux couleurs du site : cobalt #2E6BFF) -->
+<script src="chatbot-config.js"></script>
+<script src="chatbot.js"></script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier Skill — générateur de SKILL.md gratuit | SkillVault</title>
+<meta name="description" content="Créez un SKILL.md valide et installable en 10 questions : frontmatter, instructions, exemple, checklist. 100 % local, gratuit, en français.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Atelier Skill — générateur de SKILL.md gratuit | SkillVault">
+<meta property="og:description" content="Créez un SKILL.md valide et installable en 10 questions. Vos données ne quittent jamais votre navigateur.">
+<meta property="og:url" content="https://dembis91-940.github.io/skillvault/outil.html">
+<meta property="og:site_name" content="SkillVault">
+<meta name="theme-color" content="#0e1116">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e1116'/%3E%3Cpath d='M20 44V24l12 12 12-12v20' stroke='%23ffb340' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='22' r='4' fill='%233ddc84'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --graphite:#0e1116;
+    --encre:#0b0d12;
+    --ambre:#ffb340;
+    --ambre-doux:#ffc86b;
+    --ivoire:#f4efe6;
+    --muted:#a49e92;
+    --violet:#8b7cff;
+    --vert:#3ddc84;
+    --glass:rgba(255,255,255,.035);
+    --glass-border:rgba(255,179,64,.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--graphite);
+    color:var(--ivoire);
+    font-family:'Sora',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .bg-grid{
+    position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,179,64,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,179,64,.045) 1px,transparent 1px);
+    background-size:44px 44px;
+  }
+  .bg-glow{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  .bg-glow::before,.bg-glow::after{content:'';position:absolute;border-radius:50%;filter:blur(130px)}
+  .bg-glow::before{width:560px;height:560px;top:-160px;left:-140px;background:#ffb340;opacity:.09}
+  .bg-glow::after{width:480px;height:480px;top:38%;right:-170px;background:#8b7cff;opacity:.08}
+  header{
+    position:sticky;top:0;z-index:100;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(14,17,22,.8);
+    border-bottom:1px solid rgba(255,179,64,.12);
+  }
+  .nav{max-width:1080px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:28px}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;text-decoration:none;color:var(--ivoire)}
+  .logo-mark{
+    width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#ffb340,#ff8f2e);
+    box-shadow:0 0 22px rgba(255,179,64,.35);
+  }
+  .logo-mark svg{width:20px;height:20px}
+  .nav-links{margin-left:auto;display:flex;gap:22px;align-items:center}
+  .nav-links a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--ambre)}
+  .nav-links .btn{padding:10px 18px;font-size:13.5px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    font-family:inherit;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;
+    border-radius:12px;padding:13px 26px;border:1px solid transparent;transition:transform .15s,box-shadow .2s,background .2s;
+  }
+  .btn-primary{background:linear-gradient(92deg,#ffb340,#ff9a2e);color:#161008;box-shadow:0 4px 24px rgba(255,179,64,.35)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,179,64,.5)}
+  .btn-ghost{border-color:rgba(255,179,64,.35);color:var(--ambre);background:rgba(255,179,64,.05)}
+  .btn-ghost:hover{background:rgba(255,179,64,.12)}
+  .btn-sm{padding:10px 18px;font-size:13.5px}
+  .section{max-width:1080px;margin:0 auto;padding:64px 24px 90px}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ambre);
+    border:1px solid rgba(255,179,64,.30);
+    background:rgba(255,179,64,.07);
+    padding:7px 14px;border-radius:999px;
+  }
+  h1{font-size:clamp(30px,4.6vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-top:20px}
+  .sub{color:var(--muted);font-size:16.5px;max-width:680px;margin-top:14px}
+  .grad-text{background:linear-gradient(92deg,#ffd08a 0%,#ffb340 55%,#ff8f2e 110%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .layout{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;margin-top:44px;align-items:start}
+  .panel{
+    background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    padding:28px;
+  }
+  .q-step{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ambre);margin-bottom:6px}
+  .q-title{font-size:18px;font-weight:700;margin-bottom:6px}
+  .q-help{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+  .q-input{
+    font-family:inherit;font-size:14.5px;color:var(--ivoire);
+    background:rgba(11,13,18,.7);border:1px solid rgba(255,179,64,.22);border-radius:10px;
+    padding:12px 14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;
+  }
+  .q-input:focus{border-color:var(--ambre);box-shadow:0 0 0 3px rgba(255,179,64,.12)}
+  textarea.q-input{resize:vertical;min-height:92px}
+  select.q-input option{background:#0b0d12;color:var(--ivoire)}
+  .radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .radio{
+    border:1px solid rgba(255,179,64,.18);border-radius:12px;padding:13px 14px;cursor:pointer;
+    display:flex;flex-direction:column;gap:3px;transition:border-color .2s,background .2s;
+    background:rgba(255,255,255,.02);
+  }
+  .radio:hover{border-color:rgba(255,179,64,.45)}
+  .radio.sel{border-color:var(--ambre);background:rgba(255,179,64,.10)}
+  .radio .r-t{font-size:14px;font-weight:700}
+  .radio .r-s{font-size:12px;color:var(--muted)}
+  .q-actions{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:12px;flex-wrap:wrap}
+  .q-count{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+  .progress{height:4px;border-radius:99px;background:rgba(255,255,255,.06);margin-top:18px;overflow:hidden}
+  .progress span{display:block;height:100%;background:linear-gradient(90deg,#ffb340,#ff8f2e);border-radius:99px;transition:width .3s}
+  .output-panel{position:sticky;top:84px}
+  .output-panel h2{font-size:16px;font-weight:700;margin-bottom:4px}
+  .output-panel .out-sub{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+  pre{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;
+    background:#0b0d12;border:1px solid rgba(255,179,64,.18);border-radius:12px;
+    padding:16px;max-height:420px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+    color:#d8d2c6;
+  }
+  .out-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .out-actions .btn{flex:1;min-width:170px}
+  .note{
+    margin-top:16px;padding:14px 16px;border-radius:12px;font-size:13px;
+    border:1px solid rgba(61,220,132,.35);background:rgba(61,220,132,.07);color:#bfe8d2;
+  }
+  .note b{color:var(--vert)}
+  .privacy{
+    margin-top:16px;display:flex;gap:10px;align-items:flex-start;
+    font-size:12.5px;color:var(--muted);
+  }
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);
+    background:#1a2118;border:1px solid rgba(61,220,132,.5);color:var(--vert);
+    font-size:14px;font-weight:600;padding:13px 24px;border-radius:12px;
+    transition:transform .3s;z-index:200;box-shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast.err{border-color:rgba(255,143,122,.5);color:#ff8f7a;background:#231816}
+  .banner{
+    margin-top:34px;padding:26px 28px;border-radius:18px;text-align:center;
+    background:linear-gradient(165deg,rgba(255,179,64,.09),rgba(139,124,255,.05));
+    border:1px solid rgba(255,179,64,.28);
+  }
+  .banner h3{font-size:20px;font-weight:800;margin-bottom:6px}
+  .banner p{color:var(--muted);font-size:14px;max-width:640px;margin:0 auto 16px}
+  footer{border-top:1px solid rgba(255,179,64,.10);background:rgba(8,10,14,.6)}
+  .footer-inner{max-width:1080px;margin:0 auto;padding:30px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12.5px}
+  .footer-inner a{color:var(--muted)}
+  .disclaimer{color:#7d776c;font-size:12px;max-width:760px;margin-top:10px}
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr}
+    .output-panel{position:static}
+    .section{padding:44px 18px 70px}
+  }
+  @media (max-width:560px){
+    .radio-grid{grid-template-columns:1fr}
+    .nav-links a.link{display:none}
+  }
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<header>
+  <nav class="nav">
+    <a class="logo" href="index.html" aria-label="SkillVault — accueil">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#161008" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#0e1116" stroke="none"/></svg>
+      </span>
+      SkillVault
+    </a>
+    <div class="nav-links">
+      <a class="link" href="index.html#skills">Les skills</a>
+      <a class="link" href="index.html#offres">Offres</a>
+      <a class="btn btn-ghost btn-sm" href="index.html#commande">Commander</a>
+    </div>
+  </nav>
+</header>
+
+<main class="section">
+  <span class="kicker">Outil gratuit · 100 % local</span>
+  <h1>L'Atelier Skill : créez un <span class="grad-text">SKILL.md valide</span> en 10 questions</h1>
+  <p class="sub">Répondez aux questions sur votre tâche métier : l'Atelier génère un squelette de skill installable (frontmatter, instructions, exemple, checklist). Rien n'est envoyé sur internet — tout se passe dans votre navigateur.</p>
+
+  <div class="layout">
+    <!-- FORMULAIRE -->
+    <div class="panel">
+      <div id="q-root"></div>
+      <div class="progress"><span id="q-progress" style="width:10%"></span></div>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div class="output-panel panel">
+      <h2>Votre SKILL.md</h2>
+      <p class="out-sub">Généré en direct — téléchargez-le ou copiez-le pour l'installer dans votre agent.</p>
+      <pre id="md-out">Répondez aux questions pour générer votre skill…</pre>
+      <div class="out-actions">
+        <button class="btn btn-primary" id="btn-dl" disabled>Télécharger le .md</button>
+        <button class="btn btn-ghost" id="btn-copy" disabled>Copier</button>
+      </div>
+      <div class="note">💡 <b>Ce que fait l'Atelier :</b> un squelette valide et installable. Les packs SkillVault vont plus loin : 50 skills testés, calibrés métier, avec pièges et scripts — <a href="index.html#offres" style="color:var(--ambre)">dès 29 €</a>.</div>
+      <div class="privacy">🔒 Vos réponses restent sur votre ordinateur : aucune donnée envoyée, aucun compte requis, aucun tracker.</div>
+    </div>
+  </div>
+
+  <div class="banner">
+    <h3>Un squelette, c'est bien. 50 skills testés, c'est mieux.</h3>
+    <p>Le Pack Complet contient 50 compétences métier rédigées, calibrées et vérifiées — commerce, artisanat, RH, compta, marketing — livrées avec un guide de 40 pages et un skill sur-mesure.</p>
+    <a class="btn btn-primary" href="index.html#offres">Voir les packs — dès 29 €</a>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span>© 2026 SkillVault — Tous droits réservés.</span>
+      <p class="disclaimer">SkillVault vend des compétences métier au format SKILL.md, un standard d'instructions pour agents IA. Les résultats obtenus dépendent de l'outil utilisé et de la qualité des informations fournies à l'agent.</p>
+    </div>
+    <div>
+      <a href="index.html">← Retour au site</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  var QUESTIONS = [
+    { key:'metier', title:'Quel est votre métier ?', help:'Une phrase simple : c\'est le contexte de votre skill.', type:'text', placeholder:'Ex. gérant d\'un pressing, plombier, responsable RH, comptable indépendant', example:'gérant d\'un pressing' },
+    { key:'tache', title:'Quelle tâche voulez-vous déléguer à votre agent ?', help:'La tâche précise et récurrente que le skill devra exécuter.', type:'text', placeholder:'Ex. relancer les clients avant l\'hiver, chiffrer un devis, répondre à un avis Google', example:'relancer les clients avant l\'hiver' },
+    { key:'public', title:'Qui utilise le résultat ?', help:'Le skill doit s\'adapter à ce public.', type:'radio', options:[
+      {v:'vos clients', t:'Vos clients', s:'textes et messages externes'},
+      {v:'votre équipe', t:'Votre équipe', s:'processus internes'},
+      {v:'vous-même', t:'Vous-même', s:'gain de temps personnel'},
+      {v:'vos prospects', t:'Vos prospects', s:'vente et prospection'}
+    ]},
+    { key:'niveau', title:'Quel niveau de ton ?', help:'Le registre de langue du résultat.', type:'radio', options:[
+      {v:'professionnel et chaleureux', t:'Professionnel chaleureux', s:'la plupart des cas'},
+      {v:'très formel', t:'Très formel', s:'banques, administration, grands comptes'},
+      {v:'direct et efficace', t:'Direct', s:'relances, emails courts'},
+      {v:'pédagogique', t:'Pédagogique', s:'onboarding, formation, explications'}
+    ]},
+    { key:'contraintes', title:'Y a-t-il des contraintes importantes ?', help:'Ce que le skill doit absolument respecter (facultatif).', type:'text', placeholder:'Ex. mentionner la garantie, respecter le RGPD, ne jamais baisser le prix', example:'rappeler la garantie 14 jours' },
+    { key:'exemples', title:'Donnez 1 ou 2 exemples concrets de situation.', help:'L\'agent s\'en servira pour rédiger l\'exemple du skill.', type:'textarea', placeholder:'Ex. « un client n\'est pas revenu depuis 3 mois », « un avis 1 étoile sur le nettoyage d\'un costume »', example:'un client n\'est pas revenu depuis 3 mois' },
+    { key:'livrable', title:'Quel est le livrable attendu ?', help:'La forme du résultat produit par le skill.', type:'radio', options:[
+      {v:'un texte prêt à envoyer', t:'Un texte prêt à envoyer', s:'email, message, post'},
+      {v:'un document structuré', t:'Un document structuré', s:'devis, fiche, compte-rendu'},
+      {v:'une analyse', t:'Une analyse', s:'rapport, synthèse, recommandations'},
+      {v:'une réponse courte', t:'Une réponse courte', s:'chat, avis, commentaire'}
+    ]},
+    { key:'volume', title:'À quelle fréquence cette tâche revient-elle ?', help:'Pour calibrer l\'efficacité attendue.', type:'radio', options:[
+      {v:'plusieurs fois par semaine', t:'Plusieurs fois par semaine', s:'routine quotidienne'},
+      {v:'une fois par semaine', t:'Une fois par semaine', s:'rythme régulier'},
+      {v:'quelques fois par mois', t:'Quelques fois par mois', s:'ponctuel'},
+      {v:'rarement', t:'Rarement', s:'occasionnel'}
+    ]},
+    { key:'erreurs', title:'Quelles erreurs faut-il absolument éviter ?', help:'Les pièges que le skill devra mentionner (facultatif).', type:'text', placeholder:'Ex. fautes d\'orthographe, promesses fausses, ton trop commercial', example:'aucune faute, pas de promesse fausse' },
+    { key:'mesure', title:'Comment saurez-vous que c\'est réussi ?', help:'Le critère de validation du résultat (facultatif).', type:'text', placeholder:'Ex. le client répond, l\'avis est traité en 24 h, le devis est accepté', example:'le client donne une réponse' },
+    { key:'nom', title:'Quel nom pour votre skill ?', help:'En minuscules, tirets entre les mots (ex. relance-pressing-hiver).', type:'text', placeholder:'Ex. relance-pressing-hiver', example:'relance-pressing-hiver' }
+  ];
+
+  var answers = {};
+  var qIndex = 0;
+  var root = document.getElementById('q-root');
+  var mdOut = document.getElementById('md-out');
+  var btnDl = document.getElementById('btn-dl');
+  var btnCopy = document.getElementById('btn-copy');
+  var toast = document.getElementById('toast');
+
+  function slugify(s){
+    return (s||'').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,48) || 'mon-skill';
+  }
+  function cap(s){ return (s||'').trim(); }
+
+  function showToast(msg, isErr){
+    toast.textContent = msg;
+    toast.classList.toggle('err', !!isErr);
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function(){ toast.classList.remove('show'); }, 2600);
+  }
+
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function buildMarkdown(){
+    var m = answers;
+    var name = slugify(m.nom);
+    var metier = cap(m.metier);
+    var tache = cap(m.tache);
+    var pub = m.public || 'vos clients';
+    var ton = m.niveau || 'professionnel et chaleureux';
+    var contraintes = cap(m.contraintes);
+    var exemples = cap(m.exemples);
+    var livrable = m.livrable || 'un texte prêt à envoyer';
+    var volume = m.volume || 'plusieurs fois par semaine';
+    var erreurs = cap(m.erreurs);
+    var mesure = cap(m.mesure);
+
+    var desc = 'Réaliser ' + tache.toLowerCase() + ' pour ' + pub + ', en ' + ton + '.';
+    var lines = [];
+    lines.push('---');
+    lines.push('name: ' + name);
+    lines.push('description: ' + desc);
+    lines.push('---');
+    lines.push('');
+    lines.push('# ' + (metier ? cap(metier) : 'Ma tâche métier') + ' — ' + tache.toLowerCase());
+    lines.push('');
+    lines.push('## Objectif');
+    lines.push('Produire ' + livrable + ' pour ' + pub + ', en adoptant un ton ' + ton + '. Cette tâche revient ' + volume + '.');
+    lines.push('');
+    lines.push('## Quand utiliser ce skill');
+    lines.push('- ' + tache.charAt(0).toUpperCase() + tache.slice(1).toLowerCase() + ' est demandé(e) par un client ou un collègue.');
+    lines.push('- Vous devez produire ' + livrable + ' sans partir de zéro.');
+    lines.push('- Le résultat sera relu et validé avant envoi.');
+    lines.push('');
+    lines.push('## Instructions pas à pas');
+    lines.push('1. **Rassemblez le contexte** : les éléments factuels de la situation (' + (exemples || 'nom, date, faits') + ').');
+    lines.push('2. **Rédigez le brouillon** ' + livrable + ' en français, ton ' + ton + ', pour ' + pub + '.');
+    lines.push('3. **Vérifiez les contraintes** : ' + (contraintes || 'relisez pour la clarté et l\'exactitude') + '.');
+    lines.push('4. **Relisez** : orthographe, ton, exactitude des faits. Aucune invention.');
+    lines.push('5. **Validez avec la checklist** ci-dessous avant de livrer.');
+    lines.push('');
+    lines.push('## Exemple concret');
+    lines.push('Situation : ' + (exemples || 'une demande typique de ' + pub) + '.');
+    lines.push('');
+    lines.push('- Résultat attendu : ' + livrable + '.');
+    lines.push('- Angle : répondre au besoin réel, sans détour ni jargon.');
+    lines.push('- Phrase d\'ouverture type : « Bonjour, suite à votre demande concernant… »');
+    lines.push('');
+    lines.push('## Checklist de validation');
+    lines.push('- [ ] Le résultat répond exactement à la demande initiale.');
+    lines.push('- [ ] Ton ' + ton + ' respecté de bout en bout.');
+    lines.push('- [ ] ' + (contraintes ? 'Contrainte respectée : ' + contraintes : 'Aucun fait inventé, aucune promesse fausse.'));
+    lines.push('- [ ] Aucune faute d\'orthographe ni de frappe.');
+    lines.push('- [ ] ' + (erreurs || 'Pas d\'erreur bloquante') + ' — vérifié.');
+    lines.push('- [ ] Succès mesurable : ' + (mesure || 'le destinataire peut agir directement') + '.');
+    lines.push('');
+    return lines.join('\n');
+  }
+
+  function render(){
+    if (qIndex >= QUESTIONS.length){
+      root.innerHTML = '<div class="q-step">Terminé</div><div class="q-title">Votre skill est prêt 🎉</div><div class="q-help">Il est généré en direct à droite. Téléchargez-le, copiez-le, puis installez-le dans votre agent : copiez le dossier dans le dossier de skills (le guide PDF de SkillVault détaille chaque outil).</div>' +
+        '<div class="q-actions"><button class="btn btn-ghost" id="q-restart">↺ Recommencer</button><button class="btn btn-primary" id="q-more">Créer un autre skill</button></div>';
+      document.getElementById('q-restart').addEventListener('click', restart);
+      document.getElementById('q-more').addEventListener('click', restart);
+      return;
+    }
+    var q = QUESTIONS[qIndex];
+    var html = '<div class="q-step">Question ' + (qIndex+1) + ' / ' + QUESTIONS.length + '</div>';
+    html += '<div class="q-title">' + q.title + '</div>';
+    html += '<div class="q-help">' + q.help + '</div>';
+    if (q.type === 'radio'){
+      html += '<div class="radio-grid">';
+      q.options.forEach(function(o){
+        var sel = answers[q.key] === o.v ? ' sel' : '';
+        html += '<div class="radio' + sel + '" data-v="' + escapeHtml(o.v) + '"><span class="r-t">' + o.t + '</span><span class="r-s">' + o.s + '</span></div>';
+      });
+      html += '</div>';
+    } else if (q.type === 'textarea'){
+      html += '<textarea class="q-input" id="q-in" rows="4" placeholder="' + escapeHtml(q.placeholder) + '">' + (answers[q.key] ? escapeHtml(answers[q.key]) : '') + '</textarea>';
+    } else {
+      html += '<input class="q-input" id="q-in" type="text" placeholder="' + escapeHtml(q.placeholder) + '" value="' + (answers[q.key] ? escapeHtml(answers[q.key]) : '') + '">';
+    }
+    html += '<div class="q-actions">';
+    html += '<span class="q-count">' + (qIndex > 0 ? '<a href="#" id="q-prev" style="color:var(--ambre)">← Précédent</a>' : '') + '</span>';
+    html += '<button class="btn btn-primary" id="q-next">' + (qIndex === QUESTIONS.length-1 ? 'Terminer' : 'Suivant →') + '</button>';
+    html += '</div>';
+    root.innerHTML = html;
+
+    if (q.type === 'radio'){
+      root.querySelectorAll('.radio').forEach(function(el){
+        el.addEventListener('click', function(){
+          root.querySelectorAll('.radio').forEach(function(r){ r.classList.remove('sel'); });
+          el.classList.add('sel');
+          answers[q.key] = el.getAttribute('data-v');
+          next();
+        });
+      });
+    }
+    var prev = document.getElementById('q-prev');
+    if (prev) prev.addEventListener('click', function(ev){ ev.preventDefault(); qIndex--; render(); });
+    var nextBtn = document.getElementById('q-next');
+    if (nextBtn) nextBtn.addEventListener('click', function(){
+      var v;
+      if (q.type === 'radio') { v = answers[q.key]; }
+      else {
+        var inp = document.getElementById('q-in');
+        v = (inp.value||'').trim();
+      }
+      if (!v || v === ''){
+        showToast('Merci de répondre à cette question.', true);
+        return;
+      }
+      answers[q.key] = v;
+      next();
+    });
+    document.getElementById('q-progress').style.width = Math.round(((qIndex+1)/QUESTIONS.length)*100) + '%';
+  }
+
+  function next(){
+    qIndex++;
+    render();
+  }
+
+  function restart(){
+    answers = {}; qIndex = 0;
+    render();
+    mdOut.textContent = 'Répondez aux questions pour générer votre skill…';
+    btnDl.disabled = true; btnCopy.disabled = true;
+    document.getElementById('q-progress').style.width = '10%';
+  }
+
+  // Recalcul du markdown à chaque réponse
+  var _origNext = next;
+  function updateOutput(){
+    if (qIndex >= QUESTIONS.length){
+      var md = buildMarkdown();
+      mdOut.textContent = md;
+      btnDl.disabled = false; btnCopy.disabled = false;
+    }
+  }
+  // on patch next pour déclencher updateOutput quand on arrive à la fin
+  window.__svUpdate = updateOutput;
+
+  // Surcharge propre : on observe le contenu de mdOut après chaque render de fin
+  var _render = render;
+  render = function(){
+    _render();
+    if (qIndex >= QUESTIONS.length){
+      var md = buildMarkdown();
+      mdOut.textContent = md;
+      btnDl.disabled = false; btnCopy.disabled = false;
+    } else {
+      mdOut.textContent = 'Répondez aux questions pour générer votre skill…';
+      btnDl.disabled = true; btnCopy.disabled = true;
+    }
+  };
+
+  btnDl.addEventListener('click', function(){
+    var md = buildMarkdown();
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = slugify(answers.nom) + '.md';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 800);
+    showToast('Fichier téléchargé ✓');
+  });
+
+  btnCopy.addEventListener('click', function(){
+    var md = buildMarkdown();
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = md; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); showToast('Copié dans le presse-papiers ✓'); }
+      catch(e){ showToast('Copie impossible — utilisez le téléchargement.', true); }
+      ta.remove();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(md).then(function(){ showToast('Copié dans le presse-papiers ✓'); }, fallback);
+    } else fallback();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

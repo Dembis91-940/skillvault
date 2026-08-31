@@ -1,0 +1,14 @@
+node_modules/
+package.json
+package-lock.json
+lab/
+index.old.html
+index.v2.html
+index.v3.html
+index.v4.html
+qa-v5.cjs
+qa-v5b.cjs
+qa-v5c.cjs
+qa-v5d.cjs
+v5-*.png
+.DS_Store

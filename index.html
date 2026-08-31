@@ -1,20 +1,989 @@
-<!DOCTYPE html>
+<!doctype html>
+<!--
+  SkillVault — refonte scrollcraft (grammaire : gallery/catalog).
+  Le vault : la porte du coffre, la salle, cinq rayons de skills, la combinaison,
+  l'ouverture. Signature move : la roue de combinaison, composée par le scroll.
+  Engine scrollcraft.js/.css copiés, non modifiés. Tout le reste est du markup
+  de page (classes sv-*), des données réelles du produit (50 skills, 29/89/197 €).
+-->
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SkillVault — 50 skills métier en français pour votre agent IA</title>
 <meta name="description" content="Installez une compétence métier dans votre agent IA en 2 minutes : 50 skills en français (commerce, artisanat, RH, compta, marketing), calibrés pour votre métier. Compatibles Claude Code, Codex, Copilot.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SkillVault — 50 skills métier en français pour votre agent IA">
 <meta property="og:description" content="Installez une compétence métier dans votre agent IA en 2 minutes : 50 skills en français, calibrés pour votre métier. Packs dès 29 €.">
 <meta property="og:url" content="https://dembis91-940.github.io/skillvault/">
-<meta property="og:site_name" content="SkillVault">
-<meta name="theme-color" content="#0e1116">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e1116'/%3E%3Cpath d='M20 44V24l12 12 12-12v20' stroke='%23ffb340' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='22' r='4' fill='%233ddc84'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#07090d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307090d'/%3E%3Cpath d='M20 44V24l12 12 12-12v20' stroke='%23ffb340' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='22' r='4' fill='%233ddc84'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="engine/scrollcraft.css">
+<style>
+  /* ============================================================
+     SKILLVAULT — identité "coffre-fort" (dérive de la marque réelle)
+     Une seule accent : le doré ambre de la marque. Le vert n'est que
+     la couleur d'état de la serrure (le point du logo).
+     ============================================================ */
+  :root {
+    --sc-canvas:      #07090d;
+    --sc-surface:     #0f1218;
+    --sc-ink:         #f3efe6;
+    --sc-ink-soft:    #a8a29a;
+    --sc-accent:      #ffb340;
+    --sc-accent-ink:  #17100a;
+    --sc-font-display: "Sora", system-ui, sans-serif;
+    --sc-font-text:    "Sora", system-ui, sans-serif;
+    --sc-font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+    --sv-status:       #3ddc84;
+    --sv-status-ink:   #06231a;
+    --sv-steel:        #1c232d;
+    --sv-steel-soft:   #141922;
+    --sc-section:      clamp(2.8rem, 5.5vw, 7rem);
+  }
+
+  /* -------------------------------------------------- page chrome -- */
+  .sv-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+    display: flex; align-items: center; gap: 1.5rem;
+    padding: 0.85rem clamp(1.25rem, 5vw, 3.5rem);
+    background: color-mix(in oklab, var(--sc-canvas) 82%, transparent);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sc-hairline);
+  }
+  .sv-brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--sc-ink); text-decoration: none; }
+  .sv-brand__mark { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, #ffc46b, #ff9a2e); box-shadow: 0 4px 14px rgba(255,179,64,.28); }
+  .sv-brand__mark svg { width: 18px; height: 18px; }
+  .sv-index { display: flex; gap: 1.4rem; margin-left: auto; align-items: center; }
+  .sv-index a { color: var(--sc-ink-soft); text-decoration: none; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.02em; transition: color .16s var(--sc-ease-out); }
+  .sv-index a:hover { color: var(--sc-accent); }
+  .sv-cta {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    background: linear-gradient(92deg, #ffc46b, #ff9a2e);
+    color: var(--sc-accent-ink); font-weight: 700; font-size: 0.9rem; text-decoration: none;
+    border-radius: 10px; padding: 0.7rem 1.25rem;
+    box-shadow: 0 6px 20px rgba(255,179,64,.30);
+    transition: transform .12s var(--sc-ease-out), box-shadow .2s var(--sc-ease-out);
+  }
+  .sv-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(255,179,64,.42); }
+  .sv-cta:active { transform: scale(.97); }
+  .sv-cta--ghost { background: transparent; color: var(--sc-ink); box-shadow: none; border: 1px solid var(--sc-hairline-strong); }
+  .sv-cta--ghost:hover { border-color: var(--sc-accent); color: var(--sc-accent); box-shadow: none; }
+  .sv-cta--quiet { background: transparent; color: var(--sc-accent); border: 1px solid color-mix(in oklab, var(--sc-accent) 45%, transparent); box-shadow: none; }
+  .sv-cta--quiet:hover { background: color-mix(in oklab, var(--sc-accent) 10%, transparent); }
+
+  main { padding-top: 0; }
+
+  /* -------------------------------------------------- composant porte -- */
+  .sv-door { position: relative; width: min(340px, 78vw); aspect-ratio: 3 / 4.1; flex: none; }
+  .sv-door__leaf { position: absolute; top: 0; bottom: 0; width: 50.5%; overflow: hidden; }
+  .sv-door__leaf--l { left: 0; border-radius: 16px 2px 2px 16px; }
+  .sv-door__leaf--r { right: 0; border-radius: 2px 16px 16px 2px; }
+  .sv-door__panel {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(255,255,255,.05), transparent 34%),
+      linear-gradient(150deg, #1b222c 0%, #10141b 55%, #0b0e13 100%);
+    border: 1px solid color-mix(in oklab, var(--sc-accent) 22%, #2a3340);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 24px 60px -18px rgba(0,0,0,.7);
+  }
+  .sv-door__panel::before, .sv-door__panel::after {
+    content: ""; position: absolute; width: 7px; height: 7px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4b5563, #232a34 70%);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.5);
+  }
+  .sv-door__leaf--l .sv-door__panel::before { top: 14px; left: 14px; }
+  .sv-door__leaf--l .sv-door__panel::after  { bottom: 14px; left: 14px; }
+  .sv-door__leaf--r .sv-door__panel::before { top: 14px; right: 14px; }
+  .sv-door__leaf--r .sv-door__panel::after  { bottom: 14px; right: 14px; }
+  .sv-door__joint { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%); background: #05070a; box-shadow: 0 0 0 1px rgba(255,179,64,.14), 0 0 18px rgba(255,179,64,.12); }
+  .sv-door__plate {
+    position: absolute; top: 13%; left: 50%; transform: translateX(-50%);
+    font-family: var(--sc-font-mono); font-size: 0.72rem; letter-spacing: 0.34em; text-transform: uppercase;
+    color: var(--sc-accent); background: rgba(7,9,13,.72); border: 1px solid rgba(255,179,64,.3);
+    padding: 0.55rem 1rem 0.55rem 1.34rem; border-radius: 8px; white-space: nowrap;
+  }
+  .sv-door__plate small { display: block; margin-top: 0.35rem; color: var(--sc-ink-soft); letter-spacing: 0.18em; font-size: 0.58rem; text-align: center; }
+  .sv-dial--inline { position: absolute; right: -1.4rem; bottom: 16%; width: 92px; }
+
+  /* -------------------------------------------------- la roue (cadran) -- */
+  .sv-dial__svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 18px rgba(0,0,0,.5)); }
+  .sv-dial__face { fill: #0c0f15; stroke: color-mix(in oklab, var(--sc-accent) 60%, #3a4250); stroke-width: 2; }
+  .sv-dial__inner { fill: none; stroke: rgba(255,179,64,.22); stroke-width: 1; }
+  .sv-dial__tick { stroke: #4a5565; stroke-width: 1.4; }
+  .sv-dial__tick--big { stroke: var(--sc-accent); stroke-width: 2; }
+  .sv-dial__needle { transform-origin: 60px 60px; }
+  .sv-dial__needle line { stroke: var(--sc-accent); stroke-width: 3.2; stroke-linecap: round; }
+  .sv-dial__needle circle { fill: var(--sc-accent); }
+  .sv-dial__hub { fill: #07090d; stroke: var(--sc-accent); stroke-width: 1.6; }
+
+  /* -------------------------------------------------- hero -- */
+  .sv-hero { display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem, 5vw, 4.5rem); padding: 0 clamp(1.25rem, 5vw, 4rem); }
+  .sv-hero__copy { max-width: 34rem; flex: 1 1 auto; }
+  .sv-lede { font-size: var(--sc-t-lg); line-height: 1.5; color: var(--sc-ink-soft); max-width: 34rem; margin: 1.1rem 0 0; text-wrap: pretty; }
+  .sv-lede strong { color: var(--sc-ink); font-weight: 600; }
+  .sv-cta-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.8rem; }
+  .sv-compat { display: flex; flex-wrap: wrap; gap: 0.5rem 1.1rem; margin-top: 1.6rem; font-family: var(--sc-font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sc-ink-soft); }
+  .sv-compat span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .sv-compat i { width: 6px; height: 6px; border-radius: 50%; background: var(--sv-status); box-shadow: 0 0 8px var(--sv-status); font-style: normal; }
+  .sv-hero__slot { position: relative; flex: none; }
+
+  /* -------------------------------------------------- étiquette murale -- */
+  .sv-wall { max-width: 58rem; }
+  .sv-wall__inv { font-family: var(--sc-font-mono); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--sc-accent); }
+  .sv-wall__row { display: grid; grid-template-columns: 7rem 1fr; gap: 1.2rem; padding: 1.15rem 0; border-top: 1px solid var(--sc-hairline); align-items: baseline; }
+  .sv-wall__row:last-child { border-bottom: 1px solid var(--sc-hairline); }
+  .sv-wall__code { font-family: var(--sc-font-mono); font-size: 0.72rem; letter-spacing: 0.14em; color: var(--sc-ink-soft); }
+  .sv-wall__txt { color: var(--sc-ink); font-size: var(--sc-t-base); max-width: 46ch; }
+
+  /* -------------------------------------------------- le vault (rayons) -- */
+  .sv-vault-head { max-width: 52rem; margin-bottom: 2rem; }
+  .sv-vault-head .sc-label { display: block; margin-bottom: 0.9rem; }
+  .sv-combo-note { font-family: var(--sc-font-mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--sc-ink-soft); margin-top: 1.2rem; display: flex; align-items: center; gap: 0.55rem; }
+  .sv-combo-note b { color: var(--sc-accent); font-weight: 600; }
+
+  .sv-rayon { margin-top: 2.5rem; }
+  .sv-rayon__head { display: flex; align-items: flex-start; gap: 1.1rem; margin-bottom: 1.4rem; }
+  .sv-rayon__mono {
+    width: 52px; height: 52px; border-radius: 12px; flex: none;
+    display: grid; place-items: center;
+    font-family: var(--sc-font-display); font-weight: 800; font-size: 1.5rem;
+    color: var(--sc-accent); background: color-mix(in oklab, var(--sc-accent) 10%, var(--sc-surface));
+    border: 1px solid color-mix(in oklab, var(--sc-accent) 30%, transparent);
+    transition: box-shadow .3s var(--sc-ease-out), color .3s var(--sc-ease-out), background .3s var(--sc-ease-out);
+  }
+  .sv-rayon.lit .sv-rayon__mono { color: var(--sc-accent-ink); background: linear-gradient(135deg, #ffc46b, #ff9a2e); box-shadow: 0 0 26px rgba(255,179,64,.4); }
+  .sv-rayon__titles { flex: 1; }
+  .sv-rayon__name { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+  .sv-rayon__name h3 { font-family: var(--sc-font-display); font-weight: 800; font-size: clamp(1.5rem, 3vw, 2.1rem); letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+  .sv-rayon__count { font-family: var(--sc-font-mono); font-size: 0.66rem; letter-spacing: 0.16em; color: var(--sc-ink-soft); border: 1px solid var(--sc-hairline); border-radius: 999px; padding: 0.28rem 0.7rem; }
+  .sv-rayon__gain { color: var(--sc-ink-soft); font-size: 0.95rem; max-width: 46ch; margin-top: 0.4rem; }
+  .sv-rayon__status { font-family: var(--sc-font-mono); font-size: 0.68rem; letter-spacing: 0.14em; color: var(--sc-ink-soft); margin-top: 0.9rem; min-height: 1.1em; transition: color .3s; }
+  .sv-rayon.lit .sv-rayon__status { color: var(--sv-status); }
+
+  .sv-skill { font-family: var(--sc-font-mono); font-size: 0.74rem; letter-spacing: 0.02em; color: var(--sc-ink); background: var(--sc-surface); border: 1px solid var(--sc-hairline); border-radius: 8px; padding: 0.62rem 0.85rem; white-space: nowrap; transition: border-color .25s, color .25s, transform .12s var(--sc-ease-out); }
+  .sv-skill:hover { border-color: color-mix(in oklab, var(--sc-accent) 55%, transparent); color: var(--sc-accent); }
+  .sv-rayon.lit .sv-skill { border-color: color-mix(in oklab, var(--sc-accent) 22%, transparent); }
+
+  /* rayon commerce : rail */
+  .sv-rail-clip { width: 100%; overflow: hidden; mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%); }
+  .sv-rail { display: flex; align-items: stretch; gap: 0.9rem; padding: 0.6rem 0 1.1rem; width: max-content; min-width: 100%; }
+  .sv-panhead { display: flex; align-items: flex-start; gap: 1.1rem; width: min(64rem, 100%); padding: 0 var(--sc-gutter); }
+  .sv-rail__item { flex: none; display: flex; align-items: center; border: 1px solid var(--sc-hairline-strong); background: var(--sc-surface); border-radius: 10px; padding: 0.9rem 1.1rem; box-shadow: var(--sc-e1); font-family: var(--sc-font-mono); font-size: 0.84rem; letter-spacing: 0.01em; }
+  .sv-rail__num { font-family: var(--sc-font-mono); font-size: 0.62rem; color: var(--sc-accent); margin-right: 0.6rem; }
+  .sv-rail__end { flex: none; display: flex; align-items: center; color: var(--sc-ink-soft); font-family: var(--sc-font-mono); font-size: 0.7rem; letter-spacing: 0.1em; padding-left: 0.5rem; }
+
+  /* rayon artisanat : étagère */
+  .sv-shelf { position: relative; padding: 1.6rem 0.4rem 2rem; }
+  .sv-shelf::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.6rem; height: 3px; border-radius: 2px; background: linear-gradient(180deg, #2b3340, #12161d); box-shadow: 0 6px 14px rgba(0,0,0,.5); }
+  .sv-shelf__row { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: flex-end; }
+
+  /* rayon RH : fiches */
+  .sv-tiles { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 0.7rem; }
+  .sv-tile { background: var(--sc-surface); border: 1px solid var(--sc-hairline); border-radius: 10px; padding: 0.85rem 0.7rem; box-shadow: var(--sc-e1); display: flex; flex-direction: column; gap: 0.4rem; }
+  .sv-tile .sv-tile__tag { font-family: var(--sc-font-mono); font-size: 0.6rem; letter-spacing: 0.12em; color: var(--sc-ink-soft); }
+  .sv-tile .sv-tile__name { font-family: var(--sc-font-mono); font-size: 0.72rem; color: var(--sc-ink); line-height: 1.4; }
+
+  /* rayon compta : relevé */
+  .sv-ledger { max-width: 44rem; border: 1px solid var(--sc-hairline); border-radius: 12px; background: color-mix(in oklab, var(--sc-surface) 55%, transparent); padding: 1.1rem 1.3rem; }
+  .sv-ledger__line { display: flex; align-items: baseline; gap: 1rem; padding: 0.52rem 0; border-bottom: 1px dashed var(--sc-hairline); }
+  .sv-ledger__line:last-of-type { border-bottom: none; }
+  .sv-ledger__n { font-family: var(--sc-font-mono); font-size: 0.7rem; color: var(--sc-accent); width: 2.2rem; flex: none; }
+  .sv-ledger__name { font-family: var(--sc-font-mono); font-size: 0.8rem; color: var(--sc-ink); }
+  .sv-ledger__total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--sc-hairline-strong); font-family: var(--sc-font-mono); font-size: 0.78rem; letter-spacing: 0.1em; color: var(--sc-ink-soft); }
+  .sv-ledger__total b { color: var(--sc-accent); font-size: 1.05rem; font-weight: 600; }
+
+  /* rayon marketing : grille */
+  .sv-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 0.7rem; }
+  .sv-grid .sv-skill { text-align: center; }
+
+  /* -------------------------------------------------- la porte / peak -- */
+  .sv-vaultstage { display: flex; flex-direction: column; align-items: center; justify-content: center; --door-open: clamp(0, calc((var(--sc-p, 0) - 0.42) / 0.26), 1); }
+  .sv-vaultstage__door { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; pointer-events: none; }
+  .sv-vaultstage .sv-door { width: min(300px, 46vw); position: relative; }
+  .sv-vaultstage .sv-door__leaf--l { transform: translateX(calc(var(--door-open) * -108%)); will-change: transform; }
+  .sv-vaultstage .sv-door__leaf--r { transform: translateX(calc(var(--door-open) * 108%)); will-change: transform; }
+  .sv-vaultstage .sv-light { opacity: var(--door-open); z-index: 0; }
+  .sv-vaultstage .sv-door__plate { opacity: calc(1 - var(--door-open)); transition: opacity .2s; }
+  .sv-vaultstage .sv-lock { opacity: calc(1 - var(--door-open)); z-index: 3; }
+  .sv-vaultstage .sv-lock__open { opacity: var(--door-open); z-index: 3; }
+  .sv-pricecopy { position: relative; z-index: 4; text-align: center; max-width: 40rem; margin: 0 auto; }
+  .sv-plates { position: relative; z-index: 4; }
+  .sv-rayon__stage { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6rem; }
+  .sv-hero__copy { position: relative; z-index: 2; }
+  .sv-hero__slot { position: relative; z-index: 2; }
+  .sv-hero__slot .sv-dial__needle { transform: rotate(calc(var(--sc-p, 0) * 150deg)); }
+  .sv-rayon__status .sv-st-on { display: none; color: var(--sv-status); }
+  .sv-rayon.lit .sv-st-off { display: none; }
+  .sv-rayon.lit .sv-st-on { display: inline; }
+  .sv-pricecopy .sc-label { display: block; margin-bottom: 0.8rem; }
+  .sv-lock { position: absolute; left: 50%; bottom: 9%; transform: translateX(-50%); z-index: 3; display: flex; gap: 0.5rem; align-items: center; font-family: var(--sc-font-mono); font-size: 0.9rem; letter-spacing: 0.3em; color: var(--sc-ink-soft); }
+  .sv-lock b { color: var(--sc-accent); font-weight: 600; }
+  .sv-lock__open { position: absolute; left: 50%; bottom: 9%; transform: translateX(-50%); z-index: 3; font-family: var(--sc-font-mono); font-size: 0.85rem; letter-spacing: 0.4em; color: var(--sv-status); opacity: 0; }
+  .sv-plates { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.9rem; width: min(58rem, 92vw); margin: 1.6rem auto 0; align-items: stretch; }
+  .sv-light { position: absolute; inset: 0; opacity: 0; background: radial-gradient(ellipse 70% 62% at 50% 46%, rgba(255,179,64,.16), rgba(255,179,64,.05) 46%, transparent 72%); pointer-events: none; }
+  .sv-plate {
+    display: flex; flex-direction: column; gap: 0.55rem; text-align: left;
+    background: color-mix(in oklab, var(--sc-surface) 88%, transparent);
+    border: 1px solid var(--sc-hairline-strong); border-radius: 14px; padding: 1.1rem 1.15rem;
+    box-shadow: var(--sc-e2);
+  }
+  .sv-plate--hot { border-color: color-mix(in oklab, var(--sc-accent) 55%, transparent); background: linear-gradient(168deg, color-mix(in oklab, var(--sc-accent) 10%, var(--sc-surface)), color-mix(in oklab, var(--sc-surface) 92%, transparent)); }
+  .sv-plate__flag { font-family: var(--sc-font-mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sc-accent-ink); background: linear-gradient(92deg, #ffc46b, #ff9a2e); border-radius: 999px; padding: 0.26rem 0.7rem; width: fit-content; font-weight: 600; }
+  .sv-plate__name { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.01em; }
+  .sv-plate__price { font-family: var(--sc-font-display); font-weight: 800; font-size: 2.3rem; letter-spacing: -0.03em; line-height: 1; }
+  .sv-plate__price small { font-size: 0.85rem; color: var(--sc-ink-soft); font-weight: 500; }
+  .sv-plate__desc { color: var(--sc-ink-soft); font-size: 0.8rem; line-height: 1.5; }
+  .sv-plate__specs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.42rem; flex: 1; }
+  .sv-plate__specs li { font-size: 0.76rem; color: color-mix(in oklab, var(--sc-ink) 88%, transparent); display: flex; gap: 0.5rem; align-items: flex-start; line-height: 1.45; }
+  .sv-plate__specs li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--sv-status); margin-top: 0.42em; flex: none; }
+  .sv-plate__cta { margin-top: 0.4rem; text-align: center; }
+
+  /* -------------------------------------------------- fiche technique -- */
+  .sv-specs { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1px; background: var(--sc-hairline); border: 1px solid var(--sc-hairline); border-radius: 14px; overflow: hidden; max-width: 58rem; }
+  .sv-spec { background: var(--sc-surface); padding: 1.1rem 1.2rem; }
+  .sv-spec h3 { font-family: var(--sc-font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sc-accent); margin: 0 0 0.5rem; }
+  .sv-spec p { margin: 0; color: var(--sc-ink-soft); font-size: 0.88rem; line-height: 1.6; max-width: 46ch; }
+  .sv-toolband { margin-top: 1.2rem; max-width: 58rem; border: 1px solid color-mix(in oklab, var(--sc-accent) 35%, transparent); border-radius: 14px; padding: 1.3rem 1.5rem; background: linear-gradient(160deg, color-mix(in oklab, var(--sc-accent) 8%, var(--sc-surface)), var(--sc-surface)); display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; justify-content: space-between; }
+  .sv-toolband h3 { margin: 0 0 0.3rem; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; }
+  .sv-toolband p { margin: 0; color: var(--sc-ink-soft); font-size: 0.88rem; max-width: 40ch; }
+
+  /* -------------------------------------------------- FAQ -- */
+  .sv-faq { max-width: 46rem; margin: 0 auto; }
+  .sv-faq__item { border-bottom: 1px solid var(--sc-hairline); }
+  .sv-faq__q { width: 100%; background: none; border: none; text-align: left; cursor: pointer; color: var(--sc-ink); font-family: var(--sc-font-text); font-size: 1rem; font-weight: 600; padding: 1rem 0.2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .sv-faq__q .sv-chev { color: var(--sc-accent); font-size: 0.65rem; letter-spacing: 0; transition: transform .25s var(--sc-ease-out); flex: none; }
+  .sv-faq__item.open .sv-chev { transform: rotate(180deg); }
+  .sv-faq__a { max-height: 0; overflow: hidden; transition: max-height .3s var(--sc-ease-out); }
+  .sv-faq__a-inner { padding: 0 0.2rem 1.1rem; color: var(--sc-ink-soft); font-size: 0.9rem; line-height: 1.7; max-width: 42rem; }
+
+  /* -------------------------------------------------- commande -- */
+  .sv-order { max-width: 44rem; margin: 0 auto; border: 1px solid var(--sc-hairline-strong); border-radius: 16px; background: color-mix(in oklab, var(--sc-surface) 80%, transparent); box-shadow: var(--sc-e2); padding: clamp(1.2rem, 3vw, 1.8rem); }
+  .sv-order h3 { margin: 0.2rem 0 0.3rem; font-size: 1.3rem; font-weight: 800; }
+  .sv-order__sub { color: var(--sc-ink-soft); font-size: 0.88rem; margin: 0 0 1.4rem; }
+  .sv-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+  .sv-field label { font-family: var(--sc-font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sc-ink-soft); }
+  .sv-field input, .sv-field select, .sv-field textarea { font-family: var(--sc-font-text); font-size: 0.92rem; color: var(--sc-ink); background: rgba(7,9,13,.6); border: 1px solid var(--sc-hairline-strong); border-radius: 10px; padding: 0.7rem 0.85rem; outline: none; transition: border-color .18s, box-shadow .18s; width: 100%; }
+  .sv-field input:focus, .sv-field select:focus, .sv-field textarea:focus { border-color: var(--sc-accent); box-shadow: 0 0 0 3px rgba(255,179,64,.14); }
+  .sv-field select option { background: var(--sc-canvas); color: var(--sc-ink); }
+  .sv-field .sv-err { color: #ff8f7a; font-size: 0.74rem; display: none; }
+  .sv-field.invalid input, .sv-field.invalid select, .sv-field.invalid textarea { border-color: #ff8f7a; }
+  .sv-field.invalid .sv-err { display: block; }
+  .sv-formrow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .sv-order__secure { font-size: 0.74rem; color: var(--sc-ink-soft); text-align: center; margin: 1rem 0 0; }
+  .sv-order__ok { display: none; text-align: center; padding: 1.6rem 1rem; border: 1px solid rgba(61,220,132,.4); border-radius: 14px; background: rgba(61,220,132,.06); }
+  .sv-order__ok h4 { color: var(--sv-status); margin: 0 0 0.5rem; font-size: 1.15rem; }
+  .sv-order__ok p { color: var(--sc-ink-soft); font-size: 0.88rem; margin: 0 0 0.8rem; }
+  .sv-order__ok ol { text-align: left; max-width: 26rem; margin: 0 auto; color: var(--sc-ink-soft); font-size: 0.82rem; line-height: 1.7; padding-left: 1.1rem; }
+
+  /* -------------------------------------------------- footer -- */
+  .sv-footer { border-top: 1px solid var(--sc-hairline); margin-top: 2rem; }
+  .sv-footer__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 2rem; padding: 2.4rem clamp(1.25rem, 5vw, 3.5rem) 1.4rem; max-width: 74rem; margin: 0 auto; }
+  .sv-footer h4 { font-family: var(--sc-font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sc-accent); margin: 0 0 0.9rem; }
+  .sv-footer p, .sv-footer li { color: var(--sc-ink-soft); font-size: 0.8rem; }
+  .sv-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .sv-footer a { color: var(--sc-ink-soft); text-decoration: none; transition: color .16s; }
+  .sv-footer a:hover { color: var(--sc-accent); }
+  .sv-footer__bottom { border-top: 1px solid var(--sc-hairline); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem clamp(1.25rem, 5vw, 3.5rem) 2.4rem; max-width: 74rem; margin: 0 auto; color: var(--sc-ink-soft); font-size: 0.72rem; }
+  .sv-disclaimer { color: #7d776c; font-size: 0.7rem; line-height: 1.65; max-width: 74rem; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3.5rem) 1.2rem; }
+
+  /* -------------------------------------------------- le dial fixe -- */
+  .sv-dial { position: fixed; left: clamp(0.8rem, 2.4vw, 1.6rem); bottom: clamp(0.8rem, 2.4vw, 1.6rem); z-index: 70; width: 96px; pointer-events: none; opacity: .94; }
+  .sv-dial__screen { position: absolute; left: 50%; top: 12%; transform: translateX(-50%); display: flex; gap: 3px; background: #05070b; border: 1px solid rgba(255,179,64,.35); border-radius: 6px; padding: 3px 5px; z-index: 2; }
+  .sv-dial__slot { width: 9px; height: 11px; font-family: var(--sc-font-mono); font-size: 8px; line-height: 11px; text-align: center; color: #3a4250; transition: color .25s; }
+  .sv-dial__slot.on { color: var(--sv-status); }
+  .sv-dial__label { position: absolute; left: 50%; bottom: -1.5rem; transform: translateX(-50%); font-family: var(--sc-font-mono); font-size: 0.56rem; letter-spacing: 0.3em; color: var(--sc-ink-soft); white-space: nowrap; }
+  .sv-dial--open .sv-dial__label { color: var(--sv-status); }
+
+  /* -------------------------------------------------- reduced motion -- */
+  @media (prefers-reduced-motion: reduce) {
+    .sv-dial__needle { transform: none !important; }
+    .sv-vaultstage .sv-door__leaf--l { transform: none !important; }
+    .sv-vaultstage .sv-door__leaf--r { transform: none !important; }
+    .sv-vaultstage .sv-door { opacity: .1; }
+    .sv-vaultstage .sv-light { opacity: .12 !important; }
+    .sv-rail-clip { overflow: visible; mask: none; -webkit-mask: none; }
+  }
+
+  /* -------------------------------------------------- responsive -- */
+  @media (max-width: 900px) {
+    .sv-index { display: none; }
+    .sv-hero { flex-direction: column; gap: 0.4rem; padding-top: 1rem; }
+    .sv-hero__copy { text-align: center; }
+    .sv-lede { margin-inline: auto; }
+    .sv-cta-row { justify-content: center; }
+    .sv-compat { justify-content: center; }
+    .sv-hero__slot .sv-door { width: min(220px, 62vw); margin: 0 auto; }
+    .sv-hero__slot .sv-dial--inline { width: 62px; right: -0.6rem; bottom: 10%; }
+    .sv-tiles { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .sv-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .sv-specs { grid-template-columns: 1fr; }
+    .sv-footer__grid { grid-template-columns: 1fr; gap: 1.4rem; }
+    .sv-plates { grid-template-columns: 1fr; width: min(24rem, 92vw); gap: 0.6rem; }
+    .sv-plate__specs { display: none; }
+    .sv-plate__desc { display: none; }
+    .sv-plate { padding: 0.55rem 0.8rem; gap: 0.35rem; }
+    .sv-plate__price { font-size: 1.55rem; }
+    .sv-plate__flag { padding: 0.18rem 0.55rem; }
+    .sv-plates { gap: 0.5rem; }
+    .sv-vaultstage .sv-door { width: min(220px, 54vw); }
+    .sv-lock, .sv-lock__open { bottom: 7%; font-size: 0.72rem; }
+    .sv-pricecopy .sc-display--lg { font-size: clamp(1.6rem, 7.5vw, 2.2rem); }
+    .sv-pricecopy .sv-lede { font-size: 0.9rem; }
+    .sv-pricecopy { margin-top: 0.5rem; }
+    .sv-plate__cta .sv-cta { font-size: 0.8rem; padding: 0.55rem 0.8rem; }
+    .sv-dial { width: 48px; background: color-mix(in oklab, var(--sc-canvas) 88%, transparent); border: 1px solid var(--sc-hairline-strong); border-radius: 12px; padding: 3px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .sv-dial__label { bottom: -1.05rem; font-size: 0.48rem; }
+    .sv-rayon__stage { justify-content: flex-start; padding-top: 9vh; gap: 1.2rem; }
+    .sv-rail__item { padding: 1rem 1.15rem; font-size: 0.88rem; }
+    .sv-plates { margin-top: 1.1rem; }
+    .sv-formrow { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .sv-wall__row { grid-template-columns: 1fr; gap: 0.3rem; }
+    .sv-lede { font-size: 1.02rem; }
+    .sv-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .sv-footer__bottom { padding-bottom: 5.5rem; }
+  }
+  @media (max-width: 700px) {
+    .sc-display--xl { font-size: clamp(2.15rem, 9.5vw, 3rem); }
+    .sv-lock, .sv-lock__open { display: none; }
+  }
+
+  /* ============================================================
+     SKILLVAULT v2 — hero animé, icônes rayons, compteurs, pointeur
+     (markup et thème de page uniquement ; engine non modifié)
+     ============================================================ */
+
+  /* ---- hero : l'ouverture du coffre au scroll initial ---- */
+  .sv-hero { --sc-open-hero: clamp(0, calc((var(--sc-p, 0) - 0.1) / 0.4), 1); }
+  .sv-num-hl { color: var(--sc-accent); font-variant-numeric: tabular-nums; }
+  .sv-hero__slot .sv-door__leaf--l { transform: translateX(calc(var(--sc-open-hero) * -112%)); will-change: transform; }
+  .sv-hero__slot .sv-door__leaf--r { transform: translateX(calc(var(--sc-open-hero) * 112%)); will-change: transform; }
+
+  .sv-hero__light {
+    position: absolute; inset: -14% -26%; z-index: 0; pointer-events: none;
+    opacity: calc(var(--sc-open-hero) * 0.95);
+    background:
+      radial-gradient(circle at 50% 58%, rgba(255,179,64,.30), rgba(255,179,64,.09) 36%, transparent 64%),
+      radial-gradient(circle at 50% 44%, rgba(255,196,107,.14), transparent 58%);
+    will-change: opacity;
+  }
+  .sv-hero__pulse {
+    position: absolute; left: 50%; top: 56%; width: min(430px, 86%); aspect-ratio: 1;
+    transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; z-index: 0;
+    opacity: calc(var(--sc-open-hero) * 0.85);
+    background: radial-gradient(circle, rgba(255,196,107,.20), transparent 64%);
+    filter: blur(3px);
+    animation: sv-pulse 2.9s ease-in-out infinite;
+  }
+  @keyframes sv-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.96); }
+    50%      { transform: translate(-50%, -50%) scale(1.1); }
+  }
+
+  .sv-dust-wrap { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: calc(var(--sc-open-hero) * 0.9); }
+  .sv-dust { width: 100%; height: 100%; display: block; }
+
+  /* ---- plaque du coffre : shine au pointeur ---- */
+  .sv-door__plate { overflow: hidden; }
+  .sv-door__plate::after {
+    content: ""; position: absolute; top: -30%; bottom: -30%; left: -34%; width: 36%;
+    background: linear-gradient(105deg, transparent, rgba(255,214,150,.55), transparent);
+    transform: translateX(-180%) skewX(-14deg);
+    transition: transform .7s var(--sc-ease-out);
+    pointer-events: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sv-door__plate:hover { border-color: rgba(255,179,64,.65); box-shadow: 0 0 26px rgba(255,179,64,.28); }
+    .sv-door__plate:hover::after { transform: translateX(460%) skewX(-14deg); }
+    .sv-hero__slot[data-sc-spotlight]::after { border-radius: 20px; }
+  }
+
+  /* ---- icônes des rayons (SVG inline, charte dorée) ---- */
+  .sv-rayon__icon { width: 26px; height: 26px; color: var(--sc-accent); }
+  .sv-rayon__icon svg { width: 100%; height: 100%; display: block; stroke-width: 1.5; }
+  .sv-rayon.lit .sv-rayon__icon { color: var(--sc-accent-ink); }
+
+  /* ---- compteurs du vault : plaque d'inventaire ---- */
+  .sv-stats {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 2.3rem 0 0.4rem;
+    border: 1px solid var(--sc-hairline-strong); border-radius: 14px; overflow: hidden;
+    background: color-mix(in oklab, var(--sc-surface) 58%, transparent);
+    box-shadow: var(--sc-e1);
+  }
+  .sv-stat { padding: 1.25rem 0.9rem 1.1rem; border-left: 1px solid var(--sc-hairline); text-align: center; }
+  .sv-stat:first-child { border-left: none; }
+  .sv-stat__inv { display: block; font-family: var(--sc-font-mono); font-size: 0.56rem; letter-spacing: 0.26em; color: var(--sc-ink-soft); text-transform: uppercase; }
+  .sv-stat__num { display: flex; align-items: baseline; justify-content: center; gap: 0.15rem; font-family: var(--sc-font-display); font-weight: 800; font-size: clamp(1.9rem, 3.6vw, 2.7rem); letter-spacing: -0.03em; line-height: 1.1; color: var(--sc-accent); margin: 0.45rem 0 0.35rem; font-variant-numeric: tabular-nums; }
+  .sv-stat__num small { font-size: 0.5em; font-weight: 600; color: var(--sc-accent); }
+  .sv-stat__label { display: block; font-family: var(--sc-font-mono); font-size: 0.6rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--sc-ink-soft); }
+
+  /* ---- tuiles skills : soulèvement + élévation au pointeur ---- */
+  @media (hover: hover) and (pointer: fine) {
+    .sv-skill { transition: border-color .22s, color .22s, transform .14s var(--sc-ease-out), box-shadow .2s var(--sc-ease-out); }
+    .sv-skill:hover { transform: translateY(-3px); box-shadow: var(--sc-e2); }
+    .sv-tile:hover { box-shadow: var(--sc-e2); }
+    .sv-plate:hover { box-shadow: var(--sc-e3); border-color: color-mix(in oklab, var(--sc-accent) 42%, var(--sc-hairline-strong)); }
+  }
+
+  /* ---- curseur personnalisé (point doré + halo) ---- */
+  #sv-cursor, #sv-cursor-halo { position: fixed; top: 0; left: 0; pointer-events: none; border-radius: 50%; z-index: 300; will-change: transform; }
+  #sv-cursor { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: var(--sc-accent); box-shadow: 0 0 10px rgba(255,179,64,.85); }
+  #sv-cursor-halo { width: 38px; height: 38px; margin: -19px 0 0 -19px; border: 1px solid rgba(255,179,64,.42); transition: width .16s var(--sc-ease-out), height .16s var(--sc-ease-out), margin .16s var(--sc-ease-out), border-color .16s, background .16s; }
+  html.sv-cursor-on * { cursor: none !important; }
+  html.sv-cursor-on input, html.sv-cursor-on textarea, html.sv-cursor-on select { cursor: text !important; }
+  body.sv-cursor-hover #sv-cursor-halo { width: 54px; height: 54px; margin: -27px 0 0 -27px; border-color: rgba(255,179,64,.8); background: rgba(255,179,64,.07); }
+  @media (hover: none), (pointer: coarse) { #sv-cursor, #sv-cursor-halo { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    #sv-cursor-halo { display: none; }
+    #sv-cursor { box-shadow: none; }
+  }
+
+  /* ---- reduced motion v2 : moins et plus doux ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .sv-hero__slot .sv-door__leaf--l, .sv-hero__slot .sv-door__leaf--r { transform: none; }
+    .sv-hero__light, .sv-hero__pulse { opacity: 0; animation: none; }
+    .sv-dust-wrap { display: none; }
+  }
+
+  /* ---- responsive v2 ---- */
+  @media (max-width: 900px) {
+    .sv-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sv-stat { border-left: none; border-top: 1px solid var(--sc-hairline); }
+    .sv-stat:nth-child(1), .sv-stat:nth-child(2) { border-top: none; }
+    .sv-stat:nth-child(even) { border-left: 1px solid var(--sc-hairline); }
+    .sv-stat:nth-child(5) { grid-column: 1 / -1; border-left: none; }
+    .sv-hero__pulse { width: min(320px, 84%); }
+  }
+  @media (max-width: 480px) {
+    .sv-stat { padding: 0.95rem 0.6rem; }
+    .sv-stat__num { font-size: 1.75rem; }
+  }
+
+  /* ============================================================
+     SKILLVAULT v3 — on MONTRÉ le produit au lieu de le décrire
+     (markup et thème de page uniquement ; engine non modifié)
+     ============================================================ */
+
+  /* ---- marquee infini des 50 skills (2 bandes, sens inverses) ---- */
+  .sv-marquee {
+    position: relative; overflow: hidden;
+    border-block: 1px solid color-mix(in oklab, var(--sc-accent) 18%, var(--sc-hairline));
+    background: color-mix(in oklab, var(--sc-surface) 74%, transparent);
+    padding: 0.7rem 0;
+    pointer-events: none;
+    mask-image: linear-gradient(90deg, transparent 0, #000 9rem, #000 calc(100% - 9rem), transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9rem, #000 calc(100% - 9rem), transparent 100%);
+  }
+  .sv-marquee__track {
+    display: flex; width: max-content;
+    white-space: nowrap; will-change: transform;
+  }
+  .sv-marquee__track--a { animation: sv-mq-a 52s linear infinite; }
+  .sv-marquee__track--b { animation: sv-mq-b 60s linear infinite; margin-top: 0.32rem; }
+  @keyframes sv-mq-a { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes sv-mq-b { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  .sv-mq-item {
+    display: inline-flex; align-items: center; gap: 1.15rem;
+    padding-right: 1.15rem;
+    font-family: var(--sc-font-mono);
+    font-size: clamp(0.74rem, 1.5vw, 0.86rem);
+    letter-spacing: 0.045em;
+    color: color-mix(in oklab, var(--sc-ink) 76%, transparent);
+  }
+  .sv-mq-item::after { content: "·"; color: var(--sc-accent); opacity: 0.95; }
+  .sv-mq-item--hl { color: var(--sc-accent); }
+
+  /* ---- hero : titre massif + halos de lumière ambre ---- */
+  .sv-hero { position: relative; }
+  .sv-hero__title {
+    font-family: var(--sc-font-display);
+    font-weight: 800;
+    font-size: clamp(2.6rem, 6.4vw, 7rem);
+    line-height: 0.99;
+    letter-spacing: -0.04em;
+    margin-top: 0.8rem;
+    text-wrap: balance;
+  }
+  .sv-hero__title .sv-word-coffre {
+    font-style: italic;
+    background: linear-gradient(102deg, #ffdfae 0%, #ffb340 46%, #ff9a2e 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    padding-right: 0.04em;
+  }
+  .sv-hero__copy .sv-lede { font-size: clamp(0.98rem, 1.35vw, 1.14rem); }
+  .sv-hero__halo {
+    position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
+    will-change: opacity, transform;
+  }
+  .sv-hero__halo--tl { top: -18%; left: -14%; width: min(48vw, 580px); aspect-ratio: 1; background: radial-gradient(circle, rgba(255,179,64,.15), transparent 62%); animation: sv-halo-drift 11s ease-in-out infinite; }
+  .sv-hero__halo--br { bottom: -20%; right: -12%; width: min(42vw, 500px); aspect-ratio: 1; background: radial-gradient(circle, rgba(255,196,107,.11), transparent 60%); animation: sv-halo-drift 13s ease-in-out infinite reverse; }
+  @keyframes sv-halo-drift { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(0, -14px, 0) scale(1.06); } }
+  .sv-hero__copy, .sv-hero__slot { position: relative; z-index: 2; }
+
+  /* ---- aperçu produit : le SKILL.md qui se déplie au scroll ---- */
+  .sv-code-stage {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(1.1rem, 3vh, 1.9rem);
+    padding: 0 clamp(1.25rem, 5vw, 3.5rem);
+  }
+  .sv-code-head { max-width: 44rem; text-align: center; }
+  .sv-code-head .sc-label { margin-bottom: 0.7rem; }
+  .sv-code-head h2 {
+    font-family: var(--sc-font-display); font-weight: 800;
+    font-size: clamp(1.9rem, 4.6vw, 3.5rem);
+    letter-spacing: -0.032em; line-height: 1.06; margin: 0;
+  }
+  .sv-code-head h2 em { font-style: normal; color: var(--sc-accent); }
+  .sv-code-head p { color: var(--sc-ink-soft); margin: 0.75rem auto 0; max-width: 40rem; font-size: 0.95rem; line-height: 1.6; }
+  .sv-code-head p b { color: var(--sc-ink); font-weight: 600; }
+  .sv-skillfile {
+    width: min(880px, 94vw);
+    border: 1px solid color-mix(in oklab, var(--sc-accent) 28%, #252d38);
+    border-radius: 14px;
+    background: #0a0d13;
+    box-shadow: 0 34px 90px -28px rgba(0,0,0,.75), var(--sc-edge);
+    overflow: hidden;
+  }
+  .sv-skillfile__bar {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.66rem 1rem;
+    background: linear-gradient(180deg, #151a23, #0f131a);
+    border-bottom: 1px solid var(--sc-hairline);
+  }
+  .sv-skillfile__dots { display: flex; gap: 6px; }
+  .sv-skillfile__dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+  .sv-skillfile__dots i:nth-child(1) { background: #ff5f57; }
+  .sv-skillfile__dots i:nth-child(2) { background: #febc2e; }
+  .sv-skillfile__dots i:nth-child(3) { background: #28c840; }
+  .sv-skillfile__path { font-family: var(--sc-font-mono); font-size: 0.72rem; color: var(--sc-ink-soft); letter-spacing: 0.02em; }
+  .sv-skillfile__path b { color: var(--sc-accent); font-weight: 500; }
+  .sv-skillfile__badge {
+    margin-left: auto; flex: none;
+    font-family: var(--sc-font-mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--sc-accent-ink); font-weight: 700;
+    background: linear-gradient(92deg, #ffc46b, #ff9a2e);
+    border-radius: 999px; padding: 0.22rem 0.65rem;
+  }
+  .sv-skillfile__body { padding: 0.8rem 0 1rem; }
+  .sv-cline {
+    display: flex; align-items: baseline; gap: 1.1rem;
+    font-family: var(--sc-font-mono); font-size: 0.78rem; line-height: 1.6;
+    opacity: calc(clamp(0, (var(--sc-p, 0) - var(--l, 1)) / 0.032, 1));
+    will-change: opacity;
+  }
+  .sv-cline .sv-cn { flex: none; width: 2.5rem; text-align: right; color: #49515e; font-size: 0.66rem; user-select: none; }
+  .sv-cline .sv-ct { white-space: pre; color: #dbe1ea; }
+  .sv-tk-dim { color: #8b949e; }
+  .sv-tk-key { color: #ffb340; }
+  .sv-tk-str { color: #7ee787; }
+  .sv-tk-ok { color: #3ddc84; }
+  .sv-tk-hd { color: #ffd9a0; font-weight: 600; }
+  .sv-tk-b { color: #dbe1ea; font-weight: 600; }
+  .sv-tk-ind { color: #ffb340; font-weight: 600; }
+
+  /* ---- rayons vitrine : chiffre géant en filigrane + hover premium ---- */
+  .sv-rayon { position: relative; }
+  .sv-rayon__giant {
+    position: absolute; top: -0.5rem; right: 0; z-index: 0;
+    font-family: var(--sc-font-display); font-weight: 800;
+    font-size: clamp(5rem, 13vw, 9.5rem);
+    line-height: 1; letter-spacing: -0.05em;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(255,179,64,0.20);
+    pointer-events: none; user-select: none;
+    opacity: 0.9;
+    transition: -webkit-text-stroke-color .6s var(--sc-ease-out), opacity .6s var(--sc-ease-out);
+  }
+  .sv-rayon.lit .sv-rayon__giant { -webkit-text-stroke-color: rgba(255,179,64,0.48); opacity: 1; }
+  .sv-rayon__head, .sv-rayon .sv-shelf, .sv-rayon .sv-tiles, .sv-rayon .sv-ledger, .sv-rayon .sv-grid, .sv-panhead { position: relative; z-index: 1; }
+  .sv-panhead { position: relative; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .sv-skill, .sv-rail__item { position: relative; overflow: hidden; }
+    .sv-skill::before, .sv-rail__item::before, .sv-tile::before {
+      content: ""; position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(130% 100% at 50% 0%, color-mix(in oklab, var(--sc-accent) 20%, transparent), transparent 62%);
+      opacity: 0; transition: opacity .25s; pointer-events: none;
+    }
+    .sv-skill:hover { transform: translateY(-4px); border-color: color-mix(in oklab, var(--sc-accent) 72%, transparent); color: var(--sc-accent); box-shadow: 0 12px 30px -10px rgba(0,0,0,.65), 0 0 26px -6px rgba(255,179,64,.4); }
+    .sv-rail__item:hover { transform: translateY(-4px); border-color: color-mix(in oklab, var(--sc-accent) 72%, transparent); box-shadow: 0 12px 30px -10px rgba(0,0,0,.65), 0 0 26px -6px rgba(255,179,64,.4); }
+    .sv-skill:hover::before, .sv-rail__item:hover::before, .sv-tile:hover::before { opacity: 1; }
+    .sv-tile:hover { border-color: color-mix(in oklab, var(--sc-accent) 62%, transparent); box-shadow: 0 12px 30px -10px rgba(0,0,0,.55), 0 0 22px -6px rgba(255,179,64,.32); }
+    .sv-ledger__line { transition: background .2s, border-color .2s; }
+    .sv-ledger__line:hover { background: color-mix(in oklab, var(--sc-accent) 7%, transparent); }
+  }
+
+  /* ---- jauge de coffre : le fil conducteur ---- */
+  .sv-gauge {
+    position: fixed; left: clamp(0.9rem, 2vw, 1.4rem); top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: min(38vh, 280px);
+    z-index: 58; pointer-events: none;
+    background: color-mix(in oklab, var(--sc-ink) 10%, transparent);
+    border-radius: 999px;
+    opacity: 0; transition: opacity .45s var(--sc-ease-out);
+  }
+  .sv-gauge.on { opacity: 1; }
+  .sv-gauge__fill {
+    position: absolute; left: 0; bottom: 0; width: 100%; height: 0%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #ffd9a0, #ff9a2e);
+    box-shadow: 0 0 12px rgba(255,179,64,.55);
+    transition: height .65s var(--sc-ease-out);
+  }
+  .sv-gauge__tick { position: absolute; left: -3.5px; width: 10px; height: 3px; border-radius: 2px; background: color-mix(in oklab, var(--sc-ink) 26%, transparent); }
+  .sv-gauge__tick:nth-child(2) { top: 80%; }
+  .sv-gauge__tick:nth-child(3) { top: 60%; }
+  .sv-gauge__tick:nth-child(4) { top: 40%; }
+  .sv-gauge__tick:nth-child(5) { top: 20%; }
+  .sv-gauge__tick:nth-child(6) { top: 0%; }
+
+  /* ---- finale : l'ouverture du coffre devient une scène ---- */
+  .sv-vaultstage .sv-flash {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    opacity: calc(clamp(0, (var(--sc-p, 0) - 0.50) / 0.08, 1) * clamp(0, (0.74 - var(--sc-p, 0)) / 0.10, 1));
+    transform: scale(calc(1 + 0.05 * clamp(0, (var(--sc-p, 0) - 0.50) / 0.24, 1)));
+    background: radial-gradient(ellipse 62% 58% at 50% 46%, rgba(255,216,150,.5), rgba(255,179,64,.16) 38%, transparent 66%);
+    will-change: opacity, transform;
+  }
+  .sv-vaultstage .sv-lock { position: relative; }
+  .sv-vaultstage .sv-lock__pulse {
+    position: absolute; inset: -7px; border-radius: 10px;
+    box-shadow: 0 0 0 1px rgba(255,179,64,.22), 0 0 24px rgba(255,179,64,.32);
+    animation: sv-lock-glow 1.7s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sv-lock-glow { 0%, 100% { opacity: .38; } 50% { opacity: 1; } }
+  .sv-finale-title {
+    font-family: var(--sc-font-display); font-weight: 800;
+    font-size: clamp(2rem, 5.2vw, 4.4rem);
+    letter-spacing: -0.035em; line-height: 1.02;
+    margin-top: 0.7rem;
+  }
+
+  /* ---- responsive v3 ---- */
+  @media (max-width: 900px) {
+    .sv-gauge { display: none; }
+    .sv-code-stage { justify-content: flex-start; padding-top: 7vh; }
+    .sv-skillfile { width: min(660px, 100%); }
+  }
+  @media (max-width: 700px) {
+    .sv-marquee { padding: 0.55rem 0; }
+    .sv-cline { font-size: 0.69rem; gap: 0.7rem; line-height: 1.55; }
+    .sv-cline .sv-cn { width: 1.9rem; font-size: 0.6rem; }
+    .sv-cline--hide-m { display: none; }
+    .sv-skillfile__body { padding: 0.6rem 0 0.8rem; }
+    .sv-code-head h2 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+    .sv-code-head p { font-size: 0.85rem; }
+    .sv-rayon__giant { font-size: clamp(4.2rem, 18vw, 6rem); }
+    .sv-hero__halo { opacity: .8; }
+    .sv-finale-title { font-size: clamp(1.75rem, 8vw, 2.4rem); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sv-marquee { display: none; }
+    .sv-hero__halo { animation: none; }
+    .sv-vaultstage .sv-flash { opacity: .08; transform: none; }
+    .sv-vaultstage .sv-lock__pulse { animation: none; opacity: .5; }
+    .sv-gauge__fill { transition: none; }
+  }
+
+  /* ============================================================
+     SKILLVAULT v4 — LE SITE VIT EN PERMANENCE
+     Animations CSS infinies (keyframes pures, aucun JS ajouté),
+     posées PAR-DESSUS le scrollcraft. Règle d'or : jamais de
+     keyframe infinie sur un élément data-sc-cue / data-sc-in /
+     enfant stagger (l'engine écrit opacity/transform en JS ou en
+     transition dessus). Seuls des éléments libres sont animés :
+     nouveaux containers, svg, spans internes, pseudo-éléments.
+     L'opacité pilotée par le scroll n'est jamais touchée.
+     ============================================================ */
+
+  /* ---- 1 · particules dorées en lévitation (hero) ---- */
+  .sv-sparks {
+    position: absolute; inset: 0; z-index: 1;
+    overflow: hidden; pointer-events: none;
+    opacity: calc(0.35 + var(--sc-open-hero, 0) * 0.65);
+  }
+  .sv-spark {
+    position: absolute; left: var(--x, 50%); top: var(--y, 60%);
+    width: var(--s, 7px); height: var(--s, 7px);
+    background: linear-gradient(135deg, #ffd9a0, #ffb340 55%, #ff9a2e);
+    filter: drop-shadow(0 0 4px rgba(255,179,64,.5));
+    opacity: 0;
+    animation: sv-spark-rise var(--d, 9s) linear var(--dl, 0s) infinite;
+  }
+  .sv-spark--c { border-radius: 50%; }
+  .sv-spark--d { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+  .sv-spark--s { clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); }
+  @keyframes sv-spark-rise {
+    0%   { transform: translate3d(0, 14px, 0) scale(.7); opacity: 0; }
+    12%  { opacity: var(--a, .45); }
+    82%  { opacity: var(--a, .45); }
+    100% { transform: translate3d(var(--dx, 0px), -128px, 0) scale(1.06); opacity: 0; }
+  }
+
+  /* ---- 2 · la porte du coffre respire + reflet continu sur la plaque ---- */
+  .sv-hero__slot .sv-door { animation: sv-door-breathe 4s ease-in-out infinite; }
+  @keyframes sv-door-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.015); } }
+  .sv-door__plate::before {
+    content: ""; position: absolute; top: -40%; bottom: -40%; left: -12%;
+    width: 42%; z-index: 0;
+    background: linear-gradient(105deg, transparent, rgba(255,214,150,.4), transparent);
+    transform: translateX(-160%) skewX(-16deg);
+    animation: sv-plate-sweep 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sv-plate-sweep {
+    0%   { transform: translateX(-160%) skewX(-16deg); }
+    55%  { transform: translateX(430%) skewX(-16deg); }
+    100% { transform: translateX(430%) skewX(-16deg); }
+  }
+
+  /* ---- 3 · halos ambre : pulsation en décalé (hero + prix) ---- */
+  .sv-hero__halo--tl { animation: sv-halo-drift 11s ease-in-out infinite, sv-halo-pulse 6.5s ease-in-out infinite; }
+  .sv-hero__halo--br { animation: sv-halo-drift 13s ease-in-out infinite reverse, sv-halo-pulse 8s ease-in-out infinite; }
+  @keyframes sv-halo-pulse { 0%, 100% { opacity: .62; } 50% { opacity: 1; } }
+  .sv-halo { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+  .sv-halo--price { left: -8%; top: 4%; width: 60%; aspect-ratio: 1; background: radial-gradient(circle, rgba(255,179,64,.11), rgba(255,196,107,.05) 46%, transparent 70%); animation: sv-halo-price-pulse 6.5s ease-in-out infinite; }
+  .sv-halo--price-2 { right: -12%; bottom: -6%; width: 56%; aspect-ratio: 1; background: radial-gradient(circle, rgba(255,196,107,.08), transparent 66%); animation: sv-halo-price-pulse 8s ease-in-out infinite reverse; }
+  @keyframes sv-halo-price-pulse { 0%, 100% { opacity: .5; transform: scale(.92); } 50% { opacity: 1; transform: scale(1.1); } }
+
+  /* ---- 4 · marquee : plus d'énergie (bob + lueur, bandes plus rapides) ---- */
+  .sv-marquee { animation: sv-mq-bob 3s ease-in-out infinite; }
+  .sv-marquee__track--a { animation-duration: 40s; }
+  .sv-marquee__track--b { animation-duration: 46s; }
+  .sv-marquee::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 0;
+    width: 36%; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,179,64,.16), transparent);
+    transform: translateX(-160%);
+    animation: sv-mq-sweep 7s ease-in-out infinite;
+  }
+  @keyframes sv-mq-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  @keyframes sv-mq-sweep { 0% { transform: translateX(-160%); } 60% { transform: translateX(420%); } 100% { transform: translateX(420%); } }
+
+  /* ---- 5 · icônes des rayons : lévitation, accélérée au survol ---- */
+  .sv-rayon__icon svg { animation: sv-icon-float var(--sv-float-dur, 4s) ease-in-out infinite; will-change: transform; }
+  #rayon-commerce .sv-rayon__icon svg  { --sv-float-dur: 3.2s; }
+  #rayon-artisanat .sv-rayon__icon svg { --sv-float-dur: 3.8s; animation-delay: .35s; }
+  #rayon-rh .sv-rayon__icon svg        { --sv-float-dur: 4.4s; animation-delay: .7s; }
+  #rayon-compta .sv-rayon__icon svg    { --sv-float-dur: 5s;   animation-delay: 1.05s; }
+  #rayon-marketing .sv-rayon__icon svg { --sv-float-dur: 5.6s; animation-delay: 1.4s; }
+  @media (hover: hover) and (pointer: fine) {
+    .sv-rayon:hover .sv-rayon__icon svg { animation-duration: calc(var(--sv-float-dur, 4s) / 2); }
+  }
+  @keyframes sv-icon-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+  /* ---- 6 · aperçu code : curseur qui clignote + lignes clés qui brillent ---- */
+  .sv-caret {
+    display: inline-block; width: 7px; height: 1.02em;
+    margin-left: 3px; vertical-align: -0.14em;
+    background: var(--sc-accent);
+    box-shadow: 0 0 8px rgba(255,179,64,.85);
+    border-radius: 1px;
+    animation: sv-caret-blink 1.06s step-end infinite;
+  }
+  @keyframes sv-caret-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  .sv-skillfile__body .sv-cline:nth-child(-n+5) .sv-tk-key,
+  .sv-skillfile__body .sv-cline:nth-child(-n+5) .sv-tk-dim,
+  .sv-skillfile__body .sv-cline:nth-child(7) .sv-tk-hd,
+  .sv-skillfile__body .sv-cline:nth-child(9) .sv-tk-hd,
+  .sv-skillfile__body .sv-cline:nth-child(13) .sv-tk-hd,
+  .sv-skillfile__body .sv-cline:nth-child(21) .sv-tk-hd,
+  .sv-skillfile__body .sv-cline:nth-child(27) .sv-tk-hd,
+  .sv-skillfile__body .sv-cline:nth-child(n+28) .sv-tk-ok {
+    animation: sv-line-glow 3.4s ease-in-out infinite;
+  }
+  @keyframes sv-line-glow { 0%, 100% { text-shadow: 0 0 0 rgba(255,179,64,0); } 50% { text-shadow: 0 0 10px rgba(255,179,64,.5); } }
+
+  /* ---- 7 · chiffres géants en filigrane : flottement léger, décalé ---- */
+  .sv-giant-in { display: inline-block; animation: sv-giant-float var(--sv-giant-dur, 8s) ease-in-out infinite; will-change: transform; }
+  #rayon-commerce .sv-giant-in  { --sv-giant-dur: 7s; }
+  #rayon-artisanat .sv-giant-in { --sv-giant-dur: 7.6s; animation-delay: .6s; }
+  #rayon-rh .sv-giant-in        { --sv-giant-dur: 8.2s; animation-delay: 1.2s; }
+  #rayon-compta .sv-giant-in    { --sv-giant-dur: 8.8s; animation-delay: 1.8s; }
+  #rayon-marketing .sv-giant-in { --sv-giant-dur: 9.4s; animation-delay: 2.4s; }
+  @keyframes sv-giant-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  /* ---- 8 · grain vivant (film argentique : 3 états en steps) ---- */
+  .sc-grain::before { animation: sv-grain-flicker 0.5s steps(1) infinite; }
+  @keyframes sv-grain-flicker { 0% { opacity: .5; } 50% { opacity: .85; } 100% { opacity: .6; } }
+
+  /* ---- v4 reduced motion : tout le mouvement permanent s'éteint ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .sv-sparks, .sv-spark, .sv-hero__halo, .sv-halo--price, .sv-halo--price-2,
+    .sv-hero__slot .sv-door, .sv-door__plate::before, .sv-marquee, .sv-marquee::after,
+    .sv-rayon__icon svg, .sv-giant-in, .sv-caret, .sc-grain::before { animation: none !important; }
+    .sv-skillfile__body .sv-cline span { animation: none !important; text-shadow: none !important; }
+  }
+
+  /* ============================================================
+     SKILLVAULT v5 — L'INTERACTION TOTALE + LA PROFONDEUR
+     (markup et thème de page uniquement ; engine non modifié)
+     Règle d'or v4 conservée : aucune keyframe sur un élément
+     data-sc-cue / data-sc-in. Les effets v5 sont posés sur des
+     éléments libres ou composés dans les transform CSS existants
+     via les custom properties de l'engine (--sc-mx/--sc-my
+     publiés par data-sc-spotlight, --sc-p sur les actes).
+     ============================================================ */
+
+  /* ---- 1 · SPOTLIGHT CURSEUR : la lumière suit le regard dans le coffre ----
+     L'engine publie --sc-mx/--sc-my (0..1) sur [data-sc-spotlight].
+     On surcharge le halo existant : dégradé ambre, screen, subtil (max .18). */
+  .sv-hero__slot[data-sc-spotlight]::after {
+    background: radial-gradient(26rem 26rem at calc(var(--sc-mx, 0.5) * 100%) calc(var(--sc-my, 0.5) * 100%),
+                rgba(255,196,107,.20), rgba(255,179,64,.07) 44%, transparent 70%);
+    mix-blend-mode: screen;
+    border-radius: 20px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sv-hero__slot[data-sc-spotlight]:hover::after { opacity: .9; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sv-hero__slot[data-sc-spotlight]::after { display: none; }
+  }
+
+  /* ---- 2 · PROFONDEUR 3D RÉELLE ---- */
+  /* 2a · le coffre du hero : perspective + battants qui répondent à la souris.
+     Le transform reste en CSS (composé avec --sc-mx/--sc-my), jamais écrit
+     par notre JS : aucun conflit possible avec l'engine. */
+  .sv-hero__slot { perspective: 900px; }
+  .sv-hero__slot .sv-door { transform-style: preserve-3d; }
+  .sv-hero__slot .sv-door__leaf--l {
+    transform: translateX(calc(var(--sc-open-hero) * -112%))
+               rotateY(calc((var(--sc-my, 0.5) - 0.5) * 7deg))
+               rotateX(calc((var(--sc-mx, 0.5) - 0.5) * -3deg));
+    transform-origin: left center;
+  }
+  .sv-hero__slot .sv-door__leaf--r {
+    transform: translateX(calc(var(--sc-open-hero) * 112%))
+               rotateY(calc((var(--sc-my, 0.5) - 0.5) * -7deg))
+               rotateX(calc((var(--sc-mx, 0.5) - 0.5) * -3deg));
+    transform-origin: right center;
+  }
+  /* la plaque sort du coffre (translateZ), le cadran flotte devant */
+  .sv-door__plate { transform: translateX(-50%) translateZ(26px); }
+  .sv-hero__slot .sv-dial--inline { transform: translateZ(14px); }
+
+  /* 2b · le vaultstage : ouverture en vraie charnière 3D (rotateY + perspective) */
+  .sv-vaultstage { perspective: 900px; }
+  .sv-vaultstage__door .sv-door { transform-style: preserve-3d; }
+  .sv-vaultstage .sv-door__leaf--l {
+    transform: translateX(calc(var(--door-open) * -108%)) rotateY(calc(var(--door-open) * -40deg));
+    transform-origin: left center;
+  }
+  .sv-vaultstage .sv-door__leaf--r {
+    transform: translateX(calc(var(--door-open) * 108%)) rotateY(calc(var(--door-open) * 40deg));
+    transform-origin: right center;
+  }
+  .sv-vaultstage .sv-lock, .sv-vaultstage .sv-lock__open { transform: translateX(-50%) translateZ(34px); }
+
+  /* 2c · cartes prix : relief réel au survol (le tilt engine écrit déjà
+     perspective(1100px) + preserve-3d sur la carte ; on ajoute du Z aux enfants) */
+  .sv-plate { transform-style: preserve-3d; }
+  .sv-plate__price { transform: translateZ(20px); }
+  .sv-plate__flag  { transform: translateZ(24px); }
+  .sv-plate__specs { transform: translateZ(30px); }
+  .sv-plate__cta   { transform: translateZ(38px); }
+
+  /* 2d · le fichier code : lignes échelonnées en profondeur au dépliage */
+  .sv-skillfile__body { transform-style: preserve-3d; perspective: 1200px; }
+  .sv-cline { transform: translateZ(calc((var(--l, 0.5) - 0.2) * 130px)); }
+
+  /* ---- 3 · LA FINALE INOUBLIABLE ---- */
+  /* 3a · flash de page : la pièce s'embrase au pic (valeur flash du verify-state) */
+  #sv-pageflash {
+    position: fixed; inset: 0; z-index: 60; pointer-events: none;
+    background: radial-gradient(ellipse 74% 64% at 50% 44%,
+                rgba(255,196,107,.30), rgba(255,179,64,.12) 42%, transparent 70%);
+    opacity: var(--sv-pageflash, 0);
+    mix-blend-mode: screen;
+    will-change: opacity;
+  }
+
+  /* 3b · rafale de particules dorées depuis l'entre-battement (déclenchée
+     par la classe .sv-burst-go posée par notre JS quand door-open > 0.6) */
+  .sv-burst {
+    position: absolute; left: 50%; top: 44%;
+    width: var(--s, 7px); height: var(--s, 7px);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffdfae, #ffb340 55%, #ff9a2e);
+    box-shadow: 0 0 10px rgba(255,179,64,.65);
+    opacity: 0; transform: translate(-50%, -50%) scale(.4);
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .sv-burst--d { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); border-radius: 0; }
+  .sv-burst--s { clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); border-radius: 0; }
+  .sv-burst-go .sv-burst {
+    animation: sv-burst 1.25s cubic-bezier(.16,.84,.44,1) both;
+    animation-delay: calc(var(--i, 0) * 0.045s);
+  }
+  @keyframes sv-burst {
+    0%   { transform: translate(-50%, -50%) scale(.4); opacity: 1; }
+    22%  { opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -90px))) scale(1) rotate(var(--r, 24deg)); opacity: 0; }
+  }
+
+  /* 3c · le titre final s'embrase avec la porte */
+  .sv-burst-go .sv-finale-title {
+    animation: sv-title-burst 1.05s cubic-bezier(.2,.85,.3,1.15) both;
+  }
+  @keyframes sv-title-burst {
+    0%   { transform: scale(.9); opacity: 0; text-shadow: 0 0 0 rgba(255,196,107,0); }
+    100% { transform: scale(1); opacity: 1; text-shadow: 0 0 42px rgba(255,196,107,.5); }
+  }
+
+  /* ---- 4 · TRAÎNÉE DU CURSEUR (second point, lerp plus lent) ---- */
+  #sv-cursor-trail {
+    position: fixed; top: 0; left: 0; pointer-events: none; border-radius: 50%;
+    width: 36px; height: 36px; margin: -18px 0 0 -18px; z-index: 299;
+    background: radial-gradient(circle, rgba(255,179,64,.26), rgba(255,179,64,.07) 46%, transparent 70%);
+    opacity: 0; transition: opacity .3s var(--sc-ease-out);
+    will-change: transform;
+  }
+  html.sv-cursor-on #sv-cursor-trail { opacity: 1; }
+  @media (hover: none), (pointer: coarse) { #sv-cursor-trail { display: none; } }
+
+  /* ---- 5 · MICRO-DÉTAILS PREMIUM ---- */
+  @media (hover: hover) and (pointer: fine) {
+    .sv-brand { transition: transform .2s var(--sc-ease-out); }
+    .sv-brand:hover { transform: scale(1.02); }
+    .sv-index a { position: relative; }
+    .sv-index a::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px;
+      background: linear-gradient(90deg, #ffc46b, #ff9a2e);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .25s var(--sc-ease-out);
+    }
+    .sv-index a:hover::after { transform: scaleX(1); }
+    .sv-cta:hover { box-shadow: 0 10px 28px rgba(255,179,64,.42), 0 0 24px -4px rgba(255,179,64,.55); }
+  }
+
+  /* ---- v5 reduced motion + mobile ---- */
+  @media (max-width: 900px) {
+    .sv-plate__specs, .sv-plate__desc, .sv-plate__flag { transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sv-hero__slot .sv-door__leaf--l, .sv-hero__slot .sv-door__leaf--r,
+    .sv-vaultstage .sv-door__leaf--l, .sv-vaultstage .sv-door__leaf--r { transform: none !important; }
+    .sv-door__plate { transform: translateX(-50%); }
+    .sv-vaultstage .sv-lock, .sv-vaultstage .sv-lock__open { transform: translateX(-50%); }
+    .sv-hero__slot .sv-dial--inline { transform: none; }
+    .sv-plate__price, .sv-plate__flag, .sv-plate__specs, .sv-plate__cta { transform: none; }
+    .sv-cline { transform: none; }
+    #sv-pageflash { display: none; }
+    .sv-burst { display: none; }
+    .sv-burst-go .sv-finale-title { animation: none; transform: none; opacity: 1; text-shadow: none; }
+    #sv-cursor-trail { display: none; }
+  }
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -51,807 +1020,949 @@
   ]
 }
 </script>
-<style>
-  :root{
-    --graphite:#0e1116;
-    --encre:#0b0d12;
-    --ambre:#ffb340;
-    --ambre-doux:#ffc86b;
-    --ivoire:#f4efe6;
-    --muted:#a49e92;
-    --violet:#8b7cff;
-    --vert:#3ddc84;
-    --glass:rgba(255,255,255,.035);
-    --glass-border:rgba(255,179,64,.16);
-    --radius:16px;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    background:var(--graphite);
-    color:var(--ivoire);
-    font-family:'Sora',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    line-height:1.65;
-    overflow-x:hidden;
-    -webkit-font-smoothing:antialiased;
-  }
-  /* ---------- Fond : grille fine + radials ambre discrets ---------- */
-  .bg-grid{
-    position:fixed;inset:0;z-index:-2;pointer-events:none;
-    background-image:
-      linear-gradient(rgba(255,179,64,.045) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(255,179,64,.045) 1px,transparent 1px);
-    background-size:44px 44px;
-  }
-  .bg-glow{position:fixed;inset:0;z-index:-1;pointer-events:none}
-  .bg-glow::before,.bg-glow::after{
-    content:'';position:absolute;border-radius:50%;filter:blur(130px);
-  }
-  .bg-glow::before{width:620px;height:620px;top:-190px;left:-140px;background:#ffb340;opacity:.10}
-  .bg-glow::after{width:520px;height:520px;top:32%;right:-170px;background:#8b7cff;opacity:.09}
-  /* ---------- Typo utilitaire ---------- */
-  .grad-text{
-    background:linear-gradient(92deg,#ffd08a 0%,#ffb340 55%,#ff8f2e 110%);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .kicker{
-    display:inline-flex;align-items:center;gap:8px;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--ambre);
-    border:1px solid rgba(255,179,64,.30);
-    background:rgba(255,179,64,.07);
-    padding:7px 14px;border-radius:999px;
-  }
-  .section{padding:96px 24px;max-width:1180px;margin:0 auto}
-  .section-title{font-size:clamp(30px,4.5vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.15;text-align:center}
-  .section-sub{text-align:center;color:var(--muted);max-width:660px;margin:16px auto 0;font-size:16.5px}
-  /* ---------- Header ---------- */
-  header{
-    position:sticky;top:0;z-index:100;
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    background:rgba(14,17,22,.78);
-    border-bottom:1px solid rgba(255,179,64,.12);
-  }
-  .nav{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:28px}
-  .logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;text-decoration:none;color:var(--ivoire)}
-  .logo-mark{
-    width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#ffb340,#ff8f2e);
-    box-shadow:0 0 22px rgba(255,179,64,.35);
-  }
-  .logo-mark svg{width:20px;height:20px}
-  .nav-links{display:flex;gap:26px;margin-left:auto;align-items:center}
-  .nav-links a{color:var(--muted);text-decoration:none;font-size:14.5px;font-weight:500;transition:color .2s}
-  .nav-links a:hover{color:var(--ambre)}
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:9px;
-    font-family:inherit;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;
-    border-radius:12px;padding:13px 26px;border:1px solid transparent;transition:transform .15s,box-shadow .2s,background .2s;
-  }
-  .btn-primary{
-    background:linear-gradient(92deg,#ffb340,#ff9a2e);
-    color:#161008;box-shadow:0 4px 24px rgba(255,179,64,.35);
-  }
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,179,64,.5)}
-  .btn-ghost{border-color:rgba(255,179,64,.35);color:var(--ambre);background:rgba(255,179,64,.05)}
-  .btn-ghost:hover{background:rgba(255,179,64,.12)}
-  .btn-violet{background:linear-gradient(92deg,#8b7cff,#a996ff);color:#120f24;box-shadow:0 4px 24px rgba(139,124,255,.35)}
-  .btn-violet:hover{transform:translateY(-2px)}
-  .btn-lg{padding:16px 34px;font-size:16px;border-radius:14px}
-  /* ---------- Hero ---------- */
-  .hero{position:relative;padding:110px 24px 90px;text-align:center;overflow:hidden}
-  .hero-inner{max-width:1180px;margin:0 auto}
-  .hero h1{
-    font-size:clamp(38px,6.2vw,66px);font-weight:800;letter-spacing:-.03em;line-height:1.08;
-    margin:26px auto 0;max-width:900px;
-  }
-  .hero-sub{
-    font-size:clamp(17px,2.2vw,20px);color:var(--muted);max-width:720px;margin:22px auto 0;line-height:1.65;
-  }
-  .hero-sub strong{color:var(--ivoire);font-weight:700}
-  .hero-cta{display:flex;gap:16px;justify-content:center;margin-top:34px;flex-wrap:wrap}
-  .hero-compat{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:38px;color:var(--muted);font-size:13.5px}
-  .hero-compat span{display:inline-flex;align-items:center;gap:7px}
-  .hero-compat .dot{width:7px;height:7px;border-radius:50%;background:var(--vert);box-shadow:0 0 10px var(--vert)}
-  /* ---------- Terminal d'installation ---------- */
-  .term-wrap{max-width:780px;margin:64px auto 0;position:relative}
-  .term-wrap::before{
-    content:'';position:absolute;inset:-60px -40px;z-index:-1;border-radius:40px;
-    background:radial-gradient(ellipse at center,rgba(255,179,64,.13),transparent 65%);
-  }
-  .term{
-    position:relative;border-radius:16px;text-align:left;
-    background:linear-gradient(165deg,#141820,#0b0d12);
-    border:1px solid rgba(255,179,64,.22);
-    box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05);
-    padding:0;overflow:hidden;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:13px;
-  }
-  .term-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,179,64,.12);padding:12px 16px}
-  .term-bar .lamp{width:10px;height:10px;border-radius:50%}
-  .term-bar .l1{background:#ff5f57}.term-bar .l2{background:#febc2e}.term-bar .l3{background:#28c840}
-  .term-bar .term-title{margin-left:8px;color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
-  .term-bar .term-state{margin-left:auto;color:var(--vert);font-size:11.5px;display:flex;align-items:center;gap:6px}
-  .term-state .pulse{width:8px;height:8px;border-radius:50%;background:var(--vert);animation:pulse 1.8s infinite}
-  @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(61,220,132,.5)}50%{opacity:.6;box-shadow:0 0 0 6px rgba(61,220,132,0)}}
-  .term-body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:9px}
-  .tline{display:flex;align-items:center;gap:10px;opacity:0;animation:lineIn .5s forwards}
-  .tline:nth-child(1){animation-delay:.3s}.tline:nth-child(2){animation-delay:.75s}.tline:nth-child(3){animation-delay:1.2s}
-  .tline:nth-child(4){animation-delay:1.65s}.tline:nth-child(5){animation-delay:2.1s}.tline:nth-child(6){animation-delay:2.55s}
-  @keyframes lineIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
-  .tline .prompt{color:var(--muted);flex-shrink:0}
-  .tline .cmd{color:#cfd6e4;font-weight:500}
-  .tline .ok{margin-left:auto;color:var(--vert);font-size:12px;display:flex;align-items:center;gap:6px;flex-shrink:0}
-  .tline .tag{font-size:10.5px;color:var(--violet);border:1px solid rgba(139,124,255,.4);border-radius:999px;padding:2px 9px;margin-left:8px;flex-shrink:0;text-transform:lowercase}
-  .term-foot{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,179,64,.20);display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12.5px}
-  .term-foot b{color:var(--vert);font-weight:600}
-  .term-coins{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap}
-  .tcoin{
-    font-size:12.5px;font-weight:600;color:var(--ivoire);padding:9px 16px;border-radius:999px;
-    background:rgba(255,255,255,.045);border:1px solid rgba(255,179,64,.18);
-    backdrop-filter:blur(8px);display:flex;align-items:center;gap:8px;
-  }
-  .tcoin b{color:var(--ambre)}
-  /* ---------- Stats ---------- */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:980px;margin:76px auto 0}
-  .stat{
-    background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);
-    padding:22px 16px;backdrop-filter:blur(12px);
-  }
-  .stat .num{font-size:34px;font-weight:800;background:linear-gradient(92deg,#ffd08a,#ffb340);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .stat .lbl{font-size:13px;color:var(--muted);margin-top:4px}
-  /* ---------- Sections génériques ---------- */
-  .glass{
-    background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  }
-  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
-  .card{padding:30px 26px;position:relative}
-  .card .ic{
-    width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;
-    background:rgba(255,179,64,.12);border:1px solid rgba(255,179,64,.30);
-  }
-  .card .ic.v{background:rgba(139,124,255,.12);border-color:rgba(139,124,255,.32)}
-  .card .ic.c{background:rgba(61,220,132,.08);border-color:rgba(61,220,132,.26)}
-  .card h3{font-size:19px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
-  .card p{color:var(--muted);font-size:15px}
-  /* ---------- Étapes ---------- */
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px;counter-reset:step}
-  .step{padding:32px 26px;position:relative;overflow:hidden}
-  .step::before{
-    counter-increment:step;content:'0' counter(step);
-    position:absolute;top:6px;right:18px;font-size:74px;font-weight:800;line-height:1;
-    color:rgba(255,179,64,.12);-webkit-text-stroke:1px rgba(255,179,64,.28);
-  }
-  .step .st-ic{font-size:26px;margin-bottom:14px}
-  .step h3{font-size:19px;font-weight:700;margin-bottom:10px}
-  .step p{color:var(--muted);font-size:14.5px}
-  .step p b{color:var(--ivoire);font-weight:600}
-  /* ---------- Pricing ---------- */
-  .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px;align-items:stretch}
-  .plan{display:flex;flex-direction:column;padding:34px 28px;position:relative;transition:transform .2s}
-  .plan:hover{transform:translateY(-4px)}
-  .plan .p-name{font-size:16px;font-weight:700;letter-spacing:.02em}
-  .plan .p-price{font-size:52px;font-weight:800;letter-spacing:-.03em;margin:10px 0 2px}
-  .plan .p-price small{font-size:17px;color:var(--muted);font-weight:500}
-  .plan .p-desc{color:var(--muted);font-size:14px;min-height:44px}
-  .plan ul{list-style:none;margin:22px 0 28px;display:flex;flex-direction:column;gap:11px;flex:1}
-  .plan li{font-size:14px;color:#d8d2c6;display:flex;gap:10px;align-items:flex-start}
-  .plan li::before{content:'✓';color:var(--vert);font-weight:700;flex-shrink:0}
-  .plan .btn{width:100%}
-  .plan-flag{
-    position:absolute;top:-15px;left:50%;transform:translateX(-50%);
-    background:linear-gradient(92deg,#ffb340,#ff8f2e);color:#161008;
-    font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-    padding:7px 18px;border-radius:999px;white-space:nowrap;
-    box-shadow:0 4px 18px rgba(255,179,64,.45);
-  }
-  .plan-featured{
-    border-color:rgba(255,179,64,.55);
-    background:linear-gradient(170deg,rgba(255,179,64,.12),rgba(139,124,255,.07));
-    box-shadow:0 20px 60px rgba(255,179,64,.14);
-  }
-  .plan-note{text-align:center;color:var(--muted);font-size:13.5px;margin-top:26px}
-  .plan-note b{color:var(--ambre);font-weight:600}
-  /* ---------- 50 skills ---------- */
-  .packs{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:52px}
-  .pack{padding:28px 26px;display:flex;flex-direction:column}
-  .pack-head{display:flex;align-items:center;gap:13px;margin-bottom:8px}
-  .pack-emoji{
-    width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;
-    background:rgba(255,179,64,.11);border:1px solid rgba(255,179,64,.26);flex-shrink:0;
-  }
-  .pack h3{font-size:18px;font-weight:700}
-  .pack .pack-gain{font-size:13.5px;color:var(--muted);margin:0 0 16px 57px;line-height:1.5}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{
-    font-size:11.5px;font-weight:600;color:#d8d2c6;
-    padding:6px 12px;border-radius:999px;
-    background:rgba(255,255,255,.04);border:1px solid rgba(255,179,64,.14);
-    font-family:'IBM Plex Mono',monospace;
-    transition:border-color .2s,color .2s;
-  }
-  .chip:hover{border-color:var(--ambre);color:var(--ambre)}
-  .chip.ready{border-color:rgba(61,220,132,.40);color:var(--vert);background:rgba(61,220,132,.07)}
-  .packs-note{text-align:center;color:var(--muted);font-size:14px;margin-top:30px}
-  /* ---------- Outil gratuit ---------- */
-  .tool-band{
-    margin-top:52px;padding:36px 32px;border-radius:20px;text-align:center;
-    background:linear-gradient(165deg,rgba(255,179,64,.10),rgba(139,124,255,.06));
-    border:1px solid rgba(255,179,64,.30);
-  }
-  .tool-band h3{font-size:24px;font-weight:800;margin-bottom:8px}
-  .tool-band p{color:var(--muted);font-size:15px;max-width:640px;margin:0 auto 20px}
-  /* ---------- FAQ ---------- */
-  .faq{max-width:780px;margin:48px auto 0;display:flex;flex-direction:column;gap:12px}
-  .faq-item{overflow:hidden}
-  .faq-q{
-    width:100%;background:none;border:none;text-align:left;cursor:pointer;
-    font-family:inherit;color:var(--ivoire);font-size:16px;font-weight:600;
-    padding:20px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;
-  }
-  .faq-q .chev{color:var(--ambre);font-size:13px;transition:transform .25s;flex-shrink:0}
-  .faq-item.open .chev{transform:rotate(180deg)}
-  .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
-  .faq-a-inner{padding:0 22px 20px;color:var(--muted);font-size:14.5px;line-height:1.7}
-  /* ---------- Formulaire ---------- */
-  .order-wrap{max-width:820px;margin:0 auto}
-  .order{
-    margin-top:48px;padding:38px 34px;
-    background:linear-gradient(165deg,rgba(23,27,34,.9),rgba(11,13,18,.95));
-    border:1px solid rgba(255,179,64,.35);
-    border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.45),0 0 60px rgba(255,179,64,.08);
-  }
-  .order h3{font-size:24px;font-weight:800;margin-bottom:6px}
-  .order .order-sub{color:var(--muted);font-size:14.5px;margin-bottom:26px}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;min-width:0}
-  .field label{font-size:13px;font-weight:600;color:#d8d2c6}
-  .field input,.field select,.field textarea{
-    font-family:inherit;font-size:14.5px;color:var(--ivoire);
-    background:rgba(11,13,18,.7);border:1px solid rgba(255,179,64,.22);border-radius:10px;
-    padding:12px 14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;
-  }
-  .field textarea{resize:vertical;min-height:90px}
-  .field input:focus,.field select:focus,.field textarea:focus{
-    border-color:var(--ambre);box-shadow:0 0 0 3px rgba(255,179,64,.12);
-  }
-  .field select option{background:#0b0d12;color:var(--ivoire)}
-  .field .err{color:#ff8f7a;font-size:12.5px;display:none}
-  .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:#ff8f7a}
-  .field.invalid .err{display:block}
-  .order-actions{margin-top:8px;display:flex;flex-direction:column;gap:12px}
-  .order-actions .btn{width:100%}
-  .order-secure{font-size:13px;color:var(--muted);text-align:center}
-  .order-ok{
-    display:none;text-align:center;padding:26px 18px;
-    border:1px solid rgba(61,220,132,.35);border-radius:14px;background:rgba(61,220,132,.06);
-  }
-  .order-ok .big{font-size:34px;margin-bottom:10px}
-  .order-ok h4{font-size:19px;margin-bottom:8px;color:var(--vert)}
-  .order-ok p{color:var(--muted);font-size:14.5px}
-  .order-ok .steps-list{margin:14px auto 0;max-width:420px;text-align:left;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:8px}
-  /* ---------- Footer ---------- */
-  footer{border-top:1px solid rgba(255,179,64,.10);background:rgba(8,10,14,.6);margin-top:40px}
-  .footer-inner{max-width:1180px;margin:0 auto;padding:48px 24px 34px}
-  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:34px}
-  .footer-grid h4{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ambre);margin-bottom:14px}
-  .footer-grid p,.footer-grid li{color:var(--muted);font-size:13.5px}
-  .footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-  .footer-grid a{color:var(--muted);text-decoration:none;transition:color .2s}
-  .footer-grid a:hover{color:var(--ambre)}
-  .footer-bottom{border-top:1px solid rgba(255,179,64,.08);margin-top:36px;padding-top:20px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12.5px}
-  .footer-bottom a{color:var(--muted)}
-  .disclaimer{color:#7d776c;font-size:12px;margin-top:16px;line-height:1.6;max-width:760px}
-  /* ---------- Animations reveal ---------- */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
-  .reveal.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){
-    .reveal{opacity:1;transform:none;transition:none}
-    .tline{animation:none;opacity:1}
-    html{scroll-behavior:auto}
-  }
-  /* ---------- Responsive ---------- */
-  @media (max-width:960px){
-    .cards3,.steps,.pricing{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}
-    .packs{grid-template-columns:1fr}
-    .stats{grid-template-columns:repeat(2,1fr)}
-    .footer-grid{grid-template-columns:1fr}
-    .section{padding:72px 20px}
-  }
-  @media (max-width:640px){
-    .nav-links{display:none}
-    .form-row{grid-template-columns:1fr}
-    .hero{padding:80px 18px 64px}
-    .hero-cta .btn{width:100%}
-    .order{padding:28px 20px}
-    .term{font-size:12px}
-    .term-body{padding:14px 14px 16px}
-    .tline .tag{display:none}
-  }
-</style>
 </head>
 <body>
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
 
-<!-- ================= HEADER ================= -->
-<header>
-  <nav class="nav">
-    <a class="logo" href="#top" aria-label="SkillVault — accueil">
-      <span class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#161008" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#0e1116" stroke="none"/></svg>
-      </span>
-      SkillVault
-    </a>
-    <div class="nav-links">
-      <a href="#skills">Les skills</a>
-      <a href="#fonctionnement">Fonctionnement</a>
-      <a href="#offres">Offres</a>
-      <a href="#faq">FAQ</a>
-      <a href="outil.html">Atelier Skill</a>
-    </div>
-    <a class="btn btn-primary" href="#commande" style="padding:11px 20px;font-size:14px">Obtenir les skills</a>
+<span data-sc-progress></span>
+<div class="sc-grain" aria-hidden="true"></div>
+<div id="sv-pageflash" aria-hidden="true"></div>
+
+<!-- ============ NAV : l'index des objets (grammaire gallery) ============ -->
+<header class="sv-bar">
+  <a class="sv-brand" href="#coffre" aria-label="SkillVault — accueil">
+    <span class="sv-brand__mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#17100a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#0e1116" stroke="none"/></svg>
+    </span>
+    SkillVault
+  </a>
+  <nav class="sv-index" aria-label="Index du vault">
+    <a href="#coffre">Le coffre</a>
+    <a href="#rayons">Les 5 rayons</a>
+    <a href="#prix">Le prix</a>
+    <a href="#faq">FAQ</a>
+    <a href="outil.html">Atelier Skill</a>
   </nav>
+  <a class="sv-cta" href="#prix" style="padding:0.6rem 1.05rem;font-size:0.84rem">Ouvrir le coffre</a>
 </header>
 
-<!-- ================= HERO ================= -->
-<section class="hero" id="top">
-  <div class="hero-inner">
-    <span class="kicker">⚡ 50 skills métier · 100 % en français</span>
-    <h1>Votre agent IA, enfin compétent dans <span class="grad-text">votre métier</span>.</h1>
-    <p class="hero-sub">
-      <strong>Installez une compétence métier dans votre agent IA en 2 minutes — en français, calibrée pour votre métier.</strong><br>
-      Relance de devis, réponse aux avis Google, suivi de trésorerie, fiche de poste, post LinkedIn : vos tâches réelles, prêtes à déléguer.
-    </p>
-    <div class="hero-cta">
-      <a href="#offres" class="btn btn-primary btn-lg">Voir les packs — dès 29 €</a>
-      <a href="#fonctionnement" class="btn btn-ghost btn-lg">Comment ça marche</a>
-    </div>
-    <div class="hero-compat">
-      <span><span class="dot"></span>Format standard SKILL.md</span>
-      <span><span class="dot"></span>Compatible Claude Code, Codex, Copilot</span>
-      <span><span class="dot"></span>Aucune ligne de code à écrire</span>
-    </div>
+<main id="top">
 
-    <!-- Terminal d'installation : la preuve par l'exemple -->
-    <div class="term-wrap">
-      <div class="term" role="img" aria-label="Démonstration : installation de skills métier dans un agent IA">
-        <div class="term-bar">
-          <span class="lamp l1"></span><span class="lamp l2"></span><span class="lamp l3"></span>
-          <span class="term-title">SkillVault — installation</span>
-          <span class="term-state"><span class="pulse"></span>2 minutes</span>
+  <!-- ============ 1 · CURIOSITÉ : la porte, fermée ============ -->
+  <section id="coffre" data-sc-act="pin" data-sc-span="1.5" data-sc-drift="#07090d">
+    <div data-sc-stage class="sc-stage sv-hero">
+      <div class="sv-hero__halo sv-hero__halo--tl" aria-hidden="true"></div>
+      <div class="sv-hero__halo sv-hero__halo--br" aria-hidden="true"></div>
+      <div class="sv-sparks" aria-hidden="true">
+        <span class="sv-spark sv-spark--c" style="--x:12%;--y:68%;--s:6px;--d:9s;--dl:-2.5s;--a:.4;--dx:10px"></span>
+        <span class="sv-spark sv-spark--d" style="--x:24%;--y:44%;--s:8px;--d:12s;--dl:-6s;--a:.32;--dx:-14px"></span>
+        <span class="sv-spark sv-spark--s" style="--x:31%;--y:76%;--s:7px;--d:7.5s;--dl:-1.2s;--a:.48;--dx:16px"></span>
+        <span class="sv-spark sv-spark--c" style="--x:42%;--y:30%;--s:5px;--d:10.5s;--dl:-8s;--a:.26;--dx:-8px"></span>
+        <span class="sv-spark sv-spark--d" style="--x:55%;--y:82%;--s:9px;--d:13.5s;--dl:-4s;--a:.36;--dx:12px"></span>
+        <span class="sv-spark sv-spark--c" style="--x:63%;--y:52%;--s:6px;--d:8s;--dl:-3s;--a:.45;--dx:-18px"></span>
+        <span class="sv-spark sv-spark--s" style="--x:72%;--y:38%;--s:10px;--d:11s;--dl:-9.5s;--a:.3;--dx:20px"></span>
+        <span class="sv-spark sv-spark--d" style="--x:81%;--y:70%;--s:7px;--d:6.5s;--dl:-0.5s;--a:.52;--dx:-12px"></span>
+        <span class="sv-spark sv-spark--c" style="--x:90%;--y:24%;--s:5px;--d:14s;--dl:-11s;--a:.22;--dx:8px"></span>
+        <span class="sv-spark sv-spark--c" style="--x:8%;--y:34%;--s:7px;--d:10s;--dl:-5.5s;--a:.35;--dx:16px"></span>
+        <span class="sv-spark sv-spark--s" style="--x:48%;--y:88%;--s:8px;--d:12.5s;--dl:-7.5s;--a:.28;--dx:-22px"></span>
+        <span class="sv-spark sv-spark--d" style="--x:66%;--y:16%;--s:6px;--d:9.5s;--dl:-1.8s;--a:.42;--dx:6px"></span>
+        <span class="sv-spark sv-spark--c" style="--x:76%;--y:90%;--s:5px;--d:7s;--dl:-3.5s;--a:.38;--dx:-10px"></span>
+        <span class="sv-spark sv-spark--s" style="--x:18%;--y:58%;--s:9px;--d:13s;--dl:-10.5s;--a:.3;--dx:14px"></span>
+        <span class="sv-spark sv-spark--d" style="--x:36%;--y:62%;--s:6px;--d:8.5s;--dl:-2s;--a:.46;--dx:8px"></span>
+        <span class="sv-spark sv-spark--c" style="--x:88%;--y:46%;--s:8px;--d:11.5s;--dl:-12s;--a:.34;--dx:-16px"></span>
+      </div>
+      <div class="sv-hero__copy" data-sc-cue="0 0.88 0 0.06" data-sc-rise="2.6">
+        <p class="sc-label">Catalogue français de compétences métier pour agents IA</p>
+        <h1 class="sv-hero__title">Le <span class="sv-word-coffre">coffre</span> des <span class="sv-num-hl">50</span> skills métier.</h1>
+        <p class="sv-lede">50 compétences rédigées en français, calibrées par métier. Format SKILL.md. <strong>Installables en 2 minutes, sans écrire une ligne de code.</strong></p>
+        <div class="sv-cta-row">
+          <a class="sv-cta" href="#prix">Ouvrir le coffre</a>
+          <a class="sv-cta sv-cta--ghost" href="#rayons">Visiter les 5 rayons</a>
         </div>
-        <div class="term-body">
-          <div class="tline"><span class="prompt">$</span><span class="cmd">skill install commerce/relance-panier</span><span class="tag">commerce</span><span class="ok">✓ installé</span></div>
-          <div class="tline"><span class="prompt">$</span><span class="cmd">skill install commerce/reponse-avis-google</span><span class="tag">commerce</span><span class="ok">✓ installé</span></div>
-          <div class="tline"><span class="prompt">$</span><span class="cmd">skill install artisanat/devis-chiffre</span><span class="tag">artisanat</span><span class="ok">✓ installé</span></div>
-          <div class="tline"><span class="prompt">$</span><span class="cmd">skill install compta/relance-impaye</span><span class="tag">compta</span><span class="ok">✓ installé</span></div>
-          <div class="tline"><span class="prompt">$</span><span class="cmd">skill install rh/grille-entretien</span><span class="tag">rh</span><span class="ok">✓ installé</span></div>
-          <div class="tline"><span class="prompt">$</span><span class="cmd">skill install marketing/post-linkedin</span><span class="tag">marketing</span><span class="ok">✓ installé</span></div>
-          <div class="term-foot">⏱️ <b>2 minutes</b> : copier le dossier → décrire la tâche → l'agent applique la méthode métier.</div>
+        <div class="sv-compat">
+          <span><i></i>Format SKILL.md standard</span>
+          <span><i></i>Claude Code · Codex · Copilot</span>
+          <span><i></i>100 % en français</span>
         </div>
       </div>
-      <div class="term-coins">
-        <span class="tcoin">🗂️ <b>50</b> skills prêts</span>
-        <span class="tcoin">🧭 <b>5</b> métiers couverts</span>
-        <span class="tcoin">🇫🇷 <b>100 %</b> en français</span>
-        <span class="tcoin">📦 <b>1</b> format : SKILL.md</span>
+      <div class="sv-hero__slot" data-sc-spotlight aria-hidden="true">
+        <div class="sv-hero__light" aria-hidden="true"></div>
+        <div class="sv-hero__pulse" aria-hidden="true"></div>
+        <div class="sv-door">
+          <div class="sv-door__leaf sv-door__leaf--l"><div class="sv-door__panel"></div></div>
+          <div class="sv-door__leaf sv-door__leaf--r"><div class="sv-door__panel"></div></div>
+          <div class="sv-door__joint"></div>
+          <div class="sv-door__plate">SkillVault<small>50 skills · 5 métiers</small></div>
+          <div class="sv-dial sv-dial--inline">
+            <svg class="sv-dial__svg" viewBox="0 0 120 120">
+              <circle class="sv-dial__face" cx="60" cy="60" r="52"/>
+              <circle class="sv-dial__inner" cx="60" cy="60" r="38"/>
+              <g class="sv-dial__tick"><line x1="60" y1="10" x2="60" y2="17"/><line x1="60" y1="103" x2="60" y2="110"/><line x1="10" y1="60" x2="17" y2="60"/><line x1="103" y1="60" x2="110" y2="60"/></g>
+              <g class="sv-dial__tick--big"><line x1="60" y1="12" x2="60" y2="20"/><line x1="60" y1="100" x2="60" y2="108"/></g>
+              <g class="sv-dial__needle"><line x1="60" y1="60" x2="60" y2="26"/><circle cx="60" cy="60" r="5"/></g>
+              <circle class="sv-dial__hub" cx="60" cy="60" r="3"/>
+            </svg>
+          </div>
+        </div>
+        <div class="sv-dust-wrap" aria-hidden="true"><canvas class="sv-dust" width="340" height="460"></canvas></div>
       </div>
     </div>
+  </section>
 
-    <div class="stats">
-      <div class="stat"><div class="num">50</div><div class="lbl">skills rédigés et prêts à l'emploi</div></div>
-      <div class="stat"><div class="num">5</div><div class="lbl">packs métier : commerce, artisanat, RH, compta, marketing</div></div>
-      <div class="stat"><div class="num">2 min</div><div class="lbl">pour installer un skill dans votre agent</div></div>
-      <div class="stat"><div class="num">100 %</div><div class="lbl">rédigés en français, sans jargon technique</div></div>
-    </div>
-  </div>
-</section>
+  <!-- ============ MARQUEE : les 50 skills défilent (2 bandes inversées) ============ -->
+  <section class="sv-marquee" data-sc-act="flow" data-sc-drift="#0a0d12" aria-label="Les 50 skills du catalogue">
+    <div class="sv-marquee__track sv-marquee__track--a" aria-hidden="true"></div>
+    <div class="sv-marquee__track sv-marquee__track--b" aria-hidden="true"></div>
+  </section>
 
-<!-- ================= DOULEURS ================= -->
-<section class="section" id="probleme">
-  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Le problème</span>
-  <h2 class="section-title" style="margin-top:18px">Votre agent IA n'a jamais appris <span class="grad-text">votre métier</span></h2>
-  <p class="section-sub">Les agents IA excellent dans le code et la rédaction générique. Pour vos tâches de terrain, il leur manque la méthode.</p>
-  <div class="cards3">
-    <div class="card glass reveal">
-      <div class="ic">🤖</div>
-      <h3>Des agents sans compétences métier</h3>
-      <p>Demandez à un agent IA de relancer un panier abandonné : il vous sort un texte générique, sans méthode ni vocabulaire du métier. Sans instructions précises, il improvise — et l'improviste ne se facture pas.</p>
+  <!-- ============ 2 · RECONNAISSANCE : l'étiquette murale ============ -->
+  <section class="sc-section" data-sc-act="flow" data-sc-drift="#0a0d12">
+    <div class="sc-wrap">
+      <div class="sv-wall" data-sc-in data-sc-stagger="60">
+        <p class="sc-label">Avant l'ouverture</p>
+        <h2 class="sc-display sc-display--lg" style="margin:0.8rem 0 1.6rem">Votre agent sait écrire. Il ne connaît pas votre métier.</h2>
+        <div class="sv-wall__row">
+          <span class="sv-wall__code">M-01</span>
+          <p class="sv-wall__txt">La méthode. Un agent sans skill improvise. Une relance de panier, un devis, une fiche de poste : chaque tâche a une méthode métier, et il ne l'a pas.</p>
+        </div>
+        <div class="sv-wall__row">
+          <span class="sv-wall__code">M-02</span>
+          <p class="sv-wall__txt">La langue. Les instructions existantes sont écrites en anglais, pour des développeurs. Rien pour un artisan, un cabinet comptable ou une boutique en France.</p>
+        </div>
+        <div class="sv-wall__row">
+          <span class="sv-wall__code">M-03</span>
+          <p class="sv-wall__txt">L'installation. Copier un dossier, c'est tout. Personne ne devrait avoir à coder pour déléguer une tâche.</p>
+        </div>
+      </div>
     </div>
-    <div class="card glass reveal" style="transition-delay:.12s">
-      <div class="ic v">🌐</div>
-      <h3>Des skills seulement en anglais</h3>
-      <p>Les rares compétences existantes sont écrites pour les développeurs : prompts en anglais, exemples californiens, jargon technique. Rien pour un artisan, un cabinet comptable ou une boutique en France.</p>
-    </div>
-    <div class="card glass reveal" style="transition-delay:.24s">
-      <div class="ic c">🔧</div>
-      <h3>Une installation réservée aux développeurs</h3>
-      <p>Copier des dossiers, modifier des fichiers de configuration, comprendre des chemins d'accès : la plupart des guides supposent que vous codez. Vous, vous voulez juste déléguer une tâche — pas déboguer un agent.</p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- ================= FONCTIONNEMENT ================= -->
-<section class="section" id="fonctionnement">
-  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Le fonctionnement</span>
-  <h2 class="section-title" style="margin-top:18px">Choisir → Installer → <span class="grad-text">Déléguer</span></h2>
-  <p class="section-sub">Trois étapes, zéro code. Vous gardez le contrôle : c'est vous qui validez chaque production de l'agent.</p>
-  <div class="steps">
-    <div class="step glass reveal">
-      <div class="st-ic">🗂️</div>
-      <h3>Choisir votre pack</h3>
-      <p>Commerce, artisanat, RH, compta ou marketing : prenez le pack de votre métier, ou le Pack Complet pour couvrir toute votre activité. <b>Chaque skill couvre une tâche précise et récurrente.</b></p>
+  <!-- ============ 2.5 · LA PREUVE : un vrai SKILL.md ouvert, qui se déplie ============ -->
+  <section id="apercu" data-sc-act="pin" data-sc-span="2.9" data-sc-drift="#0a0d12">
+    <div data-sc-stage class="sc-stage sv-code-stage" data-sc-verify-state="lines:0">
+      <div class="sv-code-head" data-sc-cue="0.04 0.52 0.06 0.08" data-sc-rise="1.4">
+        <p class="sc-label">L'aperçu produit</p>
+        <h2>Ce que vous recevez, <em>ouvert.</em></h2>
+        <p>Extrait réel du skill <b>relance-panier</b> (rayon Commerce). Frontmatter, méthode pas à pas, exemple, checklist de validation : c'est le fichier exact livré dans vos packs.</p>
+      </div>
+      <div class="sv-skillfile">
+        <div class="sv-skillfile__bar">
+          <span class="sv-skillfile__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="sv-skillfile__path">packs/<b>commerce</b>/relance-panier/SKILL.md</span>
+          <span class="sv-skillfile__badge">Commerce · 10</span>
+        </div>
+        <div class="sv-skillfile__body" aria-label="Contenu du fichier SKILL.md relance-panier">
+          <div class="sv-cline" style="--l:0.15"><span class="sv-cn" aria-hidden="true">1</span><span class="sv-ct"><span class="sv-tk-dim">---</span></span></div>
+          <div class="sv-cline" style="--l:0.176"><span class="sv-cn" aria-hidden="true">2</span><span class="sv-ct"><span class="sv-tk-key">name:</span> relance-panier</span></div>
+          <div class="sv-cline" style="--l:0.202"><span class="sv-cn" aria-hidden="true">3</span><span class="sv-ct"><span class="sv-tk-key">description:</span> Rédiger la séquence de 3 relances pour un panier abandonné,</span></div>
+          <div class="sv-cline" style="--l:0.228"><span class="sv-cn" aria-hidden="true">4</span><span class="sv-ct">  avec un angle différent à chaque message (rappel, preuve sociale, incitation).</span></div>
+          <div class="sv-cline" style="--l:0.254"><span class="sv-cn" aria-hidden="true">5</span><span class="sv-ct"><span class="sv-tk-dim">---</span></span></div>
+          <div class="sv-cline" style="--l:0.28"><span class="sv-cn" aria-hidden="true">6</span><span class="sv-ct"></span></div>
+          <div class="sv-cline" style="--l:0.306"><span class="sv-cn" aria-hidden="true">7</span><span class="sv-ct"><span class="sv-tk-hd"># Relance de panier abandonné</span></span></div>
+          <div class="sv-cline" style="--l:0.332"><span class="sv-cn" aria-hidden="true">8</span><span class="sv-ct"></span></div>
+          <div class="sv-cline" style="--l:0.358"><span class="sv-cn" aria-hidden="true">9</span><span class="sv-ct"><span class="sv-tk-hd">## Objectif</span></span></div>
+          <div class="sv-cline" style="--l:0.384"><span class="sv-cn" aria-hidden="true">10</span><span class="sv-ct">Récupérer une vente perdue en relançant un client qui a laissé son panier.</span></div>
+          <div class="sv-cline" style="--l:0.41"><span class="sv-cn" aria-hidden="true">11</span><span class="sv-ct">Séquence : 3 messages espacés de 24 h, 48 h et 72 h après l'abandon.</span></div>
+          <div class="sv-cline" style="--l:0.436"><span class="sv-cn" aria-hidden="true">12</span><span class="sv-ct"></span></div>
+          <div class="sv-cline" style="--l:0.462"><span class="sv-cn" aria-hidden="true">13</span><span class="sv-ct"><span class="sv-tk-hd">## Instructions pas à pas</span></span></div>
+          <div class="sv-cline" style="--l:0.488"><span class="sv-cn" aria-hidden="true">14</span><span class="sv-ct"><span class="sv-tk-ind">1.</span> Listez les produits abandonnés : nom, prix, image. Citez-les précisément</span></div>
+          <div class="sv-cline sv-cline--hide-m" style="--l:0.514"><span class="sv-cn" aria-hidden="true">15</span><span class="sv-ct">   dans chaque relance : un message générique convertit nettement moins.</span></div>
+          <div class="sv-cline" style="--l:0.54"><span class="sv-cn" aria-hidden="true">16</span><span class="sv-ct"><span class="sv-tk-ind">2.</span> Message 1 (J+1) : rappel bienveillant, sans culpabiliser, lien direct.</span></div>
+          <div class="sv-cline sv-cline--hide-m" style="--l:0.566"><span class="sv-cn" aria-hidden="true">17</span><span class="sv-ct"><span class="sv-tk-ind">3.</span> Message 2 (J+2) : preuve sociale + question douce, sans parler de prix.</span></div>
+          <div class="sv-cline" style="--l:0.592"><span class="sv-cn" aria-hidden="true">18</span><span class="sv-ct"><span class="sv-tk-ind">4.</span> Message 3 (J+3) : incitation réelle (livraison offerte, code 5 à 10 %),</span></div>
+          <div class="sv-cline sv-cline--hide-m" style="--l:0.618"><span class="sv-cn" aria-hidden="true">19</span><span class="sv-ct">   toujours honnête : « nous gardons votre panier 48 h ».</span></div>
+          <div class="sv-cline" style="--l:0.644"><span class="sv-cn" aria-hidden="true">20</span><span class="sv-ct"></span></div>
+          <div class="sv-cline" style="--l:0.67"><span class="sv-cn" aria-hidden="true">21</span><span class="sv-ct"><span class="sv-tk-hd">## Exemple concret</span></span></div>
+          <div class="sv-cline" style="--l:0.696"><span class="sv-cn" aria-hidden="true">22</span><span class="sv-ct">Panier abandonné : <span class="sv-tk-str">« Cafetière manuelle SteelBrew — 89 € »</span></span></div>
+          <div class="sv-cline" style="--l:0.722"><span class="sv-cn" aria-hidden="true">23</span><span class="sv-ct">Relance 1 : <span class="sv-tk-str">« Bonjour Claire, vous avez laissé la SteelBrew dans votre panier… »</span></span></div>
+          <div class="sv-cline sv-cline--hide-m" style="--l:0.748"><span class="sv-cn" aria-hidden="true">24</span><span class="sv-ct">Relance 2 : <span class="sv-tk-str">« 200 cafés testés pour choisir la SteelBrew. Marie P. : rendu bluffant. »</span></span></div>
+          <div class="sv-cline sv-cline--hide-m" style="--l:0.774"><span class="sv-cn" aria-hidden="true">25</span><span class="sv-ct">Relance 3 : <span class="sv-tk-str">« Dernière étape : 89 €, livraison offerte jusqu'à dimanche minuit. »</span></span></div>
+          <div class="sv-cline" style="--l:0.8"><span class="sv-cn" aria-hidden="true">26</span><span class="sv-ct"></span></div>
+          <div class="sv-cline" style="--l:0.826"><span class="sv-cn" aria-hidden="true">27</span><span class="sv-ct"><span class="sv-tk-hd">## Checklist de validation</span></span></div>
+          <div class="sv-cline" style="--l:0.852"><span class="sv-cn" aria-hidden="true">28</span><span class="sv-ct"><span class="sv-tk-ok">- [ ]</span> Chaque produit abandonné est cité avec son prix exact.</span></div>
+          <div class="sv-cline" style="--l:0.878"><span class="sv-cn" aria-hidden="true">29</span><span class="sv-ct"><span class="sv-tk-ok">- [ ]</span> Les 3 relances ont des angles différents (rappel / preuve / incitation).</span></div>
+          <div class="sv-cline" style="--l:0.904"><span class="sv-cn" aria-hidden="true">30</span><span class="sv-ct"><span class="sv-tk-ok">- [ ]</span> Lien de désinscription présent (RGPD, L.34-5).<span class="sv-caret" aria-hidden="true"></span></span></div>
+        </div>
+      </div>
     </div>
-    <div class="step glass reveal" style="transition-delay:.12s">
-      <div class="st-ic">⚡</div>
-      <h3>Installer en 2 minutes</h3>
-      <p>Vous recevez un ZIP avec les dossiers de skills et un guide PDF. <b>Vous copiez les dossiers dans le dossier de skills de votre agent</b> — le guide détaille chaque outil (Claude Code, Codex, Copilot), pas à pas, en images.</p>
-    </div>
-    <div class="step glass reveal" style="transition-delay:.24s">
-      <div class="st-ic">✅</div>
-      <h3>Déléguer la tâche</h3>
-      <p>Décrivez votre besoin en français : « relance ce panier », « chiffre ce devis », « réponds à cet avis Google ». <b>L'agent applique la méthode du skill</b> : instructions, exemple et checklist de validation inclus.</p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- ================= OFFRES ================= -->
-<section class="section" id="offres">
-  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Les offres</span>
-  <h2 class="section-title" style="margin-top:18px">Des packs simples, un prix <span class="grad-text">honnête</span></h2>
-  <p class="section-sub">Payez ce que vous utilisez. Chaque pack est livré par email, avec facture et garantie satisfait ou remboursé 14 jours.</p>
-  <div class="pricing">
-    <div class="plan glass reveal">
-      <div class="p-name">Pack Métier</div>
-      <div class="p-price">29 €<small></small></div>
-      <div class="p-desc">Pour commencer avec votre métier, sans vous ruiner.</div>
+  <!-- ============ RAYON 1 · COMMERCE : le rail (acte pan) ============ -->
+  <section class="sv-rayon" id="rayon-commerce" data-sc-act="pan" data-sc-span="2.5" data-sc-drift="#0d1016">
+    <div data-sc-stage class="sc-stage sv-rayon__stage">
+      <div class="sv-panhead" data-sc-in data-sc-stagger="50">
+        <span class="sv-rayon__giant" aria-hidden="true"><span class="sv-giant-in">01</span></span>
+        <span class="sv-rayon__mono sv-rayon__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 9h13l-1.1 8.3a2 2 0 0 1-2 1.7H8.6a2 2 0 0 1-2-1.7L5.5 9z"/><path d="M9 9V6.8a3 3 0 0 1 6 0V9"/></svg></span>
+        <div class="sv-rayon__titles">
+          <div class="sv-rayon__name"><h3>Commerce</h3><span class="sv-rayon__count">10 skills</span></div>
+          <p class="sv-rayon__gain">Vendez plus et fidélisez : chaque texte client est rédigé avec méthode, sans fautes ni promesses fausses.</p>
+          <p class="sv-rayon__status"><span class="sv-st-off">En attente de visite</span><span class="sv-st-on">Rayon visité · chiffre composé</span></p>
+        </div>
+      </div>
+      <div class="sv-rail-clip">
+        <div class="sv-rail" data-sc-pan="0.06">
+          <div class="sv-rail__item"><span class="sv-rail__num">01</span>relance-panier</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">02</span>reponse-avis-google</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">03</span>fiche-produit</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">04</span>argumentaire-vente</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">05</span>email-bienvenue</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">06</span>relance-commande</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">07</span>reponse-reclamation</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">08</span>upsell-croise</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">09</span>fiche-client</div>
+          <div class="sv-rail__item"><span class="sv-rail__num">10</span>promo-email</div>
+          <div class="sv-rail__end">fin du rayon C</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 · LE VAULT : cinq rayons, la combinaison ============ -->
+  <section id="rayons" class="sc-section" data-sc-act="flow" data-sc-drift="#0b0e13">
+    <div class="sc-wrap">
+      <div class="sv-vault-head" data-sc-in>
+        <p class="sc-label">Le vault</p>
+        <h2 class="sc-display sc-display--lg" style="margin:0.8rem 0 0">Cinq rayons. Cinquante compétences.</h2>
+        <p class="sc-body" style="margin-top:1rem">Chaque rayon est un métier. Chaque skill est un dossier SKILL.md : instructions pas à pas, exemple concret, checklist de validation. Rédigé en français, calibré pour le terrain.</p>
+        <p class="sv-combo-note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffb340" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>La roue en bas d'écran compose la combinaison : <b>chaque rayon visité ajoute un chiffre.</b></p>
+      </div>
+
+      <div class="sv-stats" data-sc-in data-sc-stagger="70" role="list" aria-label="Le vault en chiffres">
+        <div class="sv-stat" role="listitem">
+          <span class="sv-stat__inv">INV-01</span>
+          <span class="sv-stat__num"><span class="sc-nums" data-sc-count="0 50" data-sc-count-at="0.06 0.42">0</span></span>
+          <span class="sv-stat__label">skills au catalogue</span>
+        </div>
+        <div class="sv-stat" role="listitem">
+          <span class="sv-stat__inv">INV-02</span>
+          <span class="sv-stat__num"><span class="sc-nums" data-sc-count="0 5" data-sc-count-at="0.06 0.42">0</span></span>
+          <span class="sv-stat__label">rayons métier</span>
+        </div>
+        <div class="sv-stat" role="listitem">
+          <span class="sv-stat__inv">INV-03</span>
+          <span class="sv-stat__num"><span class="sc-nums" data-sc-count="0 10" data-sc-count-at="0.06 0.42">0</span></span>
+          <span class="sv-stat__label">skills par rayon</span>
+        </div>
+        <div class="sv-stat" role="listitem">
+          <span class="sv-stat__inv">INV-04</span>
+          <span class="sv-stat__num"><span class="sc-nums" data-sc-count="0 100" data-sc-count-at="0.06 0.42">0</span><small>&nbsp;%</small></span>
+          <span class="sv-stat__label">en français</span>
+        </div>
+        <div class="sv-stat" role="listitem">
+          <span class="sv-stat__inv">INV-05</span>
+          <span class="sv-stat__num"><span class="sc-nums" data-sc-count="0 2" data-sc-count-at="0.06 0.42">0</span><small>&nbsp;min</small></span>
+          <span class="sv-stat__label">d'installation</span>
+        </div>
+      </div>
+
+      <!-- RAYON 2 · ARTISANAT : étagère -->
+      <section class="sv-rayon" id="rayon-artisanat" data-sc-in data-sc-stagger="45">
+        <div class="sv-rayon__head">
+          <span class="sv-rayon__giant" aria-hidden="true"><span class="sv-giant-in">02</span></span>
+          <span class="sv-rayon__mono sv-rayon__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.6 4.2l6.2 6.2-8.4 8.4a2.4 2.4 0 0 1-3.4 0l-3-3a2.4 2.4 0 0 1 0-3.4l8.4-8.4z"/><path d="M9.6 9.6L14.4 14.4"/></svg></span>
+          <div class="sv-rayon__titles">
+            <div class="sv-rayon__name"><h3>Artisanat</h3><span class="sv-rayon__count">10 skills</span></div>
+            <p class="sv-rayon__gain">Chiffrez juste, relancez sans gêne, tenez vos chantiers informés : votre temps de gestion divisé.</p>
+            <p class="sv-rayon__status"><span class="sv-st-off">En attente de visite</span><span class="sv-st-on">Rayon visité · chiffre composé</span></p>
+          </div>
+        </div>
+        <div class="sv-shelf">
+          <div class="sv-shelf__row">
+            <span class="sv-skill">devis-chiffre</span><span class="sv-skill">relance-chantier</span><span class="sv-skill">planning-rdv</span><span class="sv-skill">facture-acompte</span><span class="sv-skill">reponse-appel-offres</span><span class="sv-skill">message-commercial</span><span class="sv-skill">suivi-chantier-client</span><span class="sv-skill">fiche-technique-materiaux</span><span class="sv-skill">reception-travaux</span><span class="sv-skill">maintenance-preventive</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RAYON 3 · RH : fiches -->
+      <section class="sv-rayon" id="rayon-rh" data-sc-in data-sc-stagger="45">
+        <div class="sv-rayon__head">
+          <span class="sv-rayon__giant" aria-hidden="true"><span class="sv-giant-in">03</span></span>
+          <span class="sv-rayon__mono sv-rayon__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="7.5" r="3"/><path d="M3.5 19c.5-3.4 2.4-5.5 5-5.5s4.5 2.1 5 5.5"/><circle cx="16.5" cy="9" r="2.4"/><path d="M15 14.6c2.3.4 4 2.3 4.5 4.9"/></svg></span>
+          <div class="sv-rayon__titles">
+            <div class="sv-rayon__name"><h3>RH</h3><span class="sv-rayon__count">10 skills</span></div>
+            <p class="sv-rayon__gain">Recrutez, intégrez, évaluez : des documents professionnels et conformes, prêts à signer.</p>
+            <p class="sv-rayon__status"><span class="sv-st-off">En attente de visite</span><span class="sv-st-on">Rayon visité · chiffre composé</span></p>
+          </div>
+        </div>
+        <div class="sv-tiles">
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">fiche-de-poste</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">grille-entretien</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">onboarding-30-jours</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">annonce-emploi</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">entretien-annuel</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">plan-formation</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">message-candidat-refuse</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">gestion-conflits</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">entretien-depart</span></div>
+          <div class="sv-tile" data-sc-tilt="6"><span class="sv-tile__tag">RH</span><span class="sv-tile__name">planning-conges</span></div>
+        </div>
+      </section>
+
+      <!-- RAYON 4 · COMPTA : relevé -->
+      <section class="sv-rayon" id="rayon-compta" data-sc-in data-sc-stagger="40">
+        <div class="sv-rayon__head">
+          <span class="sv-rayon__giant" aria-hidden="true"><span class="sv-giant-in">04</span></span>
+          <span class="sv-rayon__mono sv-rayon__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M15.2 9.4a3.4 3.4 0 1 0 0 5.2"/><path d="M8.4 12h6.6"/></svg></span>
+          <div class="sv-rayon__titles">
+            <div class="sv-rayon__name"><h3>Compta</h3><span class="sv-rayon__count">10 skills</span></div>
+            <p class="sv-rayon__gain">Factures conformes, impayés relancés, trésorerie sous contrôle : la méthode des pros, en français.</p>
+            <p class="sv-rayon__status"><span class="sv-st-off">En attente de visite</span><span class="sv-st-on">Rayon visité · chiffre composé</span></p>
+          </div>
+        </div>
+        <div class="sv-ledger">
+          <div class="sv-ledger__line"><span class="sv-ledger__n">01</span><span class="sv-ledger__name">relance-impaye</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">02</span><span class="sv-ledger__name">note-de-frais</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">03</span><span class="sv-ledger__name">suivi-tresorerie</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">04</span><span class="sv-ledger__name">facture-conforme</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">05</span><span class="sv-ledger__name">declaration-tva</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">06</span><span class="sv-ledger__name">rapprochement-bancaire</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">07</span><span class="sv-ledger__name">seuil-rentabilite</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">08</span><span class="sv-ledger__name">pointage-fournisseurs</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">09</span><span class="sv-ledger__name">cloture-mensuelle</span></div>
+          <div class="sv-ledger__line"><span class="sv-ledger__n">10</span><span class="sv-ledger__name">previsionnel-cashflow</span></div>
+          <div class="sv-ledger__total"><span>Total au relevé</span><b><span class="sc-nums" data-sc-count="0 10" data-sc-count-at="0.1 0.6">0</span> skills</b></div>
+        </div>
+      </section>
+
+      <!-- RAYON 5 · MARKETING : grille -->
+      <section class="sv-rayon" id="rayon-marketing" data-sc-in data-sc-stagger="40">
+        <div class="sv-rayon__head">
+          <span class="sv-rayon__giant" aria-hidden="true"><span class="sv-giant-in">05</span></span>
+          <span class="sv-rayon__mono sv-rayon__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5v3a1.5 1.5 0 0 0 1.5 1.5H8l4.5 3.5v-13L8 9H5.5A1.5 1.5 0 0 0 4 10.5z"/><path d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path d="M18.2 6.8a7.3 7.3 0 0 1 0 10.4"/></svg></span>
+          <div class="sv-rayon__titles">
+            <div class="sv-rayon__name"><h3>Marketing</h3><span class="sv-rayon__count">10 skills</span></div>
+            <p class="sv-rayon__gain">Un contenu régulier et crédible : posts, newsletters, pages de vente, avec des chiffres réels.</p>
+            <p class="sv-rayon__status"><span class="sv-st-off">En attente de visite</span><span class="sv-st-on">Rayon visité · chiffre composé</span></p>
+          </div>
+        </div>
+        <div class="sv-grid">
+          <span class="sv-skill">post-linkedin</span><span class="sv-skill">calendrier-contenu</span><span class="sv-skill">reponse-avis-negatif</span><span class="sv-skill">offre-promo</span><span class="sv-skill">titre-accrocheur</span><span class="sv-skill">page-vente</span><span class="sv-skill">email-newsletter</span><span class="sv-skill">brief-agence</span><span class="sv-skill">slogan-marque</span><span class="sv-skill">rapport-campagne</span>
+        </div>
+      </section>
+
+    </div>
+  </section>
+
+  <!-- ============ 4 · LE PIC : la porte s'ouvre sur les prix ============ -->
+  <section id="prix" data-sc-act="pin" data-sc-span="3.0" data-sc-drift="#07090d">
+    <div data-sc-stage class="sc-stage sv-vaultstage" data-sc-verify-state="door:0,flash:0">
+      <div class="sv-halo sv-halo--price" aria-hidden="true"></div>
+      <div class="sv-halo sv-halo--price-2" aria-hidden="true"></div>
+      <div class="sv-light" aria-hidden="true"></div>
+      <div class="sv-flash" aria-hidden="true"></div>
+
+      <div class="sv-vaultstage__door" aria-hidden="true">
+        <div class="sv-door">
+          <div class="sv-door__leaf sv-door__leaf--l"><div class="sv-door__panel"></div></div>
+          <div class="sv-door__leaf sv-door__leaf--r"><div class="sv-door__panel"></div></div>
+          <div class="sv-door__joint"></div>
+          <div class="sv-door__plate">Combinaison complète<small>3 · 8 · 2 · 9 · 4</small></div>
+          <span class="sv-burst sv-burst--c" style="--i:0;--dx:-6px;--dy:-128px;--r:200deg;--s:8px"></span>
+          <span class="sv-burst sv-burst--d" style="--i:1;--dx:-44px;--dy:-104px;--r:160deg;--s:7px"></span>
+          <span class="sv-burst sv-burst--s" style="--i:2;--dx:38px;--dy:-112px;--r:-170deg;--s:9px"></span>
+          <span class="sv-burst sv-burst--c" style="--i:3;--dx:-92px;--dy:-66px;--r:120deg;--s:6px"></span>
+          <span class="sv-burst sv-burst--d" style="--i:4;--dx:86px;--dy:-72px;--r:-130deg;--s:7px"></span>
+          <span class="sv-burst sv-burst--c" style="--i:5;--dx:-128px;--dy:-18px;--r:80deg;--s:8px"></span>
+          <span class="sv-burst sv-burst--s" style="--i:6;--dx:124px;--dy:-24px;--r:-90deg;--s:7px"></span>
+          <span class="sv-burst sv-burst--d" style="--i:7;--dx:-150px;--dy:34px;--r:40deg;--s:6px"></span>
+          <span class="sv-burst sv-burst--c" style="--i:8;--dx:146px;--dy:28px;--r:-50deg;--s:8px"></span>
+          <span class="sv-burst sv-burst--s" style="--i:9;--dx:-64px;--dy:64px;--r:-20deg;--s:5px"></span>
+          <span class="sv-burst sv-burst--d" style="--i:10;--dx:58px;--dy:72px;--r:25deg;--s:6px"></span>
+          <span class="sv-burst sv-burst--c" style="--i:11;--dx:-20px;--dy:44px;--r:15deg;--s:5px"></span>
+          <span class="sv-burst sv-burst--s" style="--i:12;--dx:22px;--dy:40px;--r:-15deg;--s:6px"></span>
+          <span class="sv-burst sv-burst--c" style="--i:13;--dx:-14px;--dy:-76px;--r:220deg;--s:7px"></span>
+        </div>
+      </div>
+
+      <div class="sv-lock" aria-hidden="true"><span class="sv-lock__pulse"></span>3 <b>·</b> 8 <b>·</b> 2 <b>·</b> 9 <b>·</b> 4</div>
+      <div class="sv-lock__open" aria-hidden="true">OUVERT</div>
+      <div class="sv-pricecopy" data-sc-cue="0.46 0.92 0.05 0.06" data-sc-rise="1.6">
+        <p class="sc-label">La porte est ouverte</p>
+        <h2 class="sv-finale-title">Choisissez votre pack.</h2>
+        <p class="sv-lede" style="font-size:1rem">Trois offres. Chaque pack est livré par email, avec facture et garantie satisfait ou remboursé 14 jours.</p>
+      </div>
+
+      <div class="sv-plates">
+        <article class="sv-plate" data-sc-tilt="5" data-sc-cue="0.56 0.94 0.05 0.06" data-sc-rise="3">
+          <div class="sv-plate__name">Pack Métier</div>
+          <div class="sv-plate__price">29 €<small> / pack</small></div>
+          <p class="sv-plate__desc">Pour commencer avec votre métier, sans vous ruiner.</p>
+          <ul class="sv-plate__specs">
+            <li>1 pack au choix : commerce, artisanat, RH, compta ou marketing</li>
+            <li>10 skills complets en ZIP (instructions + exemple + checklist)</li>
+            <li>Guide PDF d'installation, pas à pas</li>
+            <li>Livraison par email + facture</li>
+            <li>Garantie satisfait ou remboursé 14 jours</li>
+          </ul>
+          <div class="sv-plate__cta"><button class="sv-cta sv-cta--ghost" style="width:100%;justify-content:center" onclick="choisirOffre('Pack Métier', 29)">Choisir le Pack Métier</button></div>
+        </article>
+        <article class="sv-plate sv-plate--hot" data-sc-tilt="5" data-sc-cue="0.64 0.96 0.05 0.06" data-sc-rise="4">
+          <span class="sv-plate__flag">Le plus choisi</span>
+          <div class="sv-plate__name">Pack Complet</div>
+          <div class="sv-plate__price">89 €<small> / tout</small></div>
+          <p class="sv-plate__desc">Toute votre activité couverte, d'un seul geste.</p>
+          <ul class="sv-plate__specs">
+            <li>Les 5 packs : 50 skills (commerce, artisanat, RH, compta, marketing)</li>
+            <li>Guide d'installation de 40 pages, tous les outils d'agents IA</li>
+            <li>+ 1 skill sur-mesure, rédigé selon votre besoin sous 5 jours ouvrés</li>
+            <li>Mises à jour des packs incluses pendant 12 mois</li>
+            <li>Livraison par email + facture</li>
+            <li>Garantie satisfait ou remboursé 14 jours</li>
+          </ul>
+          <div class="sv-plate__cta"><button class="sv-cta" style="width:100%;justify-content:center" onclick="choisirOffre('Pack Complet', 89)">Choisir le Pack Complet</button></div>
+        </article>
+        <article class="sv-plate" data-sc-tilt="5" data-sc-cue="0.72 0.98 0.05 0.06" data-sc-rise="5">
+          <div class="sv-plate__name">Licence Entreprise</div>
+          <div class="sv-plate__price">197 €<small> / équipe</small></div>
+          <p class="sv-plate__desc">Pour les équipes qui délèguent à plusieurs.</p>
+          <ul class="sv-plate__specs">
+            <li>Les 5 packs : 50 skills</li>
+            <li>Usage équipe jusqu'à 10 personnes</li>
+            <li>5 skills personnalisés sur vos processus internes</li>
+            <li>Cadrage de 45 minutes pour définir les skills ensemble</li>
+            <li>Facture aux normes + support prioritaire</li>
+            <li>Garantie satisfait ou remboursé 14 jours</li>
+          </ul>
+          <div class="sv-plate__cta"><button class="sv-cta sv-cta--ghost" style="width:100%;justify-content:center" onclick="choisirOffre('Licence Entreprise', 197)">Choisir la Licence Entreprise</button></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 · CONFIANCE : fiche technique ============ -->
+  <section class="sc-section" data-sc-act="flow" data-sc-drift="#0a0d12">
+    <div class="sc-wrap">
+      <div class="sv-vault-head" data-sc-in>
+        <p class="sc-label">Fiche technique</p>
+        <h2 class="sc-display sc-display--lg" style="margin:0.8rem 0 1.4rem">Ce qui est garanti.</h2>
+      </div>
+      <div class="sv-specs" data-sc-in data-sc-stagger="60">
+        <div class="sv-spec"><h3>Format</h3><p>SKILL.md standard. Chaque skill = frontmatter, instructions pas à pas, exemple concret, checklist de validation. Tout en français.</p></div>
+        <div class="sv-spec"><h3>Compatibilité</h3><p>Support natif Claude Code, Codex et Copilot. Lisible par ChatGPT, Gemini, Cursor et la plupart des agents IA.</p></div>
+        <div class="sv-spec"><h3>Livraison</h3><p>ZIP par email + guide PDF pas à pas. Facture incluse. Réponse sous 24 h ouvrées.</p></div>
+        <div class="sv-spec"><h3>Garantie</h3><p>Satisfait ou remboursé 14 jours, sans condition. Nous préférons un client remboursé honnête à un client insatisfait silencieux.</p></div>
+      </div>
+      <div class="sv-toolband" data-sc-in>
+        <div>
+          <h3>Atelier Skill, gratuit.</h3>
+          <p>Créez un SKILL.md en 10 questions, directement dans votre navigateur. Vos données ne le quittent jamais.</p>
+        </div>
+        <a class="sv-cta sv-cta--quiet" href="outil.html">Ouvrir l'Atelier Skill</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6 · FAQ ============ -->
+  <section id="faq" class="sc-section" data-sc-act="flow" data-sc-drift="#0b0e13">
+    <div class="sc-wrap">
+      <div class="sv-vault-head" style="margin:0 auto 1.4rem" data-sc-in>
+        <p class="sc-label" style="text-align:center">Questions fréquentes</p>
+        <h2 class="sc-display sc-display--lg" style="margin:0.8rem 0 0;text-align:center">Les questions qu'on nous pose vraiment.</h2>
+      </div>
+      <div class="sv-faq" data-sc-in>
+        <div class="sv-faq__item">
+          <button class="sv-faq__q" aria-expanded="false">Qu'est-ce qu'un skill exactement ?<span class="sv-chev">▼</span></button>
+          <div class="sv-faq__a"><div class="sv-faq__a-inner">Un skill est un dossier contenant un fichier SKILL.md : un mode d'emploi qu'un agent IA charge pour exécuter une tâche métier précise. Chaque skill SkillVault contient une description, des instructions étape par étape, un exemple concret et une checklist de validation. Tout en français.</div></div>
+        </div>
+        <div class="sv-faq__item">
+          <button class="sv-faq__q" aria-expanded="false">Avec quels outils ça fonctionne ?<span class="sv-chev">▼</span></button>
+          <div class="sv-faq__a"><div class="sv-faq__a-inner">Le format SKILL.md est le format standard des instructions métier des agents IA : supporté nativement par Claude Code, Codex et Copilot, lisible par la plupart des autres agents (ChatGPT, Gemini, Cursor…). Le guide PDF détaille l'installation dans chaque outil.</div></div>
+        </div>
+        <div class="sv-faq__item">
+          <button class="sv-faq__q" aria-expanded="false">Je ne suis pas développeur, est-ce pour moi ?<span class="sv-chev">▼</span></button>
+          <div class="sv-faq__a"><div class="sv-faq__a-inner">Oui, c'est exactement pour vous. L'installation consiste à copier un dossier reçu par email dans le dossier de skills de votre agent, guidé par un PDF pas à pas. Aucune ligne de code à écrire : si vous savez copier un dossier, vous savez installer un skill.</div></div>
+        </div>
+        <div class="sv-faq__item">
+          <button class="sv-faq__q" aria-expanded="false">Comment se passe l'installation, concrètement ?<span class="sv-chev">▼</span></button>
+          <div class="sv-faq__a"><div class="sv-faq__a-inner">Trois étapes : vous choisissez votre pack ; vous recevez le ZIP par email, vous le décompressez et vous copiez les dossiers dans le dossier de skills de votre agent ; vous décrivez votre tâche en français (« relance ce panier », « chiffre ce devis ») et l'agent applique la méthode du skill. Comptez 2 minutes.</div></div>
+        </div>
+        <div class="sv-faq__item">
+          <button class="sv-faq__q" aria-expanded="false">Comment se font le paiement et la livraison ?<span class="sv-chev">▼</span></button>
+          <div class="sv-faq__a"><div class="sv-faq__a-inner">Après votre commande via le formulaire, vous recevez un email de confirmation avec les coordonnées de paiement (virement ou message privé) et votre facture. Le ZIP et le guide PDF sont livrés par email dès réception du paiement. Le skill sur-mesure du Pack Complet est rédigé sous 5 jours ouvrés ; les 5 skills personnalisés de la Licence Entreprise sous 10 jours, après le cadrage de 45 minutes.</div></div>
+        </div>
+        <div class="sv-faq__item">
+          <button class="sv-faq__q" aria-expanded="false">Et si ça ne me convient pas ?<span class="sv-chev">▼</span></button>
+          <div class="sv-faq__a"><div class="sv-faq__a-inner">Garantie satisfait ou remboursé 14 jours : écrivez-nous dans les 14 jours suivant la commande et nous vous remboursons intégralement, sans condition.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 · DÉCISION : la plaque de commande ============ -->
+  <section id="commande" class="sc-section" data-sc-act="flow" data-sc-drift="#0a0d12">
+    <div class="sc-wrap">
+      <div class="sv-vault-head" style="margin:0 auto 1.4rem;text-align:center" data-sc-in>
+        <p class="sc-label">Plaque de commande</p>
+        <h2 class="sc-display sc-display--lg" style="margin:0.8rem 0 0">Commander vos skills.</h2>
+        <p class="sc-body" style="margin:0.8rem auto 0">2 minutes pour commander, 2 minutes pour installer. Nous vous répondons sous 24 h ouvrées.</p>
+      </div>
+      <form class="sv-order" id="order-form" novalidate data-sc-in>
+        <h3>Votre commande</h3>
+        <p class="sv-order__sub">Remplissez le formulaire : vous recevrez l'email de confirmation, la facture et les coordonnées de paiement.</p>
+        <div class="sv-formrow">
+          <div class="sv-field">
+            <label for="f-name">Votre nom</label>
+            <input type="text" id="f-name" name="name" placeholder="Ex. Claire Martin" required>
+            <span class="sv-err">Merci d'indiquer votre nom.</span>
+          </div>
+          <div class="sv-field">
+            <label for="f-email">Votre email</label>
+            <input type="email" id="f-email" name="email" placeholder="vous@exemple.fr" required>
+            <span class="sv-err">Merci d'indiquer un email valide.</span>
+          </div>
+        </div>
+        <div class="sv-field">
+          <label for="f-pack">Pack choisi</label>
+          <select id="f-pack" name="pack" required>
+            <option value="">Choisissez votre pack</option>
+            <option value="Pack Métier (29 €)">Pack Métier — 29 € (1 pack au choix : précisez lequel dans le message)</option>
+            <option value="Pack Complet (89 €)">Pack Complet — 89 € (les 5 packs + skill sur-mesure) ★ le plus choisi</option>
+            <option value="Licence Entreprise (197 €)">Licence Entreprise — 197 € (équipe 10 personnes + 5 skills perso)</option>
+          </select>
+          <span class="sv-err">Merci de choisir un pack.</span>
+        </div>
+        <div class="sv-field">
+          <label for="f-msg">Votre message (facultatif)</label>
+          <textarea id="f-msg" name="message" placeholder="Pack Métier : précisez votre métier (commerce, artisanat, RH, compta, marketing). Pack Complet : décrivez votre skill sur-mesure. Licence Entreprise : vos besoins d'équipe…"></textarea>
+          <span class="sv-err">Message trop long (500 caractères maximum).</span>
+        </div>
+        <button type="submit" class="sv-cta" id="order-submit" style="width:100%;justify-content:center;padding:0.95rem 1.4rem;font-size:1rem">Commander — je reçois la confirmation par email</button>
+        <p class="sv-order__secure">Confirmation par email — paiement par virement ou message privé, facture incluse. Garantie satisfait ou remboursé 14 jours.</p>
+        <div class="sv-order__ok" id="order-ok">
+          <h4>Commande envoyée</h4>
+          <p>Merci — vous allez recevoir un email de confirmation dans quelques instants.</p>
+          <ol>
+            <li>Vérifiez votre boîte de réception (et les spams).</li>
+            <li>Suivez les coordonnées de paiement reçues par email.</li>
+            <li>Vos packs sont livrés dès réception du paiement.</li>
+          </ol>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="sv-footer">
+  <div class="sv-footer__grid">
+    <div>
+      <a class="sv-brand" href="#top">
+        <span class="sv-brand__mark"><svg viewBox="0 0 24 24" fill="none" stroke="#17100a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#0e1116" stroke="none"/></svg></span>
+        SkillVault
+      </a>
+      <p style="margin:0.9rem 0 0;max-width:30rem">Le catalogue français de compétences métier pour agents IA. Des skills rédigés en français, calibrés pour votre métier, installables en 2 minutes.</p>
+    </div>
+    <div>
+      <h4>Navigation</h4>
       <ul>
-        <li>1 pack au choix : commerce, artisanat, RH, compta ou marketing</li>
-        <li>10 skills complets en ZIP (SKILL.md : instructions + exemple + checklist)</li>
-        <li>Guide PDF d'installation (2 minutes, pas à pas)</li>
-        <li>Livraison par email + facture</li>
-        <li>Garantie satisfait ou remboursé 14 jours</li>
+        <li><a href="#rayons">Les 5 rayons</a></li>
+        <li><a href="#prix">Offres et prix</a></li>
+        <li><a href="outil.html">Atelier Skill (gratuit)</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#commande">Commander</a></li>
       </ul>
-      <button class="btn btn-primary" onclick="choisirOffre('Pack Métier', 29)">Choisir le Pack Métier — 29 €</button>
     </div>
-    <div class="plan plan-featured glass reveal" style="transition-delay:.12s">
-      <span class="plan-flag">★ Le plus choisi</span>
-      <div class="p-name">Pack Complet</div>
-      <div class="p-price">89 €<small></small></div>
-      <div class="p-desc">Toute votre activité couverte, d'un seul geste.</div>
+    <div>
+      <h4>Contact</h4>
       <ul>
-        <li>Les 5 packs : 50 skills (commerce, artisanat, RH, compta, marketing)</li>
-        <li>Guide d'installation de 40 pages (tous les outils d'agents IA)</li>
-        <li><b style="color:#a996ff">+ 1 skill sur-mesure</b> : rédigé selon votre besoin, livré sous 5 jours ouvrés</li>
-        <li>Mises à jour des packs incluses pendant 12 mois</li>
-        <li>Livraison par email + facture</li>
+        <li>Email : contact@skillvault.fr</li>
+        <li>Réponse sous 24 h ouvrées</li>
         <li>Garantie satisfait ou remboursé 14 jours</li>
+        <li>Données utilisées uniquement pour traiter votre commande (RGPD)</li>
       </ul>
-      <button class="btn btn-violet" onclick="choisirOffre('Pack Complet', 89)">Choisir le Pack Complet — 89 €</button>
-    </div>
-    <div class="plan glass reveal" style="transition-delay:.24s">
-      <div class="p-name">Licence Entreprise</div>
-      <div class="p-price">197 €<small></small></div>
-      <div class="p-desc">Pour les équipes qui délèguent à plusieurs.</div>
-      <ul>
-        <li>Les 5 packs : 50 skills</li>
-        <li>Usage équipe jusqu'à <b style="color:#3ddc84">10 personnes</b></li>
-        <li><b style="color:#a996ff">5 skills personnalisés</b> sur vos processus internes</li>
-        <li>Cadrage de 45 minutes pour définir les skills ensemble</li>
-        <li>Facture aux normes + support par email prioritaire</li>
-        <li>Garantie satisfait ou remboursé 14 jours</li>
-      </ul>
-      <button class="btn btn-primary" onclick="choisirOffre('Licence Entreprise', 197)">Choisir la Licence Entreprise — 197 €</button>
     </div>
   </div>
-  <p class="plan-note">💳 Paiement par <b>virement ou message privé</b> — coordonnées envoyées par email après la commande.<br>Question avant de commander ? Le chatbot en bas à droite répond, ou écrivez-nous directement.</p>
-</section>
-
-<!-- ================= 50 SKILLS ================= -->
-<section class="section" id="skills">
-  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Le catalogue</span>
-  <h2 class="section-title" style="margin-top:18px">50 skills prêts, <span class="grad-text">5 métiers</span></h2>
-  <p class="section-sub">Chaque skill est un dossier avec son SKILL.md : la description, les instructions étape par étape, un exemple concret et une checklist de validation. Rédigé en français, calibré pour le terrain.</p>
-  <div class="packs">
-    <div class="pack glass reveal">
-      <div class="pack-head"><span class="pack-emoji">🛒</span><h3>Pack Commerce</h3></div>
-      <p class="pack-gain">Vendez plus et fidélisez : chaque texte client est rédigé avec méthode, sans fautes ni promesses fausses.</p>
-      <div class="chips">
-        <span class="chip">relance-panier</span><span class="chip">reponse-avis-google</span><span class="chip">fiche-produit</span><span class="chip">argumentaire-vente</span><span class="chip">email-bienvenue</span><span class="chip">relance-commande</span><span class="chip">reponse-reclamation</span><span class="chip">upsell-croise</span><span class="chip">fiche-client</span><span class="chip">promo-email</span>
-      </div>
-    </div>
-    <div class="pack glass reveal" style="transition-delay:.08s">
-      <div class="pack-head"><span class="pack-emoji">🔨</span><h3>Pack Artisanat</h3></div>
-      <p class="pack-gain">Chiffrez juste, relancez sans gêne, tenez vos chantiers informés : votre temps de gestion divisé.</p>
-      <div class="chips">
-        <span class="chip">devis-chiffre</span><span class="chip">relance-chantier</span><span class="chip">planning-rdv</span><span class="chip">facture-acompte</span><span class="chip">reponse-appel-offres</span><span class="chip">message-commercial</span><span class="chip">suivi-chantier-client</span><span class="chip">fiche-technique-materiaux</span><span class="chip">reception-travaux</span><span class="chip">maintenance-preventive</span>
-      </div>
-    </div>
-    <div class="pack glass reveal" style="transition-delay:.16s">
-      <div class="pack-head"><span class="pack-emoji">🤝</span><h3>Pack RH</h3></div>
-      <p class="pack-gain">Recrutez, intégrez, évaluez : des documents professionnels et conformes, prêts à signer.</p>
-      <div class="chips">
-        <span class="chip">fiche-de-poste</span><span class="chip">grille-entretien</span><span class="chip">onboarding-30-jours</span><span class="chip">annonce-emploi</span><span class="chip">entretien-annuel</span><span class="chip">plan-formation</span><span class="chip">message-candidat-refuse</span><span class="chip">gestion-conflits</span><span class="chip">entretien-depart</span><span class="chip">planning-conges</span>
-      </div>
-    </div>
-    <div class="pack glass reveal" style="transition-delay:.24s">
-      <div class="pack-head"><span class="pack-emoji">🧮</span><h3>Pack Compta</h3></div>
-      <p class="pack-gain">Factures conformes, impayés relancés, trésorerie sous contrôle : la méthode des pros, en français.</p>
-      <div class="chips">
-        <span class="chip">relance-impaye</span><span class="chip">note-de-frais</span><span class="chip">suivi-tresorerie</span><span class="chip">facture-conforme</span><span class="chip">declaration-tva</span><span class="chip">rapprochement-bancaire</span><span class="chip">seuil-rentabilite</span><span class="chip">pointage-fournisseurs</span><span class="chip">cloture-mensuelle</span><span class="chip">previsionnel-cashflow</span>
-      </div>
-    </div>
-    <div class="pack glass reveal" style="transition-delay:.32s">
-      <div class="pack-head"><span class="pack-emoji">📣</span><h3>Pack Marketing</h3></div>
-      <p class="pack-gain">Un contenu régulier et crédible : posts, newsletters, pages de vente, avec des chiffres réels.</p>
-      <div class="chips">
-        <span class="chip">post-linkedin</span><span class="chip">calendrier-contenu</span><span class="chip">reponse-avis-negatif</span><span class="chip">offre-promo</span><span class="chip">titre-accrocheur</span><span class="chip">page-vente</span><span class="chip">email-newsletter</span><span class="chip">brief-agence</span><span class="chip">slogan-marque</span><span class="chip">rapport-campagne</span>
-      </div>
-    </div>
-    <div class="pack glass reveal" style="transition-delay:.4s">
-      <div class="pack-head"><span class="pack-emoji">📦</span><h3>Pack Complet — les 5</h3></div>
-      <p class="pack-gain">Les 50 skills précédents réunis, plus le guide de 40 pages et un skill sur-mesure. Le meilleur rapport valeur-prix.</p>
-      <div class="chips">
-        <span class="chip">10 skills commerce</span><span class="chip">10 skills artisanat</span><span class="chip">10 skills RH</span><span class="chip">10 skills compta</span><span class="chip">10 skills marketing</span><span class="chip">guide 40 pages</span><span class="chip" style="border-color:rgba(139,124,255,.55);color:#a996ff">+ 1 skill sur-mesure</span>
-      </div>
-    </div>
-  </div>
-  <p class="packs-note">Chaque pack = 10 skills exactement. Chaque skill = 1 dossier avec SKILL.md, prêt à copier dans votre agent.</p>
-</section>
-
-<!-- ================= OUTIL GRATUIT ================= -->
-<section class="section" id="outil">
-  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">L'outil gratuit</span>
-  <h2 class="section-title" style="margin-top:18px">Créez un skill en <span class="grad-text">10 questions</span></h2>
-  <p class="section-sub">L'Atelier Skill génère un SKILL.md valide et installable pour votre tâche, directement dans votre navigateur. Vos données ne quittent jamais votre ordinateur.</p>
-  <div class="tool-band reveal">
-    <h3>Atelier Skill — le générateur de SKILL.md</h3>
-    <p>Répondez à 10 questions sur votre métier et votre tâche : vous obtenez un squelette de skill complet (frontmatter, instructions, exemple, checklist), téléchargeable en un clic. Les packs SkillVault vont plus loin : 50 skills testés, calibrés métier, avec scripts et pièges.</p>
-    <a href="outil.html" class="btn btn-primary btn-lg">Ouvrir l'Atelier Skill — gratuit</a>
-  </div>
-</section>
-
-<!-- ================= FAQ ================= -->
-<section class="section" id="faq">
-  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">FAQ</span>
-  <h2 class="section-title" style="margin-top:18px">Les questions qu'on nous <span class="grad-text">pose vraiment</span></h2>
-  <div class="faq">
-    <div class="faq-item glass">
-      <button class="faq-q">Qu'est-ce qu'un skill exactement ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">Un skill est un dossier contenant un fichier SKILL.md : un mode d'emploi qu'un agent IA charge pour exécuter une tâche métier précise. Chaque skill SkillVault contient une description, des instructions étape par étape, un exemple concret et une checklist de validation — tout en français.</div></div>
-    </div>
-    <div class="faq-item glass">
-      <button class="faq-q">Avec quels outils ça fonctionne ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">Le format SKILL.md est le format standard des instructions métier des agents IA : il est supporté nativement par Claude Code, Codex et Copilot, et lisible par la plupart des autres agents (ChatGPT, Gemini, Cursor…). Le guide PDF détaille l'installation dans chaque outil.</div></div>
-    </div>
-    <div class="faq-item glass">
-      <button class="faq-q">Je ne suis pas développeur, est-ce pour moi ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">Oui, c'est exactement pour vous. L'installation consiste à copier un dossier reçu par email dans le dossier de skills de votre agent, guidé par un PDF pas à pas. Aucune ligne de code à écrire — si vous savez copier un dossier, vous savez installer un skill.</div></div>
-    </div>
-    <div class="faq-item glass">
-      <button class="faq-q">Comment se passe l'installation, concrètement ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">Trois étapes : 1) vous choisissez votre pack ; 2) vous recevez le ZIP par email, vous le décompressez et vous copiez les dossiers de skills dans le dossier de skills de votre agent (le guide PDF montre chaque outil) ; 3) vous décrivez votre tâche en français (« relance ce panier », « chiffre ce devis ») et l'agent applique la méthode du skill. Comptez 2 minutes pour l'installation.</div></div>
-    </div>
-    <div class="faq-item glass">
-      <button class="faq-q">Que contient exactement le ZIP ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">10 dossiers de skills, un par compétence, chacun avec son SKILL.md : frontmatter (nom + description), instructions étape par étape, exemple concret et checklist de validation. Le ZIP du Pack Complet contient les 5 packs, soit 50 skills, plus le guide d'installation de 40 pages.</div></div>
-    </div>
-    <div class="faq-item glass">
-      <button class="faq-q">Comment se font le paiement et la livraison ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">Après votre commande via le formulaire, vous recevez un email de confirmation avec les coordonnées de paiement (virement ou message privé) et votre facture. Le ZIP et le guide PDF sont livrés par email dès réception du paiement. Le skill sur-mesure du Pack Complet est rédigé sous 5 jours ouvrés ; les 5 skills personnalisés de la Licence Entreprise sous 10 jours, après le cadrage de 45 minutes.</div></div>
-    </div>
-    <div class="faq-item glass">
-      <button class="faq-q">Le skill sur-mesure, c'est quoi ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">Le Pack Complet inclut 1 skill rédigé selon votre besoin précis : vous décrivez votre tâche métier (ex. « la relance des clients de mon pressing avant l'hiver ») et nous rédigeons un SKILL.md dédié, livré sous 5 jours ouvrés. La Licence Entreprise va plus loin : 5 skills personnalisés sur vos processus internes, définis ensemble lors d'un cadrage de 45 minutes.</div></div>
-    </div>
-    <div class="faq-item glass">
-      <button class="faq-q">Et si ça ne me convient pas ?<span class="chev">▼</span></button>
-      <div class="faq-a"><div class="faq-a-inner">Garantie satisfait ou remboursé 14 jours : si un pack ne vous convient pas, écrivez-nous dans les 14 jours suivant la commande et nous vous remboursons intégralement, sans condition. Nous préférons un client remboursé honnête à un client insatisfait silencieux.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= COMMANDE ================= -->
-<section class="section" id="commande">
-  <span class="kicker" style="display:flex;justify-content:center;width:fit-content;margin:0 auto">Commande</span>
-  <h2 class="section-title" style="margin-top:18px">Commander <span class="grad-text">vos skills</span></h2>
-  <p class="section-sub">2 minutes pour commander, 2 minutes pour installer. Nous vous répondons sous 24 h ouvrées.</p>
-  <div class="order-wrap">
-    <form class="order" id="order-form" novalidate>
-      <h3>Votre commande</h3>
-      <p class="order-sub">Remplissez le formulaire : vous recevrez l'email de confirmation, la facture et les coordonnées de paiement.</p>
-      <div class="form-row">
-        <div class="field">
-          <label for="f-name">Votre nom</label>
-          <input type="text" id="f-name" name="name" placeholder="Ex. Claire Martin" required>
-          <span class="err">Merci d'indiquer votre nom.</span>
-        </div>
-        <div class="field">
-          <label for="f-email">Votre email</label>
-          <input type="email" id="f-email" name="email" placeholder="vous@exemple.fr" required>
-          <span class="err">Merci d'indiquer un email valide.</span>
-        </div>
-      </div>
-      <div class="field">
-        <label for="f-pack">Pack choisi</label>
-        <select id="f-pack" name="pack" required>
-          <option value="">— Choisissez votre pack —</option>
-          <option value="Pack Métier (29 €)">Pack Métier — 29 € (1 pack au choix : précisez lequel dans le message)</option>
-          <option value="Pack Complet (89 €)">Pack Complet — 89 € (les 5 packs + skill sur-mesure) ★ le plus choisi</option>
-          <option value="Licence Entreprise (197 €)">Licence Entreprise — 197 € (équipe 10 personnes + 5 skills perso)</option>
-        </select>
-        <span class="err">Merci de choisir un pack.</span>
-      </div>
-      <div class="field">
-        <label for="f-msg">Votre message (facultatif)</label>
-        <textarea id="f-msg" name="message" placeholder="Pack Métier : précisez votre métier (commerce, artisanat, RH, compta, marketing). Pack Complet : décrivez votre skill sur-mesure. Licence Entreprise : vos besoins d'équipe…"></textarea>
-        <span class="err">Message trop long (500 caractères maximum).</span>
-      </div>
-      <div class="order-actions">
-        <button type="submit" class="btn btn-primary btn-lg" id="order-submit">Commander — je reçois la confirmation par email</button>
-        <p class="order-secure">🔒 Confirmation par email — paiement par virement ou message privé, facture incluse. Garantie satisfait ou remboursé 14 jours.</p>
-      </div>
-      <div class="order-ok" id="order-ok">
-        <div class="big">🎉</div>
-        <h4>Commande envoyée !</h4>
-        <p>Merci — vous allez recevoir un email de confirmation dans quelques instants.</p>
-        <div class="steps-list">
-          <span>1. Vérifiez votre boîte de réception (et les spams).</span>
-          <span>2. Suivez les coordonnées de paiement reçues par email.</span>
-          <span>3. Vos packs sont livrés dès réception du paiement.</span>
-        </div>
-      </div>
-    </form>
-  </div>
-</section>
-
-<!-- ================= FOOTER ================= -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-grid">
-      <div>
-        <a class="logo" href="#top" style="margin-bottom:14px">
-          <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#161008" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#0e1116" stroke="none"/></svg></span>
-          SkillVault
-        </a>
-        <p style="margin-top:14px;max-width:320px">Le catalogue français de compétences métier pour agents IA. Des skills rédigés en français, calibrés pour votre métier, installables en 2 minutes.</p>
-      </div>
-      <div>
-        <h4>Navigation</h4>
-        <ul>
-          <li><a href="#skills">Les 50 skills</a></li>
-          <li><a href="#fonctionnement">Fonctionnement</a></li>
-          <li><a href="#offres">Offres et prix</a></li>
-          <li><a href="outil.html">Atelier Skill (gratuit)</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#commande">Commander</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <ul>
-          <li>Email : contact@skillvault.fr</li>
-          <li>Réponse sous 24 h ouvrées</li>
-          <li>Garantie satisfait ou remboursé 14 jours</li>
-          <li>Données utilisées uniquement pour traiter votre commande (RGPD)</li>
-        </ul>
-      </div>
-    </div>
-    <p class="disclaimer">SkillVault vend des compétences métier au format SKILL.md, un standard d'instructions pour agents IA. Les résultats obtenus dépendent de l'outil utilisé (Claude Code, Codex, Copilot…) et de la qualité des informations que vous fournissez à votre agent : chaque production de l'agent reste à valider par vous avant envoi ou publication. Les montants annoncés sont en euros, toutes taxes comprises.</p>
-    <div class="footer-bottom">
-      <span>© 2026 SkillVault — Tous droits réservés.</span>
-      <span>Fait avec soin en France 🇫🇷</span>
-    </div>
+  <p class="sv-disclaimer">SkillVault vend des compétences métier au format SKILL.md, un standard d'instructions pour agents IA. Les résultats obtenus dépendent de l'outil utilisé (Claude Code, Codex, Copilot…) et de la qualité des informations que vous fournissez à votre agent : chaque production de l'agent reste à valider par vous avant envoi ou publication. Les montants annoncés sont en euros, toutes taxes comprises.</p>
+  <div class="sv-footer__bottom">
+    <span>© 2026 SkillVault — Tous droits réservés.</span>
+    <span>Fait avec soin en France</span>
   </div>
 </footer>
 
-<!-- ================= SCRIPTS ================= -->
+<!-- ============ LA JAUGE DE COFFRE (fil conducteur : 1 rayon = 1 palier) ============ -->
+<div class="sv-gauge" id="sv-gauge" aria-hidden="true">
+  <span class="sv-gauge__tick"></span>
+  <span class="sv-gauge__tick"></span>
+  <span class="sv-gauge__tick"></span>
+  <span class="sv-gauge__tick"></span>
+  <span class="sv-gauge__tick"></span>
+  <div class="sv-gauge__fill" id="sv-gauge-fill"></div>
+</div>
+
+<!-- ============ LA ROUE DE COMBINAISON (signature move) ============ -->
+<div class="sv-dial" id="sv-dial" aria-hidden="true">
+  <div class="sv-dial__screen">
+    <span class="sv-dial__slot">3</span><span class="sv-dial__slot">8</span><span class="sv-dial__slot">2</span><span class="sv-dial__slot">9</span><span class="sv-dial__slot">4</span>
+  </div>
+  <svg class="sv-dial__svg" viewBox="0 0 120 120">
+    <circle class="sv-dial__face" cx="60" cy="60" r="52"/>
+    <circle class="sv-dial__inner" cx="60" cy="60" r="38"/>
+    <g class="sv-dial__tick">
+      <line x1="60" y1="10" x2="60" y2="18"/><line x1="60" y1="102" x2="60" y2="110"/><line x1="10" y1="60" x2="18" y2="60"/><line x1="102" y1="60" x2="110" y2="60"/>
+      <line x1="23" y1="23" x2="29" y2="29"/><line x1="97" y1="23" x2="91" y2="29"/><line x1="23" y1="97" x2="29" y2="91"/><line x1="97" y1="97" x2="91" y2="91"/>
+    </g>
+    <g class="sv-dial__needle" id="sv-dial-needle"><line x1="60" y1="60" x2="60" y2="26"/><circle cx="60" cy="60" r="5"/></g>
+    <circle class="sv-dial__hub" cx="60" cy="60" r="3"/>
+  </svg>
+  <div class="sv-dial__label">VAULT</div>
+</div>
+
+<!-- ============ CURSEUR PERSONNALISÉ (point doré + halo + traînée) ============ -->
+<div id="sv-cursor" aria-hidden="true"></div>
+<div id="sv-cursor-halo" aria-hidden="true"></div>
+<div id="sv-cursor-trail" aria-hidden="true"></div>
+
+<script src="engine/scrollcraft.js"></script>
 <script>
-/* ---------- Révélation au scroll ---------- */
-(function(){
-  var els = document.querySelectorAll('.reveal');
-  if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
-  }, { threshold: .12 });
-  els.forEach(function(e){ io.observe(e); });
-})();
+ScrollCraft.mount(document.body);
+</script>
+<script>
+(function () {
+  "use strict";
 
-/* ---------- FAQ accordéon ---------- */
-(function(){
-  var items = document.querySelectorAll('.faq-item');
-  items.forEach(function(item){
-    var q = item.querySelector('.faq-q');
-    var a = item.querySelector('.faq-a');
-    q.addEventListener('click', function(){
-      var open = item.classList.contains('open');
-      items.forEach(function(o){ o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight = null; });
-      if (!open) { item.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px'; }
-    });
-  });
-})();
+  /* ============ PARTICULES DORÉES du hero (canvas léger) ============ */
+  (function () {
+    var wrap = document.querySelector('.sv-dust-wrap');
+    var cv = wrap && wrap.querySelector('canvas');
+    if (!cv || !wrap) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return; /* le CSS masque le wrap en reduced-motion */
+    var ctx = cv.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0, parts = [], running = false, inView = false, last = 0;
 
-/* ---------- EmailJS : configuration réelle ---------- */
-var EMAILJS_CFG = (window.CHATBOT_CONFIG && window.CHATBOT_CONFIG.emailjs) || { serviceId: 'service_cy1ytdb', templateId: 'template_xpo58cv', publicKey: '8Pui4ZEqxW2jRVF7h' };
-if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} }
-
-function chargerEmailJS() {
-  return new Promise(function (resolve) {
-    if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); return; }
-    var s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-    s.onload = function () { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); };
-    s.onerror = function () { resolve(); };
-    document.head.appendChild(s);
-  });
-}
-
-/* ---------- Pré-sélection d'offre depuis les cartes de prix ---------- */
-function choisirOffre(nom, prix) {
-  var sel = document.getElementById('f-pack');
-  for (var i = 0; i < sel.options.length; i++) {
-    if (sel.options[i].value.indexOf(nom) === 0) { sel.value = sel.options[i].value; break; }
-  }
-  document.getElementById('commande').scrollIntoView({ behavior: 'smooth' });
-  document.getElementById('f-name').focus();
-}
-
-/* ---------- Validation + envoi ---------- */
-(function(){
-  var form = document.getElementById('order-form');
-  var submit = document.getElementById('order-submit');
-  var okPanel = document.getElementById('order-ok');
-  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-  function mark(field, bad, msg) {
-    var f = field.closest('.field');
-    if (f) { f.classList.toggle('invalid', bad); if (bad && msg) f.querySelector('.err').textContent = msg; }
-    return !bad;
-  }
-
-  form.addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var name = document.getElementById('f-name').value.trim();
-    var email = document.getElementById('f-email').value.trim();
-    var pack = document.getElementById('f-pack').value;
-    var msg = document.getElementById('f-msg').value.trim();
-
-    var ok = true;
-    ok = mark(document.getElementById('f-name'), !name) && ok;
-    ok = mark(document.getElementById('f-email'), !emailRe.test(email)) && ok;
-    ok = mark(document.getElementById('f-pack'), !pack) && ok;
-    ok = mark(document.getElementById('f-msg'), msg.length > 500) && ok;
-    if (!ok) return;
-
-    submit.disabled = true;
-    submit.textContent = 'Envoi en cours…';
-    var question = 'Commande SkillVault : ' + pack + '. Nom : ' + name + '. Email : ' + email + (msg ? '. Message : ' + msg : '') + '. Paiement par virement ou message privé — merci d\'envoyer les coordonnées et la facture.';
-
-    chargerEmailJS().then(function () {
-      if (!window.emailjs) {
-        submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
-        alert('Connexion impossible au service d\'envoi. Vérifiez votre connexion internet puis réessayez, ou écrivez-nous directement à contact@skillvault.fr.');
-        return;
-      }
-      window.emailjs.send(EMAILJS_CFG.serviceId, EMAILJS_CFG.templateId, { site: 'SkillVault', name: name, email: email, question: question })
-        .then(function () {
-          form.style.display = 'none';
-          okPanel.style.display = 'block';
-        })
-        .catch(function () {
-          submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
-          alert('L\'envoi a échoué. Merci de réessayer dans un instant, ou écrivez-nous directement à contact@skillvault.fr.');
+    function seed() {
+      var n = Math.max(6, Math.round(Math.min(W, 340) / 24));
+      parts = [];
+      for (var i = 0; i < n; i++) {
+        parts.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: 0.6 + Math.random() * 1.5,
+          v: 7 + Math.random() * 15,
+          drift: (Math.random() - 0.5) * 9,
+          a: 0.16 + Math.random() * 0.5,
+          tw: Math.random() * Math.PI * 2
         });
+      }
+    }
+
+    function size() {
+      var box = cv.getBoundingClientRect();
+      W = Math.max(1, Math.round(box.width));
+      H = Math.max(1, Math.round(box.height));
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (parts.length === 0) seed();
+    }
+
+    function frame(t) {
+      if (!inView) return;
+      var dt = Math.min((t - last) / 1000 || 0.016, 0.05);
+      last = t;
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        p.y -= p.v * dt;
+        p.x += p.drift * dt;
+        p.tw += dt * 2.2;
+        if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
+        if (p.x < -6) p.x = W + 6;
+        else if (p.x > W + 6) p.x = -6;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,190,92,' + (p.a * (0.65 + 0.35 * Math.sin(p.tw))).toFixed(3) + ')';
+        ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          inView = en.isIntersecting;
+          if (inView && !running) { running = true; last = performance.now(); requestAnimationFrame(frame); }
+          if (!inView) running = false;
+        });
+      }, { threshold: 0.02 });
+      io.observe(wrap);
+    } else {
+      inView = true; running = true; last = performance.now(); requestAnimationFrame(frame);
+    }
+    window.addEventListener('resize', size);
+    size();
+  })();
+
+  /* ============ CURSEUR PERSONNALISÉ (point + halo, lerp) ============ */
+  (function () {
+    var cursor = document.getElementById('sv-cursor');
+    var halo = document.getElementById('sv-cursor-halo');
+    var trail = document.getElementById('sv-cursor-trail');
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!cursor || !halo || !trail || !fine || reduce) return;
+    document.documentElement.classList.add('sv-cursor-on');
+    var mx = -100, my = -100, hx = -100, hy = -100, tx = -100, ty = -100;
+    document.addEventListener('mousemove', function (e) { mx = e.clientX; my = e.clientY; });
+    document.addEventListener('mouseleave', function () { mx = -100; my = -100; });
+    (function loop() {
+      hx += (mx - hx) * 0.16;
+      hy += (my - hy) * 0.16;
+      tx += (mx - tx) * 0.09; /* traînée : lerp plus lent, elle rattrape le point */
+      ty += (my - ty) * 0.09;
+      cursor.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+      halo.style.transform = 'translate(' + hx.toFixed(1) + 'px,' + hy.toFixed(1) + 'px)';
+      trail.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)';
+      requestAnimationFrame(loop);
+    })();
+    document.addEventListener('mouseover', function (e) {
+      var t = e.target && e.target.closest ? e.target.closest('a,button,.sv-cta,.sv-plate,.sv-tile,.sv-skill,.sv-faq__q,input,select,textarea,label') : null;
+      document.body.classList.toggle('sv-cursor-hover', !!t);
+    });
+  })();
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+
+  /* ================= MARQUEE : les 50 vrais noms, 2 bandes inversées ================= */
+  (function () {
+    var trackA = document.querySelector('.sv-marquee__track--a');
+    var trackB = document.querySelector('.sv-marquee__track--b');
+    if (!trackA || !trackB) return;
+    var names = [];
+    function push(t) {
+      t = (t || '').replace(/\s+/g, ' ').trim();
+      if (t && names.indexOf(t) === -1) names.push(t);
+    }
+    document.querySelectorAll('.sv-rail .sv-rail__item').forEach(function (el) {
+      var num = el.querySelector('.sv-rail__num');
+      var t = el.textContent;
+      if (num) t = t.replace(num.textContent, '');
+      push(t);
+    });
+    document.querySelectorAll('.sv-shelf .sv-skill').forEach(function (el) { push(el.textContent); });
+    document.querySelectorAll('.sv-tiles .sv-tile__name').forEach(function (el) { push(el.textContent); });
+    document.querySelectorAll('.sv-ledger__line .sv-ledger__name').forEach(function (el) { push(el.textContent); });
+    document.querySelectorAll('.sv-grid .sv-skill').forEach(function (el) { push(el.textContent); });
+    if (names.length < 40) return; /* les vrais rayons doivent être présents */
+    function build(list) {
+      var frag = document.createDocumentFragment();
+      list.forEach(function (n) {
+        var s = document.createElement('span');
+        s.className = 'sv-mq-item';
+        s.textContent = n;
+        frag.appendChild(s);
+      });
+      return frag;
+    }
+    var seqA = names.slice();
+    var seqB = names.slice().reverse();
+    /* chaque track = séquence dupliquée 2x : boucle parfaite à -50 % */
+    for (var r = 0; r < 2; r++) {
+      trackA.appendChild(build(seqA));
+      trackB.appendChild(build(seqB));
+    }
+  })();
+
+  /* ================= LA ROUE DE COMBINAISON ================= */
+  var dial = document.getElementById('sv-dial');
+  var needle = document.getElementById('sv-dial-needle');
+  var slots = Array.prototype.slice.call(dial.querySelectorAll('.sv-dial__slot'));
+  var combo = ['3', '8', '2', '9', '4'];
+  var rayons = ['rayon-commerce', 'rayon-artisanat', 'rayon-rh', 'rayon-compta', 'rayon-marketing'];
+  var seen = [false, false, false, false, false];
+  var composed = 0;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function lightRayon(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('lit');
+  }
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var i = rayons.indexOf(en.target.id);
+        if (i === -1) return;
+        if (seen[i]) return;
+        seen[i] = true;
+        composed += 1;
+        lightRayon(en.target.id);
+        slots[i].classList.add('on');
+        if (composed === rayons.length) { dial.classList.add('sv-dial--armed'); }
+      });
+    }, { threshold: 0.25 });
+    rayons.forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
+  } else {
+    slots.forEach(function (s) { s.classList.add('on'); });
+  }
+
+  /* rotation de l'aiguille : le scroll est la main qui tourne la roue */
+  var maxRot = 660;
+  var prixEl = document.getElementById('prix');
+  var gauge = document.getElementById('sv-gauge');
+  var gaugeFill = document.getElementById('sv-gauge-fill');
+  var apercuEl = document.getElementById('apercu');
+  var codeStage = apercuEl ? apercuEl.querySelector('[data-sc-stage]') : null;
+  var codeLines = apercuEl ? apercuEl.querySelectorAll('.sv-cline') : [];
+  var prixStage = prixEl ? prixEl.querySelector('[data-sc-stage]') : null;
+  var lockPulse = document.querySelector('#prix .sv-lock__pulse');
+  var burstFired = false;
+
+  /* la jauge n'apparaît que dans les rayons (commerce + vault) */
+  if ('IntersectionObserver' in window && gauge) {
+    var gio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) gauge.classList.add('on'); });
+    }, { threshold: 0.04 });
+    var rayonCom = document.getElementById('rayon-commerce');
+    var rayonsSec = document.getElementById('rayons');
+    if (rayonCom) gio.observe(rayonCom);
+    if (rayonsSec) gio.observe(rayonsSec);
+  }
+
+  function frame() {
+    var y = window.scrollY || window.pageYOffset;
+    if (y !== lastScrollY) {
+      lastScrollY = y;
+      if (!reduce) {
+        var doorTop = prixEl ? (prixEl.getBoundingClientRect().top + y) : 0;
+        var p = doorTop > 0 ? Math.min(y / (doorTop + window.innerHeight * 0.5), 1) : 1;
+        if (needle) needle.setAttribute('transform', 'rotate(' + (p * maxRot).toFixed(1) + ' 60 60)');
+        if (p >= 1 && composed === rayons.length) dial.classList.add('sv-dial--open');
+      }
+      /* jauge de coffre : 1 rayon visité = 1 palier (composé par la roue) */
+      if (gaugeFill) gaugeFill.style.height = (composed / rayons.length * 100).toFixed(1) + '%';
+      /* état réel du stage aperçu : le fichier se déplie ligne par ligne */
+      if (codeStage) {
+        var pApercu = parseFloat(window.getComputedStyle(codeStage).getPropertyValue('--sc-p')) || 0;
+        var n = 0;
+        codeLines.forEach(function (ln) {
+          var t = parseFloat(ln.style.getPropertyValue('--l')) || 0;
+          if (pApercu >= t) n++;
+        });
+        codeStage.setAttribute('data-sc-verify-state', 'lines:' + n);
+      }
+      /* état réel du stage prix : battants, éclat, verrou (le verrou pulse en CSS) */
+      if (prixStage) {
+        var pPrix = parseFloat(window.getComputedStyle(prixStage).getPropertyValue('--sc-p')) || 0;
+        var door = Math.max(0, Math.min(1, (pPrix - 0.42) / 0.26));
+        var flash = Math.max(0, Math.min(1, (pPrix - 0.50) / 0.08)) * Math.max(0, Math.min(1, (0.74 - pPrix) / 0.10));
+        var lock = lockPulse ? (parseFloat(window.getComputedStyle(lockPulse).opacity) || 0) : 0;
+        /* v5 : le flash embrase toute la page (overlay fixed) */
+        document.documentElement.style.setProperty('--sv-pageflash', (reduce ? 0 : flash).toFixed(3));
+        /* v5 : la rafale de particules part quand la porte est franchement ouverte.
+           La classe est posée sur le STAGE (ancêtre des particules ET du titre final). */
+        if (door > 0.6 && !burstFired) { burstFired = true; prixStage.classList.add('sv-burst-go'); }
+        if (door < 0.3 && burstFired) { burstFired = false; prixStage.classList.remove('sv-burst-go'); }
+        prixStage.setAttribute('data-sc-verify-state', 'door:' + door.toFixed(2) + ',flash:' + flash.toFixed(2) + ',lock:' + lock.toFixed(2));
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  var lastScrollY = -1;
+  requestAnimationFrame(frame);
+
+  /* ================= FAQ accordéon ================= */
+  var items = document.querySelectorAll('.sv-faq__item');
+  items.forEach(function (item) {
+    var q = item.querySelector('.sv-faq__q');
+    var a = item.querySelector('.sv-faq__a');
+    q.addEventListener('click', function () {
+      var open = item.classList.contains('open');
+      items.forEach(function (o) {
+        o.classList.remove('open');
+        o.querySelector('.sv-faq__a').style.maxHeight = null;
+        o.querySelector('.sv-faq__q').setAttribute('aria-expanded', 'false');
+      });
+      if (!open) {
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+        q.setAttribute('aria-expanded', 'true');
+      }
     });
   });
+
+  /* ================= EmailJS : tunnel réel ================= */
+  var EMAILJS_CFG = (window.CHATBOT_CONFIG && window.CHATBOT_CONFIG.emailjs) || { serviceId: 'service_cy1ytdb', templateId: 'template_xpo58cv', publicKey: '8Pui4ZEqxW2jRVF7h' };
+  if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} }
+
+  function chargerEmailJS() {
+    return new Promise(function (resolve) {
+      if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); return; }
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      s.onload = function () { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); };
+      s.onerror = function () { resolve(); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function choisirOffre(nom, prix) {
+    var sel = document.getElementById('f-pack');
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value.indexOf(nom) === 0) { sel.value = sel.options[i].value; break; }
+    }
+    document.getElementById('commande').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('f-name').focus();
+  }
+  window.choisirOffre = choisirOffre;
+
+  (function () {
+    var form = document.getElementById('order-form');
+    var submit = document.getElementById('order-submit');
+    var okPanel = document.getElementById('order-ok');
+    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    function mark(field, bad, msg) {
+      var f = field.closest('.sv-field');
+      if (f) { f.classList.toggle('invalid', bad); if (bad && msg) f.querySelector('.sv-err').textContent = msg; }
+      return !bad;
+    }
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var name = document.getElementById('f-name').value.trim();
+      var email = document.getElementById('f-email').value.trim();
+      var pack = document.getElementById('f-pack').value;
+      var msg = document.getElementById('f-msg').value.trim();
+
+      var ok = true;
+      ok = mark(document.getElementById('f-name'), !name) && ok;
+      ok = mark(document.getElementById('f-email'), !emailRe.test(email)) && ok;
+      ok = mark(document.getElementById('f-pack'), !pack) && ok;
+      ok = mark(document.getElementById('f-msg'), msg.length > 500) && ok;
+      if (!ok) return;
+
+      submit.disabled = true;
+      submit.textContent = 'Envoi en cours…';
+      var question = 'Commande SkillVault : ' + pack + '. Nom : ' + name + '. Email : ' + email + (msg ? '. Message : ' + msg : '') + '. Paiement par virement ou message privé — merci d\'envoyer les coordonnées et la facture.';
+
+      chargerEmailJS().then(function () {
+        if (!window.emailjs) {
+          submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
+          alert('Connexion impossible au service d\'envoi. Vérifiez votre connexion internet puis réessayez, ou écrivez-nous directement à contact@skillvault.fr.');
+          return;
+        }
+        window.emailjs.send(EMAILJS_CFG.serviceId, EMAILJS_CFG.templateId, { site: 'SkillVault', name: name, email: email, question: question })
+          .then(function () {
+            form.style.display = 'none';
+            okPanel.style.display = 'block';
+          })
+          .catch(function () {
+            submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
+            alert('L\'envoi a échoué. Merci de réessayer dans un instant, ou écrivez-nous directement à contact@skillvault.fr.');
+          });
+      });
+    });
+  })();
 })();
 </script>
 
-<!-- Chatbot SkillVault (aux couleurs du site : ambre #ffb340) -->
+<!-- Chatbot SkillVault (inchangé, aux couleurs de la marque) -->
 <script src="chatbot-config.js"></script>
 <script src="chatbot.js"></script>
 </body>

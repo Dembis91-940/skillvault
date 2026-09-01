@@ -1012,7 +1012,7 @@
         {"@type": "Question", "name": "Je ne suis pas développeur, est-ce pour moi ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui : l'installation consiste à copier un dossier reçu par email dans le dossier de skills de votre agent, guidé par un PDF pas à pas. Aucune ligne de code à écrire."}},
         {"@type": "Question", "name": "Comment se passe l'installation ?", "acceptedAnswer": {"@type": "Answer", "text": "Trois étapes : choisir votre pack, copier les dossiers de skills dans votre agent (2 minutes, guide PDF inclus), puis décrire votre tâche à l'agent : il applique la méthode du skill."}},
         {"@type": "Question", "name": "Que contient le ZIP ?", "acceptedAnswer": {"@type": "Answer", "text": "10 dossiers de skills, un par compétence, chacun contenant son SKILL.md : frontmatter (nom + description), instructions étape par étape, exemple concret et checklist de validation. Tout est rédigé en français."}},
-        {"@type": "Question", "name": "Comment se font le paiement et la livraison ?", "acceptedAnswer": {"@type": "Answer", "text": "Après votre commande via le formulaire, vous recevez un email de confirmation avec les coordonnées de paiement (virement ou message privé) et la facture. Le ZIP et le guide PDF sont livrés par email dès réception du paiement."}},
+        {"@type": "Question", "name": "Comment se font le paiement et la livraison ?", "acceptedAnswer": {"@type": "Answer", "text": "Après votre paiement en ligne (Stripe, carte bancaire), vous recevez un email de confirmation et la facture. Le ZIP et le guide PDF sont livrés par email dès réception du paiement."}},
         {"@type": "Question", "name": "Le skill sur-mesure, c'est quoi ?", "acceptedAnswer": {"@type": "Answer", "text": "Le Pack Complet inclut 1 skill rédigé selon votre besoin précis : vous décrivez votre tâche métier et nous rédigeons un SKILL.md dédié, livré sous 5 jours ouvrés. La Licence Entreprise inclut 5 skills personnalisés avec un cadrage de 45 min."}},
         {"@type": "Question", "name": "Et si ça ne me convient pas ?", "acceptedAnswer": {"@type": "Answer", "text": "Garantie satisfait ou remboursé 14 jours : si un pack ne vous convient pas, écrivez-nous dans les 14 jours et nous vous remboursons intégralement, sans condition."}}
       ]
@@ -1526,7 +1526,7 @@
           <span class="sv-err">Message trop long (500 caractères maximum).</span>
         </div>
         <button type="submit" class="sv-cta" id="order-submit" style="width:100%;justify-content:center;padding:0.95rem 1.4rem;font-size:1rem">Commander — je reçois la confirmation par email</button>
-        <p class="sv-order__secure">Confirmation par email — paiement par virement ou message privé, facture incluse. Garantie satisfait ou remboursé 14 jours.</p>
+        <p class="sv-order__secure">Paiement en ligne sécurisé par Stripe (carte bancaire) — facture incluse. Garantie satisfait ou remboursé 14 jours.</p>
         <div class="sv-order__ok" id="order-ok">
           <h4>Commande envoyée</h4>
           <p>Merci — vous allez recevoir un email de confirmation dans quelques instants.</p>
@@ -1577,6 +1577,7 @@
     <span>© 2026 SkillVault — Tous droits réservés.</span>
     <span>Fait avec soin en France</span>
   </div>
+  <div style="margin-top:.6rem;font-size:.82rem;opacity:.75"><a href="cgv.html">CGV</a> · <a href="mentions-legales.html">Mentions légales</a></div>
 </footer>
 
 <!-- ============ LA JAUGE DE COFFRE (fil conducteur : 1 rayon = 1 palier) ============ -->
@@ -1886,78 +1887,32 @@ ScrollCraft.mount(document.body);
     });
   });
 
-  /* ================= EmailJS : tunnel réel ================= */
-  var EMAILJS_CFG = (window.CHATBOT_CONFIG && window.CHATBOT_CONFIG.emailjs) || { serviceId: 'service_cy1ytdb', templateId: 'template_xpo58cv', publicKey: '8Pui4ZEqxW2jRVF7h' };
-  if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} }
-
-  function chargerEmailJS() {
-    return new Promise(function (resolve) {
-      if (window.emailjs) { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); return; }
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-      s.onload = function () { try { emailjs.init({ publicKey: EMAILJS_CFG.publicKey }); } catch (e) {} resolve(); };
-      s.onerror = function () { resolve(); };
-      document.head.appendChild(s);
-    });
-  }
+  /* ================= Stripe : tunnel de paiement (remplace EmailJS) ================= */
+  var STRIPE_LINKS = {
+    29: 'https://buy.stripe.com/7sYaEZdrggyx8vj7i4frW00',
+    89: 'https://buy.stripe.com/28E9AV3QGgyx8vj0TGfrW01',
+    197: 'https://buy.stripe.com/7sYcN7bj8aa9dPD9qcfrW02'
+  };
+  function lienStripe(prix) { return STRIPE_LINKS[prix] || STRIPE_LINKS[29]; }
 
   function choisirOffre(nom, prix) {
-    var sel = document.getElementById('f-pack');
-    for (var i = 0; i < sel.options.length; i++) {
-      if (sel.options[i].value.indexOf(nom) === 0) { sel.value = sel.options[i].value; break; }
-    }
-    document.getElementById('commande').scrollIntoView({ behavior: 'smooth' });
-    document.getElementById('f-name').focus();
+    window.location.href = lienStripe(prix);
   }
   window.choisirOffre = choisirOffre;
 
   (function () {
     var form = document.getElementById('order-form');
+    if (!form) return;
     var submit = document.getElementById('order-submit');
     var okPanel = document.getElementById('order-ok');
-    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-    function mark(field, bad, msg) {
-      var f = field.closest('.sv-field');
-      if (f) { f.classList.toggle('invalid', bad); if (bad && msg) f.querySelector('.sv-err').textContent = msg; }
-      return !bad;
-    }
-
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
-      var name = document.getElementById('f-name').value.trim();
-      var email = document.getElementById('f-email').value.trim();
-      var pack = document.getElementById('f-pack').value;
-      var msg = document.getElementById('f-msg').value.trim();
-
-      var ok = true;
-      ok = mark(document.getElementById('f-name'), !name) && ok;
-      ok = mark(document.getElementById('f-email'), !emailRe.test(email)) && ok;
-      ok = mark(document.getElementById('f-pack'), !pack) && ok;
-      ok = mark(document.getElementById('f-msg'), msg.length > 500) && ok;
-      if (!ok) return;
-
-      submit.disabled = true;
-      submit.textContent = 'Envoi en cours…';
-      var question = 'Commande SkillVault : ' + pack + '. Nom : ' + name + '. Email : ' + email + (msg ? '. Message : ' + msg : '') + '. Paiement par virement ou message privé — merci d\'envoyer les coordonnées et la facture.';
-
-      chargerEmailJS().then(function () {
-        if (!window.emailjs) {
-          submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
-          alert('Connexion impossible au service d\'envoi. Vérifiez votre connexion internet puis réessayez, ou écrivez-nous directement à contact@skillvault.fr.');
-          return;
-        }
-        window.emailjs.send(EMAILJS_CFG.serviceId, EMAILJS_CFG.templateId, { site: 'SkillVault', name: name, email: email, question: question })
-          .then(function () {
-            form.style.display = 'none';
-            okPanel.style.display = 'block';
-          })
-          .catch(function () {
-            submit.disabled = false; submit.textContent = 'Commander — je reçois la confirmation par email';
-            alert('L\'envoi a échoué. Merci de réessayer dans un instant, ou écrivez-nous directement à contact@skillvault.fr.');
-          });
-      });
+      var pack = document.getElementById('f-pack');
+      var m = /(\d+)\s*€/.exec(pack ? pack.value : '');
+      window.location.href = lienStripe(m ? parseInt(m[1], 10) : 29);
     });
+    if (submit) submit.textContent = 'Payer avec Stripe — carte bancaire';
+    if (okPanel) okPanel.style.display = 'none';
   })();
 })();
 </script>

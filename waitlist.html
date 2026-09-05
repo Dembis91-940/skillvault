@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liste d'attente — SkillVault : les portes rouvrent bientôt</title>
+<meta name="description" content="Les inscriptions à SkillVault sont fermées pour l'instant. Rejoignez la liste d'attente : vous serez prévenu en premier à la prochaine ouverture, avec un bonus réservé aux inscrits.">
+<meta name="robots" content="noindex,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sc-canvas:#07090d; --sc-surface:#0f1218; --sc-ink:#f3efe6; --sc-ink-soft:#a7a294;
+    --sc-accent:#ffb340; --sc-hairline:rgba(255,255,255,.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--sc-canvas); color:var(--sc-ink); font-family:'Sora',system-ui,sans-serif; min-height:100vh; display:flex; flex-direction:column; }
+  .bar { position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:1rem; padding:.8rem clamp(1.25rem,5vw,3.5rem); background:color-mix(in oklab, var(--sc-canvas) 82%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--sc-hairline); }
+  .bar a { color:var(--sc-ink-soft); text-decoration:none; font-size:.82rem; }
+  .bar a:hover { color:var(--sc-accent); }
+  .bar .brand { display:flex; align-items:center; gap:.5rem; color:var(--sc-ink); font-weight:800; font-size:1.02rem; text-decoration:none; }
+  .bar .brand svg { width:22px; height:22px; }
+  .bar .go { margin-left:auto; color:var(--sc-ink-soft); }
+  .main { flex:1; display:flex; align-items:center; justify-content:center; padding:3rem 1.25rem; }
+  .card { max-width:560px; width:100%; background:var(--sc-surface); border:1px solid color-mix(in oklab, var(--sc-accent) 28%, transparent); border-radius:22px; padding:2.6rem 2.2rem; text-align:center; box-shadow:0 24px 80px rgba(0,0,0,.45); }
+  .seal { width:76px; height:76px; border-radius:50%; margin:0 auto 1.3rem; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#ffb340,#ff8a3d); box-shadow:0 0 34px rgba(255,179,64,.28); }
+  .seal svg { width:38px; height:38px; }
+  .kicker { font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--sc-accent); font-weight:700; margin-bottom:.7rem; }
+  h1 { font-size:1.7rem; letter-spacing:-.02em; line-height:1.2; margin-bottom:.8rem; }
+  .sub { color:var(--sc-ink-soft); font-size:.95rem; line-height:1.65; margin-bottom:1.8rem; }
+  .sub b { color:var(--sc-ink); }
+  form { text-align:left; }
+  label { display:block; font-size:.8rem; color:var(--sc-ink-soft); margin-bottom:.35rem; }
+  .row { display:flex; gap:.6rem; }
+  input[type=email] { flex:1; min-width:0; padding:.85rem 1rem; border-radius:12px; border:1px solid var(--sc-hairline); background:#0b0e14; color:var(--sc-ink); font-size:.95rem; font-family:'Sora',sans-serif; }
+  input[type=email]:focus { outline:none; border-color:color-mix(in oklab, var(--sc-accent) 55%, transparent); }
+  button { margin-top:.7rem; width:100%; padding:.95rem; border:0; border-radius:12px; background:linear-gradient(135deg,#ffb340,#ff8a3d); color:#17100a; font-weight:800; font-size:.98rem; cursor:pointer; font-family:'Sora',sans-serif; transition:transform .15s ease, filter .15s ease; }
+  button:hover { transform:translateY(-2px); filter:brightness(1.06); }
+  .check { display:flex; gap:.6rem; align-items:flex-start; margin-top:.9rem; font-size:.74rem; color:var(--sc-ink-soft); line-height:1.5; }
+  .check input { margin-top:.15rem; }
+  .msg { display:none; margin-top:1rem; border-radius:12px; padding:.85rem 1rem; font-size:.88rem; line-height:1.55; text-align:center; }
+  .msg.ok { display:block; background:color-mix(in oklab, var(--sc-accent) 12%, transparent); border:1px solid color-mix(in oklab, var(--sc-accent) 40%, transparent); color:var(--sc-ink); }
+  .msg.err { display:block; background:rgba(255,90,63,.1); border:1px solid rgba(255,90,63,.4); color:#ffb4a6; }
+  .fine { margin-top:1.2rem; font-size:.72rem; color:#7d776c; line-height:1.6; }
+  .fine a { color:var(--sc-accent); text-decoration:none; }
+  .back { margin-top:1.4rem; font-size:.85rem; }
+  .back a { color:var(--sc-ink-soft); text-decoration:none; }
+  .back a:hover { color:var(--sc-accent); }
+</style>
+</head>
+<body>
+<nav class="bar">
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffb340" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V9l5 5 5-5v8"/><circle cx="12" cy="8" r="1.6" fill="#07090d" stroke="none"/></svg>
+    SkillVault
+  </a>
+  <span class="go"><a href="index.html">← Retour au catalogue</a></span>
+</nav>
+
+<main class="main">
+  <div class="card">
+    <div class="seal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#17100a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    </div>
+    <div class="kicker">Inscriptions fermées — ouverture prochaine</div>
+    <h1>Les portes de SkillVault rouvrent bientôt.</h1>
+    <p class="sub">SkillVault s'ouvre par <b>fenêtres courtes</b> : quand les portes ferment, les nouveaux skills attendent la prochaine ouverture. Rejoignez la liste d'attente — vous serez prévenu <b>en premier</b> à la réouverture, avec un bonus réservé aux inscrits.</p>
+    <form id="form-wl" novalidate>
+      <label for="wl-email">Email professionnel</label>
+      <div class="row">
+        <input type="email" id="wl-email" name="email" autocomplete="email" placeholder="vous@entreprise.fr">
+      </div>
+      <div style="display:none" aria-hidden="true"><label>Site web</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <label class="check"><input type="checkbox" id="wl-consent"> <span>J'accepte d'être prévenu à la prochaine ouverture de SkillVault (RGPD). Désinscription en 1 clic, données jamais revendues.</span></label>
+      <div class="msg" id="wl-msg"></div>
+      <button type="submit" id="wl-btn">Rejoindre la liste d'attente →</button>
+    </form>
+    <p class="fine">Les skills restent disponibles à l'unité au <a href="index.html#prix">catalogue</a>. La liste d'attente concerne les packs et la prochaine ouverture premium.</p>
+    <p class="back"><a href="index.html">← Découvrir SkillVault</a></p>
+  </div>
+</main>
+
+<script>
+/* ============================================================
+   Liste d'attente SkillVault — capture email (EmailJS).
+   template_xpo58cv : notification auteur (recréé au dashboard).
+   Si le template est absent, message de secours local (aucun faux OK).
+   ============================================================ */
+(function(){
+  "use strict";
+  var CFG = { serviceId:'service_cy1ytdb', templateId:'template_xpo58cv', publicKey:'8Pui4ZEqxW2jRVF7h' };
+  var form = document.getElementById('form-wl');
+  if(!form) return;
+  var btn = document.getElementById('wl-btn');
+  var msg = document.getElementById('wl-msg');
+  function show(cls, html){ msg.className = 'msg ' + cls; msg.innerHTML = html; }
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var email = (document.getElementById('wl-email').value||'').trim();
+    var consent = document.getElementById('wl-consent').checked;
+    var hp = form.querySelector('input[name=website]').value;
+    if(hp){ show('ok','✓ Bien reçu — vous serez prévenu à la prochaine ouverture.'); form.reset(); document.getElementById('wl-consent').checked=false; return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ show('err','Un email valide est requis pour rejoindre la liste.'); return; }
+    if(!consent){ show('err','Merci d\'accepter le traitement de vos données (RGPD) pour rejoindre la liste.'); return; }
+    btn.disabled = true;
+    var old = btn.textContent;
+    btn.textContent = 'Inscription…';
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+    s.async = true;
+    s.onload = function(){
+      try{ emailjs.init(CFG.publicKey); }catch(e){}
+      var name = (email.split('@')[0]||'').replace(/[._-]+/g,' ').trim();
+      name = name ? name.charAt(0).toUpperCase()+name.slice(1) : 'ami';
+      emailjs.send(CFG.serviceId, CFG.templateId, {
+        site:'SkillVault',
+        name:name,
+        email:email,
+        question:'LISTE D\'ATTENTE SkillVault — ouverture premium'
+      }).then(function(){
+        btn.disabled=false; btn.textContent=old;
+        show('ok','✓ Bien reçu ! Vous êtes sur la liste d\'attente — on vous prévient en premier à la prochaine ouverture.');
+        form.reset(); document.getElementById('wl-consent').checked=false;
+      }, function(){
+        btn.disabled=false; btn.textContent=old;
+        show('err','Le service d\'envoi n\'est pas encore activé. Écrivez-nous directement : contact@skillvault.fr — on vous ajoute à la main.');
+      });
+    };
+    s.onerror = function(){ btn.disabled=false; btn.textContent=old; show('err','Échec de connexion. Réessayez dans un instant.'); };
+    document.head.appendChild(s);
+  });
+})();
+</script>
+</body>
+</html>

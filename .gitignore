@@ -12,3 +12,7 @@ qa-v5c.cjs
 qa-v5d.cjs
 v5-*.png
 .DS_Store
+
+# Livrables payants — hors dépôt public (livraison par email)
+zip/
+PDF/guide-installation.pdf
